@@ -1,14 +1,8 @@
-# This is the central configuration file for Netlify.
 
 [build]
-  # This command tells Netlify to go into the 'frontend' folder and run the build script.
-  command = "npm run build --prefix frontend"
-  
-  # This tells Netlify where to find the finished website files, relative to the project root.
+  command = "npm ci --prefix frontend && npm run build --prefix frontend"
   publish = "frontend/build"
 
-# This is the crucial rule to make React Router work correctly.
-# It tells Netlify to redirect all page requests to the main index.html file.
 [[redirects]]
   from = "/*"
   to = "/index.html"
