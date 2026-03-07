@@ -1,0 +1,336 @@
+:root {
+  --blue: #00afec;
+  --gold: #f1c40f;
+  --dark: #00112b;
+  --white-10: rgba(255, 255, 255, 0.1);
+}
+
+.header-space {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 30px 20px;
+  z-index: 1000;
+  transition: padding 0.6s cubic-bezier(0.2, 1, 0.2, 1);
+}
+
+.header-space.is-compressed {
+  padding: 15px 20px;
+}
+
+.futuristic-header {
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  background: rgba(10, 10, 10, 0.6);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid var(--white-10);
+  border-radius: 24px; /* Округлый "парящий" вид */
+  overflow: hidden;
+  transition: 0.4s;
+}
+
+/* Эффект сканирующей линии сверху */
+.header-glow {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--blue), transparent);
+  animation: scan 4s linear infinite;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 30px;
+  height: 64px;
+}
+
+/* LOGO */
+.f-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+.f-logo__icon {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--blue);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.f-logo__dot {
+  width: 10px;
+  height: 10px;
+  background: var(--gold);
+  border-radius: 50%;
+  box-shadow: 0 0 15px var(--gold);
+}
+.f-logo__text {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+.f-logo__text span {
+  color: var(--blue);
+  font-weight: 300;
+  margin-left: 4px;
+}
+
+/* NAVIGATION PILL */
+.f-nav__pill {
+  display: flex;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 6px;
+  border-radius: 100px;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.f-nav__item {
+  padding: 8px 20px;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 100px;
+  transition: 0.3s;
+}
+.f-nav__item:hover,
+.f-nav__item.active {
+  color: #fff;
+  background: var(--white-10);
+}
+
+/* ACTIONS */
+.f-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.f-btn-link {
+  color: #fff;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0.7;
+  transition: 0.3s;
+}
+.f-btn-link:hover {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+.f-btn-main {
+  background: #fff;
+  color: #000;
+  padding: 10px 24px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.f-btn-main:hover {
+  background: var(--blue);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+@keyframes scan {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 200%;
+  }
+}
+
+/* MOBILE ADAPTATION */
+@media (max-width: 991px) {
+  .f-nav,
+  .f-btn-link {
+    display: none;
+  }
+  .header-inner {
+    padding: 12px 20px;
+  }
+  .header-space {
+    padding: 15px 15px;
+  }
+}
+.f-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Кнопка профиля (Триггер) */
+.profile-trigger {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 6px 6px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-trigger:hover {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.4);
+  transform: translateY(-1px);
+}
+
+.profile-trigger__info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.profile-trigger__name {
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.profile-trigger__role {
+  color: #3b82f6;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.profile-trigger__avatar {
+  position: relative;
+  width: 36px;
+  height: 36px;
+}
+
+.profile-trigger__avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.online-badge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  background: #10b981;
+  border: 2px solid #0b0e14;
+  border-radius: 50%;
+}
+
+/* Лоадер, пока данные грузятся */
+.header-loader {
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(59, 130, 246, 0.2);
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: h-spin 0.8s linear infinite;
+}
+
+@keyframes h-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Мобильная адаптация хедера */
+@media (max-width: 768px) {
+  .profile-trigger__info {
+    display: none; /* Прячем текст на мобилках, оставляем только аватар */
+  }
+  .profile-trigger {
+    padding: 4px;
+  }
+}
+/* Контейнер переключателя */
+.theme-switcher {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  margin-right: 15px;
+  outline: none;
+}
+
+/* Трек (дорожка) тумблера */
+.switcher-track {
+  width: 52px;
+  height: 28px;
+  border-radius: 100px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--border);
+}
+
+/* Цвета трека для темной темы */
+.switcher-track.dark {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Цвета трека для светлой темы */
+.switcher-track.light {
+  background: #e2e8f0;
+}
+
+/* Круглый бегунок */
+.switcher-thumb {
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f172a; /* Цвет иконки внутри бегунка */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Позиция бегунка в темной теме (справа) */
+.dark .switcher-thumb {
+  transform: translateX(24px);
+  background: #1e293b;
+  color: #3b82f6; /* Синее свечение луны */
+}
+
+/* Позиция бегунка в светлой теме (слева) */
+.light .switcher-thumb {
+  transform: translateX(0);
+  background: white;
+  color: #f59e0b; /* Оранжевое солнце */
+}
+
+/* Эффект при наведении */
+.theme-switcher:hover .switcher-track {
+  border-color: var(--accent);
+  box-shadow: 0 0 10px var(--accent-glow);
+}

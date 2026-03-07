@@ -1,0 +1,1469 @@
+/* Hero.css — Версия: Black Belt / Engine Performance */
+.jd-hero {
+    position: relative;
+    min-height: 100vh;
+    padding: 140px 24px 80px;
+    /* Заменяем жесткий синий на переменную фона */
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.4s ease;
+  }
+  
+  /* ФОНОВЫЕ СЛОИ */
+  .grid-layer {
+    position: absolute;
+    inset: 0;
+    /* Сетка теперь подстраивается под границы темы */
+    background-image: linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 50px 50px;
+    mask-image: radial-gradient(circle at 30% 30%, black, transparent 80%);
+    pointer-events: none;
+    opacity: 0.6;
+  }
+  
+  .glow-top {
+    position: absolute;
+    top: -10%;
+    left: 10%;
+    width: min(600px, 100vw);
+    height: min(600px, 100vw);
+    /* Свечение берет цвет акцента темы */
+    background: radial-gradient(circle, var(--accent-glow), transparent 70%);
+    filter: blur(80px);
+    pointer-events: none;
+  }
+  
+  /* КОНТЕНТ */
+  .jd-hero__wrap {
+    position: relative;
+    z-index: 2;
+    max-width: 1300px;
+    width: 100%;
+  }
+  
+  .jd-hero__left {
+    text-align: left;
+    max-width: 950px;
+  }
+  
+  /* PILL STATUS */
+  .jd-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 20px;
+    /* Полупрозрачный фон карточки темы */
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    backdrop-filter: blur(10px);
+    margin-bottom: 32px;
+  }
+  
+  .jd-pill .pulse {
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 15px var(--accent);
+    animation: pulse-glow 2s infinite;
+  }
+  
+  @keyframes pulse-glow {
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.4);
+      opacity: 0.6;
+    }
+  }
+  
+  .jd-pill .txt {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+  }
+  
+  /* ЗАГОЛОВОК ENGINE STYLE */
+  .jd-hero__title {
+    font-size: clamp(38px, 8.5vw, 92px);
+    font-weight: 900;
+    line-height: 0.9;
+    text-transform: uppercase;
+    letter-spacing: -0.03em;
+    margin-bottom: 32px;
+    color: var(--text); /* Белый в темной, Темный в светлой */
+  }
+  
+  .jd-hero__title .outline-text {
+    display: block;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--accent);
+    text-shadow: 0 0 40px var(--accent-glow);
+    margin-top: 5px;
+  }
+  
+  .jd-hero__desc {
+    font-size: clamp(16px, 2.2vw, 20px);
+    color: var(--text-muted);
+    max-width: 600px;
+    line-height: 1.6;
+    margin-bottom: 48px;
+  }
+  
+  /* КНОПКИ (CTA) */
+  .jd-hero__cta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  
+  .jd-cta {
+    padding: 18px 36px;
+    border-radius: 16px;
+    font-size: 16px;
+    font-weight: 800;
+    text-decoration: none;
+    transition: 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  
+  .jd-cta--primary {
+    background: linear-gradient(135deg, var(--accent), #7a5cff);
+    color: #fff; /* Текст на кнопке оставляем светлым всегда */
+    box-shadow: 0 15px 35px var(--accent-glow);
+  }
+  
+  .jd-cta--soft {
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+  }
+  
+  .jd-cta:hover {
+    transform: translateY(-5px);
+    filter: brightness(1.2);
+  }
+  
+  /* МЕТА-КАРТОЧКИ */
+  .jd-hero__meta {
+    display: flex;
+    gap: 12px;
+    margin-top: 60px;
+    flex-wrap: wrap;
+  }
+  
+  .meta-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 24px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    transition: 0.3s ease;
+  }
+  
+  .meta-card:hover {
+    background: var(--accent-glow);
+    border-color: var(--accent);
+  }
+  
+  .meta-card .kpi {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--text);
+  }
+  
+  .meta-card .cap {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  
+  /* МОБИЛЬНАЯ АДАПТАЦИЯ */
+  @media (max-width: 768px) {
+    .jd-hero {
+      padding-top: 120px;
+      padding-bottom: 60px;
+      text-align: center;
+    }
+    .jd-hero__left {
+      align-items: center;
+    }
+    .jd-hero__desc {
+      margin-inline: auto;
+    }
+    .jd-hero__cta,
+    .jd-cta,
+    .jd-hero__meta,
+    .meta-card {
+      width: 100%;
+    }
+    .meta-card {
+      justify-content: space-between;
+    }
+  }
+  
+
+
+  /* AboutPlatform.css — Версия: White Belt / Engine Style */
+.jd-about-platform {
+    position: relative;
+    padding: 100px 24px;
+    /* Заменили --deep-dark на переменную фона */
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    transition: all 0.4s ease;
+  }
+  
+  /* ФОНОВЫЙ ГРАДИЕНТ */
+  .jd-bg-glow {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 600px;
+    /* Свечение теперь адаптивное */
+    background: radial-gradient(
+      circle at 50% 0%,
+      var(--accent-glow) 0%,
+      transparent 70%
+    );
+    pointer-events: none;
+  }
+  
+  .jd-about-content {
+    z-index: 2;
+    max-width: 1300px;
+    width: 100%;
+  }
+  
+  /* ЗАГОЛОВОК ENGINE STYLE */
+  .jd-about-title {
+    font-size: clamp(38px, 8vw, 86px);
+    font-weight: 950;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    text-align: center;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+  
+  .jd-about-title .outline-text {
+    display: block;
+    color: transparent;
+    /* Обводка теперь берет цвет текста темы */
+    -webkit-text-stroke: 1.5px var(--text);
+    text-shadow: 0 0 30px var(--accent-glow);
+    filter: drop-shadow(0 0 5px var(--accent-glow));
+    opacity: 0.8;
+  }
+  
+  .jd-about-description {
+    font-size: clamp(16px, 2.2vw, 20px);
+    /* Заменили rgba на text-muted */
+    color: var(--text-muted);
+    max-width: 800px;
+    margin: 0 auto 60px;
+    text-align: center;
+    line-height: 1.6;
+  }
+  
+  /* СЕТКА АДАПТИВНАЯ */
+  .jd-about-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+    width: 100%;
+  }
+  
+  /* КАРТОЧКА */
+  .jd-feature-item {
+    /* Теперь фон карточки меняется (белый/темно-синий) */
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 32px;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .jd-feature-item:hover {
+    transform: translateY(-12px);
+    border-color: var(--accent);
+    background: var(--card);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+  }
+  
+  .jd-feature-img-wrapper {
+    position: relative;
+    height: 220px;
+    width: 100%;
+    overflow: hidden;
+  }
+  
+  .jd-feature-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: 0.8s ease;
+    filter: grayscale(0.3) brightness(0.9);
+  }
+  
+  .jd-feature-item:hover .jd-feature-img {
+    transform: scale(1.08);
+    filter: grayscale(0) brightness(1);
+  }
+  
+  .jd-card-overlay {
+    position: absolute;
+    inset: 0;
+    /* Градиент уходит в цвет карточки темы */
+    background: linear-gradient(to top, var(--card), transparent);
+  }
+  
+  .jd-feature-body {
+    padding: 32px;
+    text-align: left;
+  }
+  
+  /* ИКОНКИ */
+  .jd-custom-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 20px;
+    background-color: var(--accent);
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    transition: 0.3s;
+  }
+  
+  /* Иконки подгружаем через твои маски */
+  .icon-reg {
+    -webkit-mask-image: url("data:image/svg+xml,...");
+  }
+  .icon-board {
+    -webkit-mask-image: url("data:image/svg+xml,...");
+  }
+  .icon-tatami {
+    -webkit-mask-image: url("data:image/svg+xml,...");
+  }
+  
+  .jd-feature-item:hover .jd-custom-icon {
+    background-color: var(--accent);
+    filter: drop-shadow(0 0 10px var(--accent-glow));
+  }
+  
+  .jd-feature-body h3 {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+  
+  .jd-feature-body p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+  
+  /* МОБИЛЬНАЯ АДАПТАЦИЯ */
+  @media (max-width: 768px) {
+    .jd-about-platform {
+      padding: 80px 20px;
+    }
+    .jd-about-features {
+      grid-template-columns: 1fr;
+    }
+    .jd-feature-item {
+      border-radius: 24px;
+    }
+    .jd-feature-img-wrapper {
+      height: 180px;
+    }
+  }
+
+  
+
+
+  /* SkillDojo.css — Версия: Yellow Belt / Blueprint Style */
+
+:root {
+    --belt-yellow: #ffea00;
+  }
+  
+  .dojo {
+    position: relative;
+    padding: 100px 5%;
+    /* Теперь фон и текст зависят от глобальной темы */
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+    transition: background 0.4s ease, color 0.4s ease;
+  }
+  
+  .dojo__header {
+    text-align: center;
+    margin-bottom: 80px;
+  }
+  
+  /* ЕДИНЫЙ СТИЛЬ ЗАГОЛОВОК (ENGINE STYLE) */
+  .dojo__title {
+    font-size: clamp(38px, 8vw, 86px);
+    font-weight: 950;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    color: var(--text);
+  }
+  
+  .dojo__title .outline-text {
+    display: block;
+    color: transparent;
+    /* Обводка теперь всегда видна за счет переменной текста темы */
+    -webkit-text-stroke: 1.5px var(--belt-yellow);
+    text-shadow: 0 0 30px rgba(255, 234, 0, 0.2);
+    filter: drop-shadow(0 0 5px rgba(255, 234, 0, 0.3));
+  }
+  
+  .dojo__subtitle {
+    font-size: clamp(16px, 2vw, 19px);
+    /* Используем text-muted вместо rgba белого */
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+  
+  /* СЕТКА */
+  .dojo__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  /* КАРТОЧКА-ЧЕРТЕЖ */
+  .skill-card {
+    position: relative;
+    /* Фон карточки меняется (белый/темно-синий) */
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 40px;
+    border-radius: 24px;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+    cursor: crosshair;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .skill-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--belt-yellow);
+    /* В светлой теме будет легкий желтый оттенок при наведении */
+    background: var(--card);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Декоративные уголки */
+  .skill-card::before {
+    content: "";
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 10px;
+    height: 10px;
+    border-top: 1px solid var(--belt-yellow);
+    border-right: 1px solid var(--belt-yellow);
+    opacity: 0;
+    transition: 0.3s;
+  }
+  
+  .skill-card:hover::before {
+    opacity: 1;
+    top: 25px;
+    right: 25px;
+  }
+  
+  .skill-card__tag {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--belt-yellow);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  
+  .skill-card__name {
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+  
+  /* Визуализация векторов */
+  .skill-card__visual {
+    height: 120px;
+    margin-bottom: 30px;
+    position: relative;
+    /* Делаем пунктирную рамку видимой в обеих темах */
+    border: 1px dashed var(--border);
+    background: rgba(0, 0, 0, 0.03);
+  }
+  
+  .vector-line {
+    position: absolute;
+    background: var(--belt-yellow);
+    transition: 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    opacity: 0.3;
+  }
+  
+  /* Позиционирование векторов оставляем без изменений */
+  .v1 {
+    width: 1px;
+    height: 40px;
+    left: 50%;
+    top: 20%;
+    transform: rotate(45deg);
+  }
+  .v2 {
+    width: 50px;
+    height: 1px;
+    left: 30%;
+    top: 50%;
+  }
+  .v3 {
+    width: 1px;
+    height: 60px;
+    left: 70%;
+    top: 15%;
+    transform: rotate(-30deg);
+  }
+  
+  .skill-card:hover .vector-line {
+    opacity: 1;
+    box-shadow: 0 0 10px var(--belt-yellow);
+  }
+  
+  /*Blueprint Background */
+  .skill-card__blueprint {
+    position: absolute;
+    bottom: -10px;
+    right: -10px;
+    width: 120px;
+    height: 120px;
+    /* Точки чертежа подстраиваются под тему */
+    background-image: radial-gradient(var(--belt-yellow) 1px, transparent 1px);
+    background-size: 12px 12px;
+    opacity: 0.1;
+    mask-image: linear-gradient(to top left, black, transparent);
+    pointer-events: none;
+  }
+  
+  .skill-card__desc {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin-bottom: 30px;
+    flex-grow: 1;
+  }
+  
+  /* Power Bar */
+  .power-bar {
+    width: 100%;
+    height: 3px;
+    background: var(--border);
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .power-bar .fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    background: var(--belt-yellow);
+    box-shadow: 0 0 10px var(--belt-yellow);
+    transition: width 0.8s ease-in-out;
+  }
+  
+  .skill-card:hover .fill {
+    width: 85%;
+  }
+  
+  /* МОБИЛЬНАЯ АДАПТАЦИЯ */
+  @media (max-width: 768px) {
+    .dojo {
+      padding: 80px 20px;
+    }
+    .dojo__grid {
+      grid-template-columns: 1fr;
+    }
+    .skill-card {
+      padding: 30px;
+    }
+  }
+  /* Advantages.css — Версия: Blue Belt / Analytics & Data */
+
+:root {
+    --belt-blue: #2b5ff5;
+  }
+  
+  .adv-v2 {
+    position: relative;
+    padding: 100px 24px;
+    /* Используем глобальные переменные темы */
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+    transition: background 0.4s ease, color 0.4s ease;
+  }
+  
+  /* ФОНОВАЯ СЕТКА */
+  .adv-v2__grid-bg {
+    position: absolute;
+    inset: 0;
+    /* Сетка теперь подстраивается под границы темы */
+    background-image: linear-gradient(
+        var(--border) 1px,
+        transparent 1px
+      ),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(circle at 50% 50%, black, transparent 85%);
+    pointer-events: none;
+    opacity: 0.5;
+  }
+  
+  .adv-v2__wrap {
+    position: relative;
+    z-index: 2;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+  
+  /* ЗАГОЛОВОК ENGINE STYLE */
+  .status-bar {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--belt-blue);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-transform: uppercase;
+  }
+  
+  .scanner-line {
+    width: 40px;
+    height: 1px;
+    background: var(--belt-blue);
+    box-shadow: 0 0 10px var(--belt-blue);
+    animation: scan 2.5s infinite ease-in-out;
+  }
+  
+  @keyframes scan {
+    0%, 100% { transform: translateX(0); opacity: 0.3; }
+    50% { transform: translateX(30px); opacity: 1; }
+  }
+  
+  .adv-v2__title {
+    font-size: clamp(38px, 8vw, 86px);
+    font-weight: 950;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    margin-bottom: 60px;
+    color: var(--text);
+  }
+  
+  .adv-v2__title .outline-text {
+    display: block;
+    color: transparent;
+    /* Обводка теперь следует за цветом текста или акцентом */
+    -webkit-text-stroke: 1.5px var(--belt-blue);
+    text-shadow: 0 0 35px rgba(43, 95, 245, 0.2);
+  }
+  
+  /* КОНТЕЙНЕР КАРТОЧЕК */
+  .adv-v2__container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 24px;
+  }
+  
+  /* КАРТОЧКА АНАЛИТИКИ */
+  .adv-v2-card {
+    position: relative;
+    padding: 40px;
+    /* Используем цвет карточки из main.css */
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 32px;
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    transition: 0.6s cubic-bezier(0.2, 1, 0.3, 1);
+    backdrop-filter: blur(10px);
+  }
+  
+  .adv-v2-card:hover {
+    background: var(--card);
+    border-color: var(--belt-blue);
+    transform: translateY(-10px) scale(1.02);
+    /* Мягкая тень для светлой темы */
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Круговой индикатор */
+  .adv-v2-card__visual {
+    position: relative;
+    width: 90px;
+    height: 90px;
+    flex-shrink: 0;
+  }
+  
+  .adv-v2-card__visual svg {
+    transform: rotate(-90deg);
+    width: 100%;
+    height: 100%;
+  }
+  
+  .adv-v2-card__visual circle {
+    fill: none;
+    stroke-width: 5;
+  }
+  
+  .adv-v2-card__visual circle.bg {
+    /* Фон круга теперь берет цвет границ */
+    stroke: var(--border);
+  }
+  
+  .adv-v2-card__visual circle.prog {
+    stroke: var(--belt-blue);
+    stroke-dasharray: 282;
+    stroke-dashoffset: 282;
+    transition: stroke-dashoffset 2s cubic-bezier(0.4, 0, 0.2, 1);
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 8px var(--belt-blue));
+  }
+  
+  .adv-v2-card.is-visible .prog {
+    stroke-dashoffset: var(--target);
+  }
+  
+  .adv-v2-card__icon {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    /* Иконка теперь подстраивается */
+    color: var(--text);
+  }
+  
+  /* ТЕКСТОВЫЙ БЛОК */
+  .adv-v2-card__num {
+    font-size: 44px;
+    font-weight: 900;
+    line-height: 1;
+    color: var(--text);
+    text-shadow: 0 0 20px rgba(43, 95, 245, 0.1);
+  }
+  
+  .adv-v2-card__num span {
+    font-size: 16px;
+    color: var(--text-muted);
+    margin-left: 5px;
+  }
+  
+  .adv-v2-card__title {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 12px 0 8px;
+    color: var(--belt-blue);
+  }
+  
+  .adv-v2-card__desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  
+  /* Декоративный уголок */
+  .adv-v2-card__ui-corner {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 20px;
+    height: 20px;
+    border-top: 2px solid var(--belt-blue);
+    border-right: 2px solid var(--belt-blue);
+    opacity: 0.5;
+    transition: 0.3s;
+  }
+  
+  .adv-v2-card:hover .adv-v2-card__ui-corner {
+    opacity: 1;
+    top: 20px;
+    right: 20px;
+  }
+  
+  /* АДАПТАЦИЯ */
+  @media (max-width: 900px) {
+    .adv-v2__container { grid-template-columns: 1fr; }
+  }
+  
+  @media (max-width: 600px) {
+    .adv-v2-card { flex-direction: column; text-align: center; padding: 30px; }
+    .adv-v2-card__ui-corner { display: none; }
+  }
+  :root {
+    --belt-green: #4caf50;
+    --blue-judo: #0055ff;
+    --glass: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.08);
+  }
+  /* Цвет темы (зеленый пояс) */
+  :root {
+    --belt-green: #4caf50;
+  }
+  /* Вставь это в самый верх твоего index.css */
+  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@500;700;900&display=swap");
+  
+  body {
+    font-family: "Inter", sans-serif;
+  }
+  
+  h1,
+  h2,
+  h3,
+  .scoreboard-number {
+    font-family: "Montserrat", sans-serif;
+  }
+  .jd-live__title {
+    font-size: clamp(38px, 8vw, 86px);
+    font-weight: 950;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 30px;
+  }
+  
+  /* ЭФФЕКТ СВЕЧЕНИЯ ДЛЯ LIVE SHOWCASE */
+  .jd-live__title .outline-text.glow-text {
+    display: block;
+    color: transparent;
+    /* Тонкая обводка */
+    -webkit-text-stroke: 1.5px var(--belt-green);
+  
+    /* Многослойное свечение для глубины */
+    filter: drop-shadow(0 0 5px rgba(76, 175, 80, 0.6))
+      drop-shadow(0 0 15px rgba(76, 175, 80, 0.4))
+      drop-shadow(0 0 30px rgba(76, 175, 80, 0.2));
+  
+    /* Анимация пульсации света */
+    animation: text-glow-pulse 3s infinite ease-in-out;
+    transition: all 0.4s ease;
+  }
+  
+  /* Пульсация: текст то затухает, то горит ярче */
+  @keyframes text-glow-pulse {
+    0%,
+    100% {
+      opacity: 1;
+      filter: drop-shadow(0 0 5px rgba(76, 175, 80, 0.6))
+        drop-shadow(0 0 15px rgba(76, 175, 80, 0.4));
+    }
+    50% {
+      opacity: 0.8;
+      filter: drop-shadow(0 0 10px rgba(76, 175, 80, 0.8))
+        drop-shadow(0 0 25px rgba(76, 175, 80, 0.6))
+        drop-shadow(0 0 40px rgba(76, 175, 80, 0.3));
+    }
+  }
+  
+  /* Дополнительный эффект при наведении на секцию */
+  .jd-live:hover .glow-text {
+    -webkit-text-stroke: 1.5px #66bb6a; /* Чуть светлее при наведении */
+    text-shadow: 0 0 20px rgba(76, 175, 80, 0.5);
+  }
+  
+  /* Если тема темная, делаем свечение более выраженным */
+  [data-theme="dark"] .glow-text {
+    filter: drop-shadow(0 0 8px rgba(76, 175, 80, 0.8))
+      drop-shadow(0 0 20px rgba(76, 175, 80, 0.5));
+  }
+  [data-theme="dark"] {
+    --glass: rgba(0, 0, 0, 0.2);
+    --glass-border: rgba(255, 255, 255, 0.05);
+  }
+  
+  .jd-live {
+    position: relative;
+    padding: 100px 0;
+    background: var(--bg);
+    overflow: hidden;
+  }
+  
+  /* Сетка на фоне для эффекта "чертежа" */
+  .jd-live__grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(var(--glass-border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--glass-border) 1px, transparent 1px);
+    background-size: 50px 50px;
+    mask-image: radial-gradient(circle at 50% 50%, black, transparent 80%);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  
+  .jd-live__wrap {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 2;
+  }
+  
+  /* Индикатор сигнала */
+  .signal-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 12px;
+  }
+  .signal-bars .bar {
+    width: 3px;
+    background: var(--text-muted);
+    border-radius: 1px;
+  }
+  .signal-bars .bar.active {
+    background: var(--belt-green);
+  }
+  .signal-bars .bar.pulse {
+    background: var(--belt-green);
+    animation: bar-pulse 1s infinite;
+  }
+  .signal-bars .bar:nth-child(1) {
+    height: 40%;
+  }
+  .signal-bars .bar:nth-child(2) {
+    height: 60%;
+  }
+  .signal-bars .bar:nth-child(3) {
+    height: 80%;
+  }
+  .signal-bars .bar:nth-child(4) {
+    height: 100%;
+  }
+  
+  @keyframes bar-pulse {
+    50% {
+      opacity: 0.3;
+    }
+  }
+  
+  /* ЗАГОЛОВОК (ТВОЙ СТИЛЬ) */
+  .jd-live__title {
+    font-size: clamp(38px, 7vw, 76px);
+    font-weight: 950;
+    line-height: 0.9;
+    text-transform: uppercase;
+    margin-bottom: 60px;
+  }
+  .jd-live__title .outline-text {
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--belt-green);
+    text-shadow: 0 0 20px rgba(76, 175, 80, 0.2);
+  }
+  
+  /* ЛЕЙАУТ */
+  .jd-live__main-layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 30px;
+  }
+  
+  /* ТАБЫ */
+  .jd-showcase__tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .jd-tab-btn {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    padding: 15px 30px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .jd-tab-btn .tab-id {
+    font-size: 10px;
+    color: var(--belt-green);
+    font-family: monospace;
+  }
+  .jd-tab-btn .tab-txt {
+    font-weight: 900;
+    color: var(--text);
+    letter-spacing: 1px;
+  }
+  .jd-tab-btn.is-active {
+    border-color: var(--belt-green);
+    background: rgba(76, 175, 80, 0.1);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* ТАБЛО V3 */
+  .scoreboard-v3 {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    padding: 40px;
+    position: relative;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
+  }
+  
+  .scoreboard-v3__top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 40px;
+  }
+  
+  .live-badge {
+    background: #ff3b3b;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 900;
+    animation: rec-blink 1s infinite;
+  }
+  
+  @keyframes rec-blink {
+    50% {
+      opacity: 0.6;
+    }
+  }
+  
+  .scoreboard-v3__vs {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 40px;
+  }
+  
+  /* Стороны атлетов */
+  .side {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+  }
+  .side__score {
+    font-size: 82px;
+    font-weight: 950;
+    line-height: 1;
+    font-family: "JetBrains Mono", monospace;
+  }
+  .side.blue .side__score {
+    color: var(--blue-judo);
+  }
+  .side.white .side__score {
+    color: var(--text);
+  }
+  
+  .side__name {
+    font-size: 28px;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+  .side__club {
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+  .side__stats {
+    margin-top: 10px;
+    display: flex;
+    gap: 15px;
+    font-family: monospace;
+    font-weight: 700;
+  }
+  .side__stats .shido {
+    color: #ff9800;
+  }
+  
+  /* Таймер */
+  .match-timer {
+    text-align: center;
+    min-width: 200px;
+  }
+  .match-timer__clock {
+    font-size: 56px;
+    font-weight: 900;
+    font-family: "JetBrains Mono", monospace;
+    letter-spacing: -2px;
+  }
+  .match-timer__label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--belt-green);
+    font-weight: 800;
+    margin-top: 10px;
+  }
+  
+  /* ОЧЕРЕДЬ */
+  .jd-side-panel {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 30px;
+    padding: 30px;
+  }
+  .panel-title {
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    margin-bottom: 25px;
+  }
+  
+  .queue-card {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    border-bottom: 1px solid var(--glass-border);
+    transition: 0.3s;
+  }
+  .queue-card.active {
+    background: rgba(76, 175, 80, 0.05);
+    border-radius: 15px;
+    border-bottom-color: transparent;
+  }
+  .queue-card__time {
+    font-family: monospace;
+    font-size: 11px;
+    font-weight: 900;
+    color: var(--belt-green);
+  }
+  .queue-card__cat {
+    font-size: 13px;
+    font-weight: 800;
+  }
+  .queue-card__ppl {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  
+  /* Адаптивность */
+  @media (max-width: 1200px) {
+    .jd-live__main-layout {
+      grid-template-columns: 1fr;
+    }
+    .scoreboard-v3__vs {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+    .side {
+      justify-content: center;
+      flex-direction: column !important;
+    }
+  }
+  /* Partners.css — Версия: Tech-Scanner Elite */
+
+.partners-tech {
+    position: relative;
+    padding: 120px 0;
+    background: var(--bg);
+    --gold: #a67c52;
+    --border-alpha: rgba(166, 124, 82, 0.2);
+  }
+  
+  /* Слайдер с маской */
+  .partners-tech__slider {
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 15%,
+      black 85%,
+      transparent
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 15%,
+      black 85%,
+      transparent
+    );
+  }
+  
+  .partners-tech__track {
+    display: flex;
+    gap: 40px;
+    animation: scrollContinuous 35s linear infinite;
+    padding: 30px 0;
+  }
+  
+  /* КАРТОЧКА */
+  .tech-card__inner {
+    position: relative;
+    width: 320px;
+    height: 180px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px; /* Техно-стиль: почти острые углы */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.4s ease;
+    overflow: hidden;
+  }
+  
+  /* СТИЛИЗАЦИЯ УГОЛКОВ */
+  .scanner-corner {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--gold);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    opacity: 0.6;
+  }
+  
+  .tl {
+    top: 10px;
+    left: 10px;
+    border-right: none;
+    border-bottom: none;
+  }
+  .tr {
+    top: 10px;
+    right: 10px;
+    border-left: none;
+    border-bottom: none;
+  }
+  .bl {
+    bottom: 10px;
+    left: 10px;
+    border-right: none;
+    border-top: none;
+  }
+  .br {
+    bottom: 10px;
+    right: 10px;
+    border-left: none;
+    border-top: none;
+  }
+  
+  /* Ховер на уголки: они "обнимают" карточку */
+  .tech-card:hover .scanner-corner {
+    width: calc(100% - 20px);
+    height: calc(100% - 20px);
+    opacity: 1;
+  }
+  
+  /* Эффект бегущей линии сканера */
+  .scan-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    box-shadow: 0 0 15px var(--gold);
+    opacity: 0;
+    z-index: 3;
+  }
+  
+  .tech-card:hover .scan-line {
+    animation: scanning 2s linear infinite;
+    opacity: 1;
+  }
+  
+  @keyframes scanning {
+    0% {
+      top: 0;
+    }
+    100% {
+      top: 100%;
+    }
+  }
+  
+  /* ЛОГОТИП (ТЕПЕРЬ БОЛЬШОЙ) */
+  .logo-box {
+    width: 75%;
+    height: 65%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: 0.4s;
+  }
+  
+  .logo-box img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: grayscale(0.3) brightness(1); /* Сразу хорошо видно */
+    transition: 0.4s ease;
+  }
+  
+  [data-theme="dark"] .logo-box img {
+    filter: grayscale(0.2) brightness(1.4);
+  }
+  
+  .tech-card:hover .logo-box img {
+    filter: grayscale(0) brightness(1.2);
+    transform: scale(1.1);
+  }
+  
+  /* Технический индекс */
+  .tech-tag {
+    position: absolute;
+    bottom: 5px;
+    right: 8px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    color: var(--gold);
+    opacity: 0.4;
+  }
+  
+  /* ЭФФЕКТ ПРИ НАВЕДЕНИИ НА КАРТОЧКУ */
+  .tech-card:hover .tech-card__inner {
+    background: rgba(166, 124, 82, 0.05);
+    box-shadow: inset 0 0 20px rgba(166, 124, 82, 0.1);
+  }
+  
+  @keyframes scrollContinuous {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(calc(-360px * 3));
+    }
+  }
+  
+  /* Твой заголовок остается без изменений */
+  .partners-v2__title {
+    font-size: clamp(38px, 8vw, 86px);
+    font-weight: 950;
+    line-height: 0.95;
+    text-align: center;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 60px;
+  }
+  .partners-v2__title .outline-text {
+    display: block;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--gold);
+  }
+  /* BeltDivider.css */
+.belt-divider {
+    width: 100%;
+    height: 40px; /* Фиксированная небольшая высота */
+    margin: 0; /* Никаких отступов снаружи! */
+    padding: 0;
+    display: flex;
+    align-items: center;
+    background: #011430; /* Цвет фона, чтобы не было щелей */
+  }
+  
+  .belt-divider__strip {
+    width: 100%;
+    height: 32px;
+    background: var(--belt-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    /* Легкий наклон для динамики */
+    transform: skewY(-0.5deg);
+  }
+  
+  /* Эффект текстуры ткани */
+  .belt-divider__strip::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      45deg,
+      rgba(0, 0, 0, 0.1) 0px,
+      rgba(0, 0, 0, 0.1) 1px,
+      transparent 1px,
+      transparent 4px
+    );
+    opacity: 0.4;
+  }
+  
+  .belt-divider__text {
+    font-family: "Inter", sans-serif;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    color: rgba(0, 0, 0, 0.7);
+    text-transform: uppercase;
+    z-index: 2;
+    /* Текст будет "вдавлен" в пояс */
+    text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.2);
+  }
+  
+  .belt-divider__patch {
+    position: absolute;
+    right: 10%;
+    width: 80px;
+    height: 100%;
+    background: #111;
+    border-left: 2px solid rgba(255, 255, 255, 0.1);
+    border-right: 2px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Свечение под поясом */
+  .belt-divider::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: var(--belt-color);
+    filter: blur(60px);
+    opacity: 0.12;
+    z-index: -1;
+  }
+  
