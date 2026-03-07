@@ -87,11 +87,22 @@ const MetricCard = ({ val, suffix, label, desc, color, icon, delay }) => {
   const cardRef = useRef(null);
 
   useEffect(() => {
+    const currentCard = cardRef.current;
     const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { setTimeout(() => setVisible(true), delay); }
+      if (entry.isIntersecting) {
+        setTimeout(() => setVisible(true), delay);
+      }
     }, { threshold: 0.1 });
-    if (cardRef.current) { observer.observe(cardRef.current); }
-    return () => { if (cardRef.current) { observer.unobserve(cardRef.current); } };
+
+    if (currentCard) {
+      observer.observe(currentCard);
+    }
+
+    return () => {
+      if (currentCard) {
+        observer.unobserve(currentCard);
+      }
+    };
   }, [delay]);
 
   useEffect(() => {
