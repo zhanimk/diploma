@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../store/authSlice";
-import toast from 'react-hot-toast'; // Импортируем toast
+import toast from 'react-hot-toast';
 import { Mail, Lock, Eye, EyeOff, LogIn } from "lucide-react";
 import "./Auth.css";
 
@@ -39,7 +39,6 @@ export default function Login() {
           }
           dispatch(setUser(userData));
           
-          // После всех успешных операций
           resolve(userData); 
 
           const role = userData.role;
@@ -55,10 +54,10 @@ export default function Login() {
               navigate("/coach/dashboard");
               break;
             case "athlete":
-              navigate("/profile");
+              navigate("/athlete/dashboard");
               break;
             default:
-              navigate("/profile");
+              navigate("/athlete/dashboard");
               break;
           }
         } else if (response.status === 401) {
@@ -92,9 +91,7 @@ export default function Login() {
       <div className="auth-visual login-visual">
         <div className="auth-visual__bg"></div>
         <div className="auth-visual__content">
-          <div className="brand-logo">
-            JUDO<span>ARENA</span>
-          </div>
+          <div className="brand-logo">JUDO<span>ARENA</span></div>
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -134,9 +131,7 @@ export default function Login() {
           <form onSubmit={handleLogin}>
             <div className="form-fields">
               <div className="input-group">
-                <div className="icon-wrapper">
-                  <Mail size={18} />
-                </div>
+                <div className="icon-wrapper"><Mail size={18} /></div>
                 <input
                   type="email"
                   placeholder="Email поштаңыз"
@@ -147,9 +142,7 @@ export default function Login() {
               </div>
 
               <div className="input-group">
-                <div className="icon-wrapper">
-                  <Lock size={18} />
-                </div>
+                <div className="icon-wrapper"><Lock size={18} /></div>
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="Құпия сөз"

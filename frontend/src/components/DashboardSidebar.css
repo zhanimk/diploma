@@ -1,0 +1,33 @@
+.dashboard-sidebar {
+    width: 250px;
+    background: #1a1a2e;
+    padding: 1.5rem;
+    height: 100vh; /* Занимает всю высоту экрана */
+}
+
+.dashboard-sidebar h3 {
+    color: #007bff; /* Синий цвет */
+    border-bottom: 2px solid #007bff; /* Синяя линия */
+    padding-bottom: 10px;
+    margin-bottom: 1rem;
+}
+
+.dashboard-sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.dashboard-sidebar li a {
+    display: block;
+    padding: 10px 15px;
+    color: #e0e0e0;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    transition: background 0.3s ease;
+}
+
+.dashboard-sidebar li a:hover, .dashboard-sidebar li a.active {
+    background: #23233a;
+    color: #007bff; /* Синий цвет */
+}

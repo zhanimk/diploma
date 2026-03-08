@@ -40,7 +40,19 @@ const userSchema = new mongoose.Schema({
     city: {
         type: String,
         required: true
-    }
+    },
+    coach: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    students: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    coachRequests: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }]
 }, {
     timestamps: true
 });

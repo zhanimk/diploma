@@ -1,0 +1,97 @@
+/* Общая сетка для дашборда: меню слева, контент справа */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 2rem;
+    padding: 2rem 0;
+    align-items: start; 
+}
+
+/* Навигационное меню */
+.dashboard-nav {
+    background: #101024; /* Темно-синий фон, как на главной */
+    padding: 1.5rem;
+    border-radius: 10px;
+}
+
+.dashboard-nav h3 {
+    color: #00aaff;
+    border-bottom: 2px solid #00aaff;
+    padding-bottom: 10px;
+    margin: 0 0 1rem 0;
+    font-size: 1.2rem;
+}
+
+.dashboard-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.dashboard-nav li a {
+    display: block;
+    padding: 12px 15px;
+    color: #e0e0e0;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-bottom: 8px;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.dashboard-nav li a:hover,
+.dashboard-nav li a.active {
+    background: rgba(0, 170, 255, 0.1);
+    color: #00aaff;
+}
+
+/* Основной контент дашборда */
+.dashboard-content h2 {
+    font-size: 2rem;
+    color: #e0e0e0;
+    margin-bottom: 1.5rem;
+}
+
+/* Использование существующего стиля .card из HomePage.css */
+.card {
+    background: #101024;
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+}
+
+.card h3 {
+    color: #00aaff;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #2a2a4a;
+    padding-bottom: 10px;
+}
+
+/* Стили для форм внутри дашборда */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    color: #aaa;
+    margin-bottom: 0.5rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 5px;
+    border: 1px solid #333;
+    background: #23233a;
+    color: #e0e0e0;
+    font-size: 1rem;
+}
+
+/* Стили для кнопок, используем классы с главной страницы */
+.f-btn-main, .f-btn-link {
+    margin-right: 10px;
+}

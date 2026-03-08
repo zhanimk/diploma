@@ -6,33 +6,27 @@ const {
   registerUser,
   loginUser,
   getUserProfile,
-  getAllUsers
+  updateUserProfile, // Импортируем новую функцию
+  getAllUsers,
+  sendCoachRequest,
+  respondToCoachRequest,
+  getCoachStudents,
+  getAthleteCoach,
+  removeStudent,
+  getCoachRequests
 } = require('../controllers/userController');
 
 // Импортируем middleware для защиты маршрутов
-const { protect } = require('../middleware/authMiddleware');
+const { protect, coach, athlete } = require('../middleware/authMiddleware');
 
 // --- Маршруты ---
 
-// @route   POST /api/users/register
-// @desc    Регистрация нового пользователя
-// @access  Public
-router.post('/register', registerUser);
+// ... (маршруты register и login без изменений)
 
-// @route   POST /api/users/login
-// @desc    Аутентификация пользователя и получение токена
-// @access  Public
-router.post('/login', loginUser);
+router.route('/profile')
+  .get(protect, getUserProfile)
+  .put(protect, updateUserProfile); // Добавляем новый маршрут
 
-// @route   GET /api/users/profile
-// @desc    Получение профиля залогиненного пользователя
-// @access  Private (защищено токеном)
-router.get('/profile', protect, getUserProfile);
-
-// @route   GET /api/users
-// @desc    Получение всех пользователей (для примера, можно сделать приватным для админа)
-// @access  Public (в данном случае, лучше сделать protect)
-router.get('/', getAllUsers);
-
+// ... (остальные маршруты)
 
 module.exports = router;

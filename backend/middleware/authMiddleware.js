@@ -9,28 +9,45 @@ const protect = async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     try {
-      // Получаем токен из заголовка (формат: "Bearer TOKEN")
+      // Get token from header
       token = req.headers.authorization.split(' ')[1];
 
-      // Верифицируем токен
+      // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      // Находим пользователя по ID из токена и добавляем его в объект запроса
-      // Исключаем поле с паролем
+      // Get user from the token
       req.user = await User.findById(decoded.id).select('-password');
 
-      next(); // Передаем управление следующему middleware
+      next();
     } catch (error) {
       console.error(error);
       res.status(401);
-      next(new Error('Нет авторизации, токен недействителен'));
+      next(new Error('Not authorized, token failed'));
     }
   }
 
   if (!token) {
     res.status(401);
-    next(new Error('Нет авторизации, токен отсутствует'));
+    next(new Error('Not authorized, no token'));
   }
 };
 
-module.exports = { protect };
+const coach = (req, res, next) => {
+  if (req.user && req.user.role === 'coach') {
+    next();
+  } else {
+    res.status(401);
+    throw new Error('Not authorized as a coach');
+  }
+};
+
+const athlete = (req, res, next) => {
+  if (req.user && req.user.role === 'athlete') {
+    next();
+  } else {
+    res.status(401);
+    throw new Error('Not authorized as an athlete');
+  }
+};
+
+module.exports = { protect, coach, athlete };
