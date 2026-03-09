@@ -1,97 +1,237 @@
-/* Общая сетка для дашборда: меню слева, контент справа */
+/*
+  ==========================================
+  -- Dashboard Styles --
+     - Общие стили для личного кабинета
+  ==========================================
+*/
+
+/* -- 1. Основная сетка дашборда -- */
 .dashboard-grid {
     display: grid;
-    grid-template-columns: 250px 1fr;
-    gap: 2rem;
-    padding: 2rem 0;
-    align-items: start; 
+    grid-template-columns: 240px 1fr;
+    gap: 32px;
+    align-items: flex-start;
 }
 
-/* Навигационное меню */
+/* -- 2. Навигационное меню (сайдбар) -- */
 .dashboard-nav {
-    background: #101024; /* Темно-синий фон, как на главной */
-    padding: 1.5rem;
-    border-radius: 10px;
+    position: sticky;
+    top: calc(var(--header-height-scrolled) + 32px);
+    background: #10121a;
+    border: 1px solid var(--header-border);
+    border-radius: 8px;
+    padding: 16px;
 }
 
 .dashboard-nav h3 {
-    color: #00aaff;
-    border-bottom: 2px solid #00aaff;
-    padding-bottom: 10px;
-    margin: 0 0 1rem 0;
-    font-size: 1.2rem;
+    color: white;
+    font-size: 16px;
+    padding: 0 12px 12px;
+    margin: 0;
+    border-bottom: 1px solid var(--header-border);
 }
 
 .dashboard-nav ul {
     list-style: none;
-    padding: 0;
+    padding: 12px 0 0;
     margin: 0;
 }
 
-.dashboard-nav li a {
+.dashboard-nav a {
     display: block;
-    padding: 12px 15px;
-    color: #e0e0e0;
-    text-decoration: none;
-    border-radius: 5px;
-    margin-bottom: 8px;
-    transition: background 0.3s ease, color 0.3s ease;
-}
-
-.dashboard-nav li a:hover,
-.dashboard-nav li a.active {
-    background: rgba(0, 170, 255, 0.1);
-    color: #00aaff;
-}
-
-/* Основной контент дашборда */
-.dashboard-content h2 {
-    font-size: 2rem;
-    color: #e0e0e0;
-    margin-bottom: 1.5rem;
-}
-
-/* Использование существующего стиля .card из HomePage.css */
-.card {
-    background: #101024;
-    padding: 2rem;
-    border-radius: 10px;
-    margin-bottom: 1.5rem;
-}
-
-.card h3 {
-    color: #00aaff;
-    margin-top: 0;
-    margin-bottom: 1.5rem;
-    border-bottom: 1px solid #2a2a4a;
-    padding-bottom: 10px;
-}
-
-/* Стили для форм внутри дашборда */
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
-}
-
-.form-group label {
-    display: block;
-    color: #aaa;
-    margin-bottom: 0.5rem;
-}
-
-.form-group input {
-    width: 100%;
     padding: 12px;
-    border-radius: 5px;
-    border: 1px solid #333;
-    background: #23233a;
-    color: #e0e0e0;
-    font-size: 1rem;
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 15px;
+    border-radius: 6px;
+    transition: all 0.2s;
 }
 
-/* Стили для кнопок, используем классы с главной страницы */
-.f-btn-main, .f-btn-link {
-    margin-right: 10px;
+.dashboard-nav a:hover {
+    background-color: rgba(43, 95, 245, 0.2);
+    color: #fff;
+}
+
+.dashboard-nav a.active {
+    background-color: var(--role-color-blue);
+    color: #fff;
+    font-weight: 500;
+}
+
+/* -- 3. Основной контент -- */
+.dashboard-content {
+    min-height: 60vh;
+}
+
+.dashboard-header {
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--header-border);
+    padding-bottom: 16px;
+}
+
+.dashboard-header h2 {
+    color: white;
+    font-size: 28px;
+    margin: 0 0 4px;
+}
+.dashboard-header p {
+    color: var(--text-color);
+    margin: 0;
+    font-size: 16px;
+}
+
+/* -- 4. Общие стили для карточек -- */
+.card {
+    background: #10121a;
+    border: 1px solid var(--header-border);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 16px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--header-border);
+}
+
+.card-header h3 {
+    margin: 0;
+    color: white;
+    font-size: 18px;
+}
+
+.card-header-action {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.card-header-action:hover {
+    background-color: rgba(255, 255, 255, 0.07);
+    color: #fff;
+}
+
+/* -- 5. Стили для страницы Профиля (AthleteDashboard) -- */
+.dashboard-main-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+.dashboard-side-grid {
+    display: grid;
+    gap: 24px;
+}
+
+.profile-fields-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+.profile-field { display: flex; align-items: center; gap: 16px; }
+.profile-field__icon { font-size: 24px; }
+.profile-field__body { display: flex; flex-direction: column; }
+.profile-field__label { font-size: 12px; color: var(--text-color); text-transform: uppercase; margin-bottom: 4px; }
+.profile-field__value { color: white; font-weight: 500; }
+
+.coach-missing { text-align: center; padding: 16px 0; }
+.coach-missing p { margin: 0 0 16px; color: var(--text-color); }
+
+.f-btn-main.small { padding: 8px 16px; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; }
+.danger-link { color: #f54343; font-size: 13px; background: none; border: none; padding: 0; cursor: pointer; }
+.danger-link:hover { color: #ff6e6e; }
+
+.profile-edit-form .form-grid { grid-template-columns: repeat(2, 1fr); }
+.form-actions { margin-top: 24px; display: flex; align-items: center; gap: 16px; }
+
+/* -- 6. Стили для статистики -- */
+.stats-summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 24px; }
+.stats-summary-grid.compact { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.stat-card { background: #141721; border-radius: 8px; padding: 16px; text-align: center; }
+.stat-card__value { font-size: 28px; font-weight: 700; color: var(--role-color-blue); line-height: 1.1; }
+.stat-card__label { font-size: 13px; color: var(--text-color); margin-top: 4px; }
+
+/* -- 7. Стили для страниц История и Турниры -- */
+.list-container h3 { color: white; margin-top: 0; }
+
+.history-list, .tournaments-list, .coach-list { list-style: none; padding: 0; margin: 0; }
+
+.history-item, .tournament-item, .coach-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--header-border);
+}
+.history-list li:last-child, .tournaments-list li:last-child, .coach-list li:last-child {
+    border-bottom: none;
+}
+
+.history-item__name, .tournament-item__name, .coach-item__name { color: white; font-weight: 500; font-size: 16px; }
+.history-item__meta, .tournament-item__date, .coach-item__meta { font-size: 14px; color: var(--text-color); margin-top: 4px; }
+.history-item__meta span { margin-right: 8px; }
+
+.medal { padding: 4px 12px; border-radius: 6px; font-weight: 500; font-size: 14px; }
+.medal.gold { background-color: #ffd700; color: #332a00; }
+.medal.silver { background-color: #c0c0c0; color: #3c3c3c; }
+.medal.bronze { background-color: #cd7f32; color: #41280e; }
+.medal.none { background-color: #2a2f42; color: var(--text-color); }
+
+.tournament-item__actions { display: flex; align-items: center; gap: 16px; }
+
+.f-btn-link { background: none; border: none; color: var(--text-color); cursor: pointer; text-decoration: none; transition: color .2s; }
+.f-btn-link:hover { color: var(--role-color-blue); }
+
+.status-badge { padding: 6px 12px; font-size: 13px; font-weight: 500; border-radius: 12px; text-transform: uppercase; }
+.status-badge.registered { background-color: rgba(43, 95, 245, 0.2); color: #6991ff; }
+.status-badge.pending { background-color: rgba(245, 166, 35, 0.2); color: #f5a623; }
+.status-badge.open { background-color: rgba(35, 210, 101, 0.2); color: #23d265; }
+
+/* -- 8. Стили для страницы Поиска тренера (FindCoach) -- */
+.coach-search-header { margin-bottom: 20px; }
+
+.search-bar {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+}
+
+.search-bar__icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-color);
+    pointer-events: none; /* Иконка не должна перехватывать клики */
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 12px 16px 12px 48px; /* Отступ слева для иконки */
+    background-color: #0A0B10;
+    border: 1px solid var(--header-border);
+    border-radius: 8px;
+    color: white;
+    font-size: 15px;
+    transition: border-color 0.2s;
+}
+
+.search-bar input:focus {
+    outline: none;
+    border-color: var(--role-color-blue);
+}
+
+.centered-message {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--text-color);
+    background-color: rgba(10,11,16,0.5);
+    border-radius: 8px;
 }

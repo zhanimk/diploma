@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const connectDB = require('./config/db');
 const cors = require('cors');
+const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
 // Подключаемся к базе данных
 connectDB();
@@ -20,7 +21,12 @@ app.use(cors());
 // --- Маршруты ---
 // Все маршруты, начинающиеся с /api/users, будут обрабатываться файлом userRoutes
 app.use('/api/users', require('./routes/userRoutes'));
+// Добавляем маршруты для турниров
+app.use('/api/tournaments', require('./routes/tournamentRoutes'));
 
+// --- Обработка ошибок ---
+app.use(notFound);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 

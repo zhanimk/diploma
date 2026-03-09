@@ -1,134 +1,343 @@
+/*
+  ==========================================
+  -- NEW FUTURISTIC HEADER --
+     - Version: 3.0
+     - Features: Glassmorphism, Role-based Colors, Animations
+  ==========================================
+*/
+
 :root {
-  --blue: #00afec;
-  --gold: #f1c40f;
-  --dark: #00112b;
-  --white-10: rgba(255, 255, 255, 0.1);
+    --header-height: 80px;
+    --header-height-scrolled: 70px;
+    --header-bg-color: rgba(10, 11, 16, 0.5);
+    --header-blur: 12px;
+    --header-border-color: rgba(255, 255, 255, 0.08);
+    --header-primary-glow: rgba(43, 95, 245, 0.3);
+    
+    /* Role Colors */
+    --role-color-blue: #3b82f6;      /* Athlete */
+    --role-color-gold: #f59e0b;      /* Coach */
+    --role-color-teal: #14b8a6;      /* Admin */
+    --role-color-silver: #a0aec0;    /* Judge */
+    --role-color-default: #aeb5c7;
 }
 
+/* -- 1. HEADER-SPACE & BASE HEADER -- */
 .header-space {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  padding: 30px 20px;
-  z-index: 1000;
-  transition: padding 0.6s cubic-bezier(0.2, 1, 0.2, 1);
+    height: var(--header-height);
+    transition: height 0.3s ease-in-out;
+}
+.header-space.is-scrolled {
+    height: var(--header-height-scrolled);
 }
 
-.header-space.is-compressed {
-  padding: 15px 20px;
+.new-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--header-height);
+    z-index: 1000;
+    transition: height 0.3s ease-in-out;
+    display: flex;
+    align-items: center;
 }
 
-.futuristic-header {
-  max-width: 1400px;
-  margin: 0 auto;
-  position: relative;
-  background: rgba(10, 10, 10, 0.6);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
-  border: 1px solid var(--white-10);
-  border-radius: 24px;
-  overflow: hidden;
-  transition: 0.4s;
+.header-space.is-scrolled .new-header {
+    height: var(--header-height-scrolled);
 }
 
-.header-glow {
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 50%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--blue), transparent);
-  animation: scan 4s linear infinite;
+.new-header__inner {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 2;
 }
 
-.header-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 30px;
-  height: 64px;
+/* Background & Effects */
+.new-header__bg {
+    position: absolute;
+    inset: 0;
+    background-color: transparent; /* Initially transparent */
+    backdrop-filter: blur(0);
+    border-bottom: 1px solid transparent; 
+    transition: all 0.3s ease-in-out;
 }
 
-/* LOGO */
-.f-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-.f-logo__icon { width: 32px; height: 32px; border: 1px solid var(--blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; }
-.f-logo__dot { width: 10px; height: 10px; background: var(--gold); border-radius: 50%; box-shadow: 0 0 15px var(--gold); }
-.f-logo__text { color: #fff; font-size: 18px; font-weight: 900; letter-spacing: 1px; }
-.f-logo__text span { color: var(--blue); font-weight: 300; margin-left: 4px; }
-
-/* NAVIGATION PILL */
-.f-nav__pill { display: flex; background: rgba(255, 255, 255, 0.03); padding: 6px; border-radius: 100px; gap: 8px; border: 1px solid rgba(255, 255, 255, 0.05); }
-.f-nav__item { padding: 8px 20px; color: rgba(255, 255, 255, 0.6); text-decoration: none; font-size: 13px; font-weight: 600; border-radius: 100px; transition: 0.3s; }
-.f-nav__item:hover, .f-nav__item.active { color: #fff; background: var(--white-10); }
-
-/* ACTIONS */
-.f-actions { display: flex; align-items: center; gap: 24px; }
-.f-btn-link { color: #fff; text-decoration: none; font-size: 13px; font-weight: 600; opacity: 0.7; transition: 0.3s; }
-.f-btn-link:hover { opacity: 1; transform: translateY(-1px); }
-.f-btn-main { background: #fff; color: #000; padding: 10px 24px; border-radius: 12px; text-decoration: none; font-weight: 800; font-size: 13px; display: flex; align-items: center; gap: 10px; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-.f-btn-main:hover { background: var(--blue); color: #fff; transform: scale(1.05); }
-
-@keyframes scan { 0% { left: -100%; } 100% { left: 200%; } }
-
-/* USER PROFILE MENU */
-.user-profile-menu { position: relative; }
-.profile-trigger { display: flex; align-items: center; gap: 12px; padding: 6px 6px 6px 16px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 100px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; }
-.profile-trigger:hover { background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.4); transform: translateY(-1px); }
-.profile-trigger__info { display: flex; flex-direction: column; align-items: flex-end; }
-.profile-trigger__name { color: white; font-size: 14px; font-weight: 600; line-height: 1.2; }
-.profile-trigger__role { color: #3b82f6; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
-.profile-trigger__avatar { position: relative; width: 36px; height: 36px; }
-.profile-trigger__avatar .avatar-placeholder { width: 100%; height: 100%; border-radius: 50%; background-color: var(--blue); display: flex; align-items: center; justify-content: center; color: white; }
-.online-badge { position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; background: #10b981; border: 2px solid #0b0e14; border-radius: 50%; }
-
-/* DROPDOWN */
-.profile-dropdown { position: absolute; top: calc(100% + 10px); right: 0; width: 250px; background: rgba(18, 24, 38, 0.8); backdrop-filter: blur(20px); border: 1px solid var(--white-10); border-radius: 16px; padding: 8px; opacity: 0; visibility: hidden; transform: translateY(10px) scale(0.95); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1100; }
-.user-profile-menu:hover .profile-dropdown { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
-.dropdown-header { padding: 12px; border-bottom: 1px solid var(--white-10); }
-.dropdown-header .profile-trigger__name { font-size: 15px; }
-.dropdown-header .profile-trigger__role { font-size: 11px; }
-.dropdown-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; color: rgba(255, 255, 255, 0.7); text-decoration: none; background: none; border: none; width: 100%; text-align: left; cursor: pointer; font-size: 14px; border-radius: 8px; transition: 0.2s; }
-.dropdown-item:hover { background: var(--white-10); color: white; }
-.logout-btn { color: #ef4444; }
-.logout-btn:hover { background: rgba(239, 68, 68, 0.1); color: #f87171; }
-
-
-/* --- НОВЫЕ СТИЛИ ДЛЯ МОБИЛЬНОЙ ВЕРСИИ --- */
-
-.mobile-menu-toggle { display: none; background: none; border: none; color: white; cursor: pointer; padding: 8px; }
-.mobile-nav { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 1200; display: flex; flex-direction: column; align-items: center; justify-content: center; animation: fadeIn 0.3s ease; }
-.mobile-nav__close { position: absolute; top: 45px; right: 35px; background: none; border: none; color: white; cursor: pointer; opacity: 0.7; transition: 0.3s; }
-.mobile-nav__close:hover { opacity: 1; transform: rotate(90deg); }
-.mobile-nav__links { display: flex; flex-direction: column; align-items: center; gap: 20px; }
-.mobile-nav .f-nav__item { font-size: 24px; color: rgba(255, 255, 255, 0.7); padding: 10px 20px; }
-.mobile-nav .f-nav__item:hover, .mobile-nav .f-nav__item.active { color: white; background: none; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-/* --- МЕДИА-ЗАПРОСЫ --- */
-
-@media (max-width: 991px) {
-  .f-nav__pill, /* Скрываем десктопную навигацию */
-  .f-btn-link { /* Скрываем кнопку "Кіру" */
-    display: none;
-  }
-  .mobile-menu-toggle { /* Показываем гамбургер */
-    display: block;
-  }
-  .header-inner { padding: 12px 20px; }
-  .header-space { padding: 15px 15px; }
-  .f-actions { gap: 15px; }
+.header-space.is-scrolled .new-header__bg {
+    background-color: var(--header-bg-color);
+    backdrop-filter: blur(var(--header-blur));
+    border-bottom: 1px solid var(--header-border-color);
 }
 
-@media (max-width: 768px) {
-  .profile-trigger__info { /* Прячем текст в кнопке профиля */
-    display: none;
-  }
-  .profile-trigger { /* Уменьшаем саму кнопку */
+/* -- 2. LOGO -- */
+.new-logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #fff;
+}
+
+.new-logo__icon-wrap {
+    width: 36px;
+    height: 36px;
+    position: relative;
+    margin-right: 14px;
+    display: grid;
+    place-items: center;
+}
+
+.new-logo__icon-bg {
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--header-border-color);
+    border-radius: 50%;
+    transition: all .3s;
+}
+.new-logo:hover .new-logo__icon-bg {
+    transform: rotate(90deg);
+    border-color: var(--role-color-blue);
+}
+
+.new-logo__icon-dot {
+    width: 6px;
+    height: 6px;
+    background-color: var(--role-color-blue);
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(43, 95, 245, 0.7);
+}
+
+.new-logo__text {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+.new-logo__text span {
+    color: var(--role-color-blue);
+}
+
+/* -- 3. NAVIGATION -- */
+.new-nav {
+    display: flex;
+    gap: 12px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.new-nav__item {
+    color: var(--text-color);
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 15px;
+    position: relative;
+    transition: color .2s, background-color .2s;
+}
+
+.new-nav__item:hover {
+    color: #fff;
+    background-color: rgba(255,255,255, 0.07);
+}
+
+/* -- 4. ACTIONS (Profile & Auth) -- */
+.new-actions { display: flex; align-items: center; gap: 16px; }
+
+/* Auth Buttons */
+.auth-buttons { display: flex; gap: 12px; }
+
+.btn-secondary {
+    color: var(--text-color);
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: color .2s, background-color .2s;
+}
+.btn-secondary:hover { color: #fff; background-color: rgba(255,255,255, 0.07);}
+
+.btn-primary {
+    background-color: var(--role-color-blue);
+    color: white;
+    text-decoration: none;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: transform .2s, box-shadow .2s;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 20px var(--header-primary-glow); }
+
+/* -- 5. PROFILE MENU (THE COOL PART) -- */
+.profile-menu {
+    position: relative;
+}
+
+.profile-menu__trigger {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     padding: 6px;
-  }
-  .mobile-nav__close {
-    top: 30px;
-    right: 30px;
-  }
+    border-radius: 99px;
+    background-color: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all .2s;
 }
+.profile-menu:hover .profile-menu__trigger {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    padding-right: 4px;
+}
+.profile-info__name { font-size: 15px; font-weight: 600; color: #fff; }
+.profile-info__role { font-size: 12px; color: var(--text-color); text-transform: capitalize; }
+
+/* Avatar with Role-based Colors */
+.avatar {
+    width: 38px;
+    height: 38px;
+    position: relative;
+    display: grid;
+    place-items: center;
+}
+.avatar__placeholder {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background-color: rgba(255,255,255,0.1);
+    color: #fff;
+}
+.avatar__border {
+    position: absolute;
+    inset: 0;
+    border: 2px solid var(--role-color-default);
+    border-radius: 50%;
+    transition: all .3s;
+    opacity: 0.7;
+}
+
+.profile-menu:hover .avatar__border { transform: rotate(120deg); opacity: 1; }
+
+/* Connecting role color from data-attribute to CSS variable */
+.profile-menu[data-role-color="blue"] .avatar__border { border-color: var(--role-color-blue); }
+.profile-menu[data-role-color="gold"] .avatar__border { border-color: var(--role-color-gold); }
+.profile-menu[data-role-color="teal"] .avatar__border { border-color: var(--role-color-teal); }
+.profile-menu[data-role-color="silver"] .avatar__border { border-color: var(--role-color-silver); }
+
+
+/* Dropdown Menu */
+.profile-menu__dropdown {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    width: 260px;
+    background: #10121a;
+    border: 1px solid var(--header-border-color);
+    border-radius: 8px;
+    padding: 8px;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px) scale(0.98);
+    transform-origin: top right;
+    transition: all 0.2s ease-out;
+}
+.profile-menu:hover .profile-menu__dropdown { 
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.dropdown__header {
+    padding: 12px;
+}
+.dropdown__greeting { display: block; font-size: 15px; font-weight: 600; color: #fff; }
+.dropdown__email { display: block; font-size: 13px; color: var(--text-color); }
+
+.dropdown__divider { height: 1px; background: var(--header-border-color); margin: 8px; }
+
+.dropdown__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 14px;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    transition: all .2s;
+}
+
+.dropdown__item:hover { background-color: rgba(255,255,255,0.07); color: #fff; }
+
+.dropdown__item.is-logout:hover {
+    background-color: rgba(245, 61, 43, 0.15);
+    color: #ff7070;
+}
+
+/* -- 6. MOBILE & RESPONSIVE -- */
+.mobile-toggle { display: none; background: none; border: none; color: #fff; }
+
+.mobile-fullscreen-nav {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 11, 16, 0.9);
+    backdrop-filter: blur(15px);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.mobile-fullscreen-nav__close { position: absolute; top: 20px; right: 20px; background: none; border: none; color: #fff; }
+.mobile-fullscreen-nav__links { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.mobile-nav-link { font-size: 24px; color: var(--text-color); padding: 10px 20px; text-decoration: none; transition: color .2s; }
+.mobile-nav-link:hover { color: #fff; }
+.mobile-nav-divider { height: 1px; width: 100px; background: var(--header-border-color); margin: 20px 0; }
+
+.mobile-nav-link.is-logout { color: #f54343; }
+
+@media (max-width: 992px) {
+    .new-nav { display: none; }
+    .auth-buttons { display: none; }
+    .profile-menu { 
+        /* If user is logged in, show profile menu, otherwise show mobile toggle */
+        display: block;
+    }
+    .mobile-toggle { 
+        display: flex;
+        /* Hide toggle if user is logged in */
+        display: none; 
+    }
+
+    .new-actions { 
+        /* This makes sure that either profile menu OR mobile toggle is shown */
+        display: contents; 
+    }
+    
+    /* A bit of logic: if no user, show the toggle */
+    .auth-buttons + .mobile-toggle { display: flex; }
+}
+
+@media (max-width: 480px) {
+    .profile-info { display: none; } /* Hide name/role on very small screens */
+    .new-logo__text { display: none; } /* Hide logo text */
+}
+

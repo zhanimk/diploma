@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { logout } from '../store/authSlice';
-import { User, LogOut, Menu, X } from 'lucide-react'; // Импортируем иконки Menu и X
-import './Header.css';
+// --- Иконки ---
+import { User, LogOut, Menu, X, LayoutDashboard, Shield, Star, Award } from 'lucide-react'; 
+import './Header.css'; // Будем переписывать этот файл
 
 export default function Header() {
   const { user } = useSelector((state) => state.auth);
@@ -15,28 +16,32 @@ export default function Header() {
     dispatch(logout());
     localStorage.removeItem('token');
     navigate('/');
-    setMobileMenuOpen(false); // Закрываем меню при выходе
+    setMobileMenuOpen(false); 
   };
-
-  let dashboardPath = '/';
-  if (user) {
-    switch (user.role) {
-      case 'athlete': dashboardPath = '/athlete/dashboard'; break;
-      case 'coach': dashboardPath = '/coach/dashboard'; break;
-      case 'admin': dashboardPath = '/admin/dashboard'; break;
-      case 'judge': dashboardPath = '/judge/dashboard'; break;
-      default: dashboardPath = '/';
+  
+  // --- Функция для определения пути к дашборду и цвета/иконки для роли ---
+  const getRoleMeta = (role) => {
+    switch (role) {
+      case 'athlete': return { path: '/athlete/dashboard', color: 'blue', Icon: Award };
+      case 'coach': return { path: '/coach/dashboard', color: 'gold', Icon: Star };
+      case 'admin': return { path: '/admin/dashboard', color: 'teal', Icon: Shield };
+      case 'judge': return { path: '/judge/dashboard', color: 'silver', Icon: User }; // Пример
+      default: return { path: '/', color: 'default', Icon: User };
     }
   }
 
-  // Эффект сжатия хедера при скролле
+  const roleMeta = user ? getRoleMeta(user.role) : getRoleMeta(null);
+
+  // --- Эффект сжатия хедера при скролле ---
   useEffect(() => {
     const handleScroll = () => {
-      const header = document.querySelector('.header-space');
-      if (window.scrollY > 20) {
-        header.classList.add('is-compressed');
-      } else {
-        header.classList.remove('is-compressed');
+      const headerSpace = document.querySelector('.header-space');
+      if (headerSpace) {
+          if (window.scrollY > 50) {
+              headerSpace.classList.add('is-scrolled');
+          } else {
+              headerSpace.classList.remove('is-scrolled');
+          }
       }
     };
     window.addEventListener('scroll', handleScroll);
@@ -45,60 +50,75 @@ export default function Header() {
 
   return (
     <>
+      {/* 
+        Этот div создает отступ, чтобы контент не заезжал под фиксированный хедер.
+        Класс .is-scrolled будет добавляться при прокрутке.
+      */}
       <div className="header-space">
-        <header className="futuristic-header">
-          <div className="header-glow"></div>
-          <div className="header-inner">
-            <Link to="/" className="f-logo">
-              <div className="f-logo__icon">
-                <div className="f-logo__dot"></div>
+        <header className="new-header">
+          {/* Элементы для футуристичного дизайна */}
+          <div className="new-header__bg"></div>
+          <div className="new-header__grid-lines"></div>
+
+          <div className="new-header__inner">
+            <Link to="/" className="new-logo">
+              <div className="new-logo__icon-wrap">
+                <div className="new-logo__icon-bg"></div>
+                <div className="new-logo__icon-dot"></div>
               </div>
-              <div className="f-logo__text">JUDO<span>ARENA</span></div>
+              <div className="new-logo__text">JUDO<span>ARENA</span></div>
             </Link>
             
-            <nav className="f-nav__pill">
-              <Link to="/#about" className="f-nav__item">Платформа туралы</Link>
-              <Link to="/#skills" className="f-nav__item">Техникалар</Link>
-              <Link to="/" className="f-nav__item active">Жарыстар</Link>
+            {/* Навигация для десктопа */}
+            <nav className="new-nav">
+              <Link to="/#about" className="new-nav__item">Платформа</Link>
+              <Link to="/#skills" className="new-nav__item">Техникалар</Link>
+              <Link to="/tournaments" className="new-nav__item">Жарыстар</Link>
             </nav>
 
-            <div className="f-actions">
+            <div className="new-actions">
               {user ? (
-                <div className="user-profile-menu">
-                  <div className="profile-trigger">
-                    <div className="profile-trigger__info">
-                      <span className="profile-trigger__name">{user.firstName || 'Профиль'}</span>
-                      <span className="profile-trigger__role">{user.role}</span>
+                // --- МЕНЮ ПРОФИЛЯ ---
+                <div className="profile-menu" data-role-color={roleMeta.color}>
+                  <div className="profile-menu__trigger">
+                    <div className="profile-info">
+                      <span className="profile-info__name">{user.firstName || 'Профиль'}</span>
+                      <span className="profile-info__role">{user.role}</span>
                     </div>
-                    <div className="profile-trigger__avatar">
-                      <div className="avatar-placeholder"><User size={18} /></div>
-                      <span className="online-badge"></span>
+                    <div className="avatar">
+                        <div className="avatar__border"></div>
+                        <div className="avatar__placeholder">
+                            <roleMeta.Icon size={18} />
+                        </div>
                     </div>
                   </div>
-                  <div className="profile-dropdown">
-                     <div className="dropdown-header">
-                        <span className="profile-trigger__name">Сәлем, {user.firstName || 'пайдаланушы'}!</span>
-                        <span className="profile-trigger__role">{user.role}</span>
+
+                  <div className="profile-menu__dropdown">
+                     <div className="dropdown__header">
+                        <span className="dropdown__greeting">Сәлем, {user.firstName || 'пайдаланушы'}!</span>
+                        <span className="dropdown__email">{user.email}</span>
                      </div>
-                    <Link to={dashboardPath} className="dropdown-item">
-                      <User size={16} />
-                      <span>Басқару панелі</span>
-                    </Link>
-                    <button onClick={handleLogout} className="dropdown-item logout-btn">
-                      <LogOut size={16} />
-                      <span>Шығу</span>
-                    </button>
+                     <div className="dropdown__divider"></div>
+                     <Link to={roleMeta.path} className="dropdown__item">
+                       <LayoutDashboard size={16} />
+                       <span>Басқару панелі</span>
+                     </Link>
+                     <button onClick={handleLogout} className="dropdown__item is-logout">
+                       <LogOut size={16} />
+                       <span>Шығу</span>
+                     </button>
                   </div>
                 </div>
               ) : (
-                <>
-                  <Link to="/login" className="f-btn-link">Кіру</Link>
-                  <Link to="/register" className="f-btn-main"><span>Тіркелу</span></Link>
-                </>
+                // --- КНОПКИ ВХОДА И РЕГИСТРАЦИИ ---
+                <div className="auth-buttons">
+                  <Link to="/login" className="btn-secondary">Кіру</Link>
+                  <Link to="/register" className="btn-primary"><span>Тіркелу</span></Link>
+                </div>
               )}
               
               {/* --- КНОПКА ГАМБУРГЕР --- */}
-              <button className="mobile-menu-toggle" onClick={() => setMobileMenuOpen(true)}>
+              <button className="mobile-toggle" onClick={() => setMobileMenuOpen(true)}>
                 <Menu size={24} />
               </button>
             </div>
@@ -108,19 +128,25 @@ export default function Header() {
 
       {/* --- МОБИЛЬНОЕ МЕНЮ --- */}
       {isMobileMenuOpen && (
-        <nav className="mobile-nav">
-          <button className="mobile-nav__close" onClick={() => setMobileMenuOpen(false)}>
+        <nav className="mobile-fullscreen-nav">
+          <button className="mobile-fullscreen-nav__close" onClick={() => setMobileMenuOpen(false)}>
             <X size={32} />
           </button>
-          <div className="mobile-nav__links">
-            <Link to="/#about" className="f-nav__item" onClick={() => setMobileMenuOpen(false)}>Платформа туралы</Link>
-            <Link to="/#skills" className="f-nav__item" onClick={() => setMobileMenuOpen(false)}>Техникалар</Link>
-            <Link to="/" className="f-nav__item active" onClick={() => setMobileMenuOpen(false)}>Жарыстар</Link>
-            {!user && (
+          <div className="mobile-fullscreen-nav__links">
+            <Link to="/#about" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Платформа</Link>
+            <Link to="/#skills" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Техникалар</Link>
+            <Link to="/tournaments" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Жарыстар</Link>
+            <div className="mobile-nav-divider"></div>
+            {!user ? (
               <>
-                <Link to="/login" className="f-nav__item" onClick={() => setMobileMenuOpen(false)}>Кіру</Link>
-                <Link to="/register" className="f-btn-main" onClick={() => setMobileMenuOpen(false)}>Тіркелу</Link>
+                <Link to="/login" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Кіру</Link>
+                <Link to="/register" className="btn-primary" onClick={() => setMobileMenuOpen(false)}>Тіркелу</Link>
               </>
+            ) : (
+                <>
+                <Link to={roleMeta.path} className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Басқару панелі</Link>
+                <button onClick={handleLogout} className="mobile-nav-link is-logout">Шығу</button>
+                </>
             )}
           </div>
         </nav>

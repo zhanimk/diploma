@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../store/authSlice";
-import axios from 'axios'; 
+import axios from 'axios';
+import setAuthToken from '../../utils/setAuthToken'; // Импортируем нашу новую функцию
 import { User, Mail, Lock, Eye, EyeOff, Medal, Briefcase, Phone, Calendar, MapPin } from "lucide-react";
 import "./Auth.css";
 
@@ -11,7 +12,8 @@ export default function Register() {
   const [step, setStep] = useState(1);
   const [role, setRole] = useState("athlete");
 
-  const [fullName, setFullName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -47,10 +49,6 @@ export default function Register() {
     setError("");
 
     try {
-        const nameParts = fullName.split(' ');
-        const firstName = nameParts[0] || '';
-        const lastName = nameParts.slice(1).join(' ') || '';
-
         const registrationData = {
             firstName,
             lastName,
@@ -66,7 +64,7 @@ export default function Register() {
         const { data } = await axios.post("/api/users/register", registrationData);
 
         if (data && data.token && data.role) {
-            localStorage.setItem('token', data.token);
+            setAuthToken(data.token); // Устанавливаем токен для будущих запросов
             dispatch(setUser(data)); 
             
             if (data.role === "coach") {
@@ -89,6 +87,8 @@ export default function Register() {
     }
   };
 
+  // ... остальная часть вашего компонента без изменений
+  
   const renderStep = () => {
     switch (step) {
       case 1:
@@ -139,7 +139,11 @@ export default function Register() {
             <div className="form-fields">
                 <div className="input-group">
                     <div className="icon-wrapper"><User size={18} /></div>
-                    <input type="text" placeholder="Толық аты-жөніңіз" required value={fullName} onChange={(e) => setFullName(e.target.value)} />
+                    <input type="text" placeholder="Аты (Имя)" required value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+                </div>
+                <div className="input-group">
+                    <div className="icon-wrapper"><User size={18} /></div>
+                    <input type="text" placeholder="Тегі (Фамилия)" required value={lastName} onChange={(e) => setLastName(e.target.value)} />
                 </div>
                 <div className="input-group">
                     <div className="icon-wrapper"><Phone size={18} /></div>

@@ -41,7 +41,7 @@ const About = () => {
         </header>
         <p className="jd-about-description">Біздің платформа дзюдо турнирлерін халықаралық стандарттарға сай ұйымдастыруға, бірнеше татамиді орталықтандырылған жүйе арқылы басқаруға және нәтижелерді нақты уақытта бақылауға мүмкіндік береді.</p>
         <div className="jd-about-features">
-          <div className="jd-feature-item"><div className="jd-feature-img-wrapper"><img src="https://rus.baq.kz/storage/storage/news/2024/05/12/mainphoto/8b86fiuj8chuCb6pfVyua33Df2JODFBODHo0MUOC.jpg?time=1765621642" alt="Қатысушыларды тіркеу" className="jd-feature-img" /><div className="jd-card-overlay" /></div><div className="jd-feature-body"><div className="jd-custom-icon icon-reg" /><h3>Тіркеу Жүйесі</h3><p>IJF ережелеріне сәйкес қатысушыларды автоматты түрде салмақ дәрежелеріне бөлу және деректерді валидациялау.</p></div></div>
+          <div className="jd-feature-item"><div className="jd-feature-img-wrapper"><img src="https://placehold.co/600x400/2b5ff5/white?text=Тіркеу+Жүйесі" alt="Қатысушыларды тіркеу" className="jd-feature-img" /><div className="jd-card-overlay" /></div><div className="jd-feature-body"><div className="jd-custom-icon icon-reg" /><h3>Тіркеу Жүйесі</h3><p>IJF ережелеріне сәйкес қатысушыларды автоматты түрде салмақ дәрежелеріне бөлу және деректерді валидациялау.</p></div></div>
           <div className="jd-feature-item"><div className="jd-feature-img-wrapper"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6MoIzl-j3JnWskyXp6JsiKO0qNT2_dsGc3g&s" alt="Online Табло" className="jd-feature-img" /><div className="jd-card-overlay" /></div><div className="jd-feature-body"><div className="jd-custom-icon icon-board" /><h3>Online Табло</h3><p>Белдесу барысы мен нәтижелерін кез келген құрылғыдан нақты уақыт режимінде (Real-time) бақылау мүмкіндігі.</p></div></div>
           <div className="jd-feature-item"><div className="jd-feature-img-wrapper"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc0hWfvwGunhkpRtgGRU7jJRa-YBRgLLeoDw&s" alt="Көп татами режимі" className="jd-feature-img" /><div className="jd-card-overlay" /></div><div className="jd-feature-body"><div className="jd-custom-icon icon-tatami" /><h3>Мульти-Татами</h3><p>Ондаған жарыс алаңдарының жұмысын бірыңғай орталықтан қатесіз үйлестіру және басқару.</p></div></div>
         </div>
@@ -252,21 +252,9 @@ const BeltDivider = ({ color, rank }) => {
 
 // ГЛАВНЫЙ КОМПОНЕНТ-СБОРКА
 export default function HomePage() {
-    const [users, setUsers] = useState([]);
-
-    useEffect(() => {
-        fetch('/api/users')
-            .then(response => response.json())
-            .then(data => setUsers(data))
-            .catch(error => console.error('Error fetching users:', error));
-    }, []);
-
     return (
         <main>
             <Hero />
-            <div style={{color: 'white', textAlign: 'center', padding: '20px'}}>
-                <h2>Users from DB: {users.length}</h2>
-            </div>
             <About />
             <BeltDivider color="#ffea00" rank="Yellow Belt Level" />
             <SkillDojo />

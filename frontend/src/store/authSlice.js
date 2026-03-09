@@ -1,8 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+// Попробуем загрузить данные пользователя из localStorage
+const userInfoFromStorage = localStorage.getItem('userInfo')
+  ? JSON.parse(localStorage.getItem('userInfo'))
+  : null;
+
 const initialState = {
-  user: null,
-  isAuthenticated: false,
+  user: userInfoFromStorage,
+  isAuthenticated: !!userInfoFromStorage,
 };
 
 const authSlice = createSlice({
@@ -12,12 +17,14 @@ const authSlice = createSlice({
     setUser: (state, action) => {
       state.user = action.payload;
       state.isAuthenticated = !!action.payload;
+      // Сохраняем данные пользователя в localStorage
+      localStorage.setItem('userInfo', JSON.stringify(action.payload));
     },
     logout: (state) => {
       state.user = null;
       state.isAuthenticated = false;
-      // Also remove the token from localStorage
-      localStorage.removeItem('token');
+      // Удаляем данные пользователя из localStorage
+      localStorage.removeItem('userInfo');
     },
   },
 });

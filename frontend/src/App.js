@@ -1,68 +1,44 @@
-import React, { useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import axios from 'axios';
-
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import PrivateRoute from './components/PrivateRoute';
+
+// Исправленные пути к страницам
 import HomePage from './pages/Home/HomePage';
 import Login from './pages/Home/Login';
-import Registration from './pages/Home/Registration';
-import ForgotPassword from './pages/Home/ForgotPassword';
+import Register from './pages/Home/Registration'; 
+
+// Страницы панелей управления
 import AthleteDashboard from './pages/athlete/AthleteDashboard';
-import AthleteTournaments from './pages/athlete/AthleteTournaments';
-import AthleteHistory from './pages/athlete/AthleteHistory';
+import FindCoachPage from './pages/athlete/FindCoachPage';
 import CoachDashboard from './pages/coach/CoachDashboard';
-import AdminDashboard from './pages/admin/AdminDashboard';
-import JudgeDashboard from './pages/judge/JudgeDashboard';
 
-import { setUser } from './store/authSlice';
-import setAuthToken from './utils/setAuthToken';
-
-// Check for token and load user
-if (localStorage.token) {
-    setAuthToken(localStorage.token);
-}
+import { Toaster } from 'react-hot-toast';
 
 const App = () => {
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        const loadUser = async () => {
-            if (localStorage.token) {
-                try {
-                    const res = await axios.get('/api/users/profile');
-                    dispatch(setUser(res.data));
-                } catch (err) {
-                    console.error('Failed to load user', err);
-                }
-            }
-        };
-        loadUser();
-    }, [dispatch]);
-
     return (
-        <>
+        <div className="App">
             <Header />
             <main>
+                <Toaster position="top-right" />
                 <Routes>
+                    {/* Публичные маршруты */}
                     <Route path="/" element={<HomePage />} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Registration />} />
-                    <Route path="/forgot-password" element={<ForgotPassword />} />
-                    
-                    {/* Athlete Routes */}
-                    <Route path="/athlete/dashboard" element={<AthleteDashboard />} />
-                    <Route path="/athlete/tournaments" element={<AthleteTournaments />} />
-                    <Route path="/athlete/history" element={<AthleteHistory />} />
+                    <Route path="/register" element={<Register />} />
 
-                    <Route path="/coach/dashboard" element={<CoachDashboard />} />
-                    <Route path="/admin/dashboard" element={<AdminDashboard />} />
-                    <Route path="/judge/dashboard" element={<JudgeDashboard />} />
+                    {/* Приватные маршруты для спортсмена */}
+                    <Route path="/athlete/dashboard" element={<PrivateRoute><AthleteDashboard /></PrivateRoute>} />
+                    <Route path="/athlete/find-coach" element={<PrivateRoute><FindCoachPage /></PrivateRoute>} />
+                    
+                    {/* Приватные маршруты для тренера */}
+                    <Route path="/coach/dashboard" element={<PrivateRoute><CoachDashboard /></PrivateRoute>} />
+                    
                 </Routes>
             </main>
             <Footer />
-        </>
+        </div>
     );
 };
 

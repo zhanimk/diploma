@@ -6,27 +6,41 @@ const {
   registerUser,
   loginUser,
   getUserProfile,
-  updateUserProfile, // Импортируем новую функцию
+  updateUserProfile,
   getAllUsers,
-  sendCoachRequest,
-  respondToCoachRequest,
+  getCoaches, // <-- Добавляем новый контроллер
+  sendRequestToCoach,       
+  getStudentRequests,       
+  respondToStudentRequest,    
   getCoachStudents,
-  getAthleteCoach,
   removeStudent,
-  getCoachRequests
 } = require('../controllers/userController');
 
 // Импортируем middleware для защиты маршрутов
-const { protect, coach, athlete } = require('../middleware/authMiddleware');
+const { protect, coach, athlete, admin } = require('../middleware/authMiddleware');
 
-// --- Маршруты ---
+// --- Основные маршруты ---
+router.post('/register', registerUser);
+router.post('/login', loginUser);
 
-// ... (маршруты register и login без изменений)
+// --- Маршруты для получения списка тренеров (для всех авторизованных) ---
+router.get('/coaches', protect, getCoaches); // <-- Новый маршрут
 
+// --- Профиль ---
 router.route('/profile')
   .get(protect, getUserProfile)
-  .put(protect, updateUserProfile); // Добавляем новый маршрут
+  .put(protect, updateUserProfile); 
 
-// ... (остальные маршруты)
+// --- Маршруты для админа ---
+router.get('/', protect, admin, getAllUsers); // <-- Уточняем, что это только для админа
+
+// --- Маршруты для спортсмена (Athlete) ---
+router.post('/athlete/send-request', protect, athlete, sendRequestToCoach);
+
+// --- Маршруты для тренера (Coach) ---
+router.get('/coach/students', protect, coach, getCoachStudents);
+router.put('/coach/remove-student', protect, coach, removeStudent);
+router.get('/coach/student-requests', protect, coach, getStudentRequests);
+router.put('/coach/respond-request', protect, coach, respondToStudentRequest);
 
 module.exports = router;

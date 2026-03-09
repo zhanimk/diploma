@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../store/authSlice";
+import axios from 'axios'; // Используем axios
+import setAuthToken from '../../utils/setAuthToken'; // Импортируем
 import toast from 'react-hot-toast';
 import { Mail, Lock, Eye, EyeOff, LogIn } from "lucide-react";
 import "./Auth.css";
@@ -21,53 +23,38 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
     setError("");
+
     const loginPromise = new Promise(async (resolve, reject) => {
       try {
-        const response = await fetch("/api/users/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, password }),
-        });
-  
-        if (response.ok) {
-          const userData = await response.json();
-  
-          if (userData.token) {
-            localStorage.setItem('token', userData.token);
-          }
-          dispatch(setUser(userData));
-          
-          resolve(userData); 
+        // Используем axios для запроса
+        const { data } = await axios.post("/api/users/login", { email, password });
 
-          const role = userData.role;
-  
-          switch (role) {
-            case "admin":
-              navigate("/admin/dashboard");
-              break;
-            case "judge":
-              navigate("/judge/dashboard");
-              break;
-            case "coach":
-              navigate("/coach/dashboard");
-              break;
-            case "athlete":
-              navigate("/athlete/dashboard");
-              break;
-            default:
-              navigate("/athlete/dashboard");
-              break;
-          }
-        } else if (response.status === 401) {
-          reject("Пошта немесе құпия сөз қате.");
-        } else {
-          reject("Жүйелік қате орын алды.");
+        // Устанавливаем токен для всех последующих запросов
+        setAuthToken(data.token);
+
+        // Сохраняем пользователя в Redux (и localStorage через authSlice)
+        dispatch(setUser(data));
+        
+        resolve(data); 
+
+        // Перенаправляем пользователя в зависимости от роли
+        switch (data.role) {
+          case "admin":
+            navigate("/admin/dashboard");
+            break;
+          case "judge":
+            navigate("/judge/dashboard");
+            break;
+          case "coach":
+            navigate("/coach/dashboard");
+            break;
+          default:
+            navigate("/athlete/dashboard");
+            break;
         }
       } catch (err) {
-        console.error(err);
-        reject("Жүйелік қате: " + err.message);
+        const message = err.response?.data?.message || "Пошта немесе құпия сөз қате.";
+        reject(message);
       }
     });
 
@@ -85,7 +72,7 @@ export default function Login() {
       setLoading(false);
     }
   };
-
+  
   return (
     <div className="auth-container">
       <div className="auth-visual login-visual">
