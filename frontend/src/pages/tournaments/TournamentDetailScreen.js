@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, Link } from 'react-router-dom'; // <-- Импортируем Link
-import { getTournamentById, generateGrid } from '../../store/tournamentSlice';
+import { getTournamentById } from '../../store/tournamentSlice';
 import GridDisplay from '../../components/tournaments/GridDisplay';
 
 const TournamentDetailScreen = () => {
@@ -26,7 +26,7 @@ const TournamentDetailScreen = () => {
     const canGenerateGrid = user?.role === 'Admin' && tournament?.status === 'REGISTRATION_CLOSED' && (!tournament.grid || tournament.grid.length === 0);
 
     const handleGenerateGrid = () => {
-        dispatch(generateGrid(id));
+        console.log("Grid generation is disabled for now.");
     };
 
     return (

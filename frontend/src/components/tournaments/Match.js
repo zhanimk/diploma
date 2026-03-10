@@ -1,14 +1,12 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { updateMatchResult } from '../../store/tournamentSlice';
+import { useSelector } from 'react-redux';
 
 const Match = ({ match, tournamentId, category }) => {
-    const dispatch = useDispatch();
     const { user } = useSelector(state => state.auth);
 
     const handleWinnerSelect = (winnerId) => {
         if (user?.role === 'Judge') {
-            dispatch(updateMatchResult({ id: tournamentId, category, matchId: match._id, winnerId }));
+            console.log("Winner selection is disabled for now.")
         }
     };
 

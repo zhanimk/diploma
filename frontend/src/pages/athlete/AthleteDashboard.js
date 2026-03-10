@@ -1,31 +1,86 @@
-
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './AthleteDashboard.css'; 
-import { User, Shield, Search, Star, Edit } from 'lucide-react'; // Убрали Weight, Pencil, Users. Добавили Edit.
+import { User, Shield, Edit, Clock, CheckCircle, XCircle, HelpCircle } from 'lucide-react';
+
+const ClubStatusCard = ({ profile, loading }) => {
+    if (loading) {
+        return <div className="item-card-placeholder"></div>;
+    }
+
+    let statusComponent;
+    const clubName = profile?.club?.name || 'белгісіз клуб';
+
+    switch (profile?.clubStatus) {
+        case 'pending':
+            statusComponent = (
+                <div className="item-card status-pending">
+                    <div className="item-card__icon"><Clock /></div>
+                    <div className="item-card__info">
+                        <h3>Сұраныс қаралуда</h3>
+                        <p><strong>{clubName}</strong> клубына қосылу туралы сұранысыңыз жіберілді. Бапкердің жауабын күтіңіз.</p>
+                    </div>
+                </div>
+            );
+            break;
+        case 'approved':
+            statusComponent = (
+                <div className="item-card status-approved">
+                    <div className="item-card__icon"><CheckCircle /></div>
+                    <div className="item-card__info">
+                        <h3>Сіз клуб мүшесісіз</h3>
+                        <p>Сіз <strong>{clubName}</strong> клубының мүшесі ретінде расталдыңыз.</p>
+                    </div>
+                </div>
+            );
+            break;
+        case 'rejected':
+            statusComponent = (
+                <div className="item-card status-rejected">
+                    <div className="item-card__icon"><XCircle /></div>
+                    <div className="item-card__info">
+                        <h3>Сұраныс қабылданбады</h3>
+                        <p><strong>{clubName}</strong> клубына қосылу туралы сұранысыңыз қабылданбады. Басқа клубты қарастырсаңыз болады.</p>
+                    </div>
+                </div>
+            );
+            break;
+        default:
+            statusComponent = (
+                <div className="item-card status-unknown">
+                    <div className="item-card__icon"><HelpCircle /></div>
+                    <div className="item-card__info">
+                        <h3>Клуб таңдалмаған</h3>
+                        <p>Сіз ешқандай клубқа тіркелмегенсіз. Профильді жаңарту қажет болуы мүмкін.</p>
+                    </div>
+                </div>
+            );
+    }
+
+    return statusComponent;
+}
 
 const AthleteDashboard = () => {
     const { user } = useSelector((state) => state.auth);
-    const [coach, setCoach] = useState(null);
+    const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
-    const hasCoach = user && user.coach;
 
     useEffect(() => {
-        const fetchCoach = async () => {
-            if (hasCoach) {
-                try {
-                    const { data } = await axios.get(`/api/users/${user.coach}`);
-                    setCoach(data);
-                } catch (error) {
-                    console.error("Тренер туралы ақпаратты алу кезінде қате:", error);
-                }
+        const fetchProfile = async () => {
+            setLoading(true);
+            try {
+                // This endpoint now populates club information
+                const { data } = await axios.get('/api/users/profile');
+                setProfile(data);
+            } catch (error) {
+                console.error("Профиль деректерін алу қатесі:", error);
             }
             setLoading(false);
         };
-        fetchCoach();
-    }, [user, hasCoach]);
+        fetchProfile();
+    }, []);
 
     return (
         <div className="container athlete-dashboard-grid">
@@ -33,13 +88,9 @@ const AthleteDashboard = () => {
                 <h3>Навигация</h3>
                 <ul>
                     <li><Link to="/athlete/dashboard" className="active">Басты бет</Link></li>
-                    {/* НОВАЯ ССЫЛКА НА ПРОФИЛЬ */}
                     <li><Link to="/profile">Профильді өңдеу</Link></li>
                     <li><Link to="/athlete/my-tournaments">Менің турнирлерім</Link></li>
                     <li><Link to="/athlete/results">Нәтижелер тарихы</Link></li>
-                    {!hasCoach && (
-                        <li><Link to="/athlete/find-coach">Жаттықтырушы табу</Link></li>
-                    )}
                 </ul>
             </nav>
 
@@ -49,58 +100,33 @@ const AthleteDashboard = () => {
                     <p>Жеке кабинетке қош келдіңіз. Мұнда сіз өзіңіздің спорттық мансабыңызды басқара аласыз.</p>
                 </header>
 
-                {loading ? <p>Жүктелуде...</p> : (
-                    <div className="list-container">
-                        
-                        {/* НОВАЯ КАРТОЧКА ПРОФИЛЯ */}
-                        <div className="item-card">
-                             <div className="item-card__info">
-                                <h3><User size={18} style={{marginRight: '8px'}}/> Жеке деректер</h3>
-                                <p>Жеке ақпаратыңызды қарап шығыңыз және жаңартыңыз.</p>
-                            </div>
-                            <Link to="/profile" className="btn btn-primary">
-                                 <Edit size={16} style={{marginRight: '8px'}}/>
-                                 Профильді өңдеу
-                            </Link>
+                <div className="list-container">
+                    {/* Club Status Card */}
+                    <ClubStatusCard profile={profile} loading={loading} />
+
+                    {/* Profile Card */}
+                    <div className="item-card">
+                        <div className="item-card__info">
+                            <h3><User size={18} /> Жеке деректер</h3>
+                            <p>Жеке ақпаратыңызды қарап шығыңыз және жаңартыңыз.</p>
                         </div>
-
-                        {hasCoach && coach && (
-                            <div className="item-card">
-                                <div className="item-card__info">
-                                    <h3>Сіздің жаттықтырушыңыз</h3>
-                                    <p style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                                       <Star size={16} color="#ffc107"/> 
-                                       <strong>{coach.firstName} {coach.lastName}</strong>
-                                    </p>
-                                </div>
-                            </div>
-                        )}
-
-                        {!hasCoach && (
-                             <div className="item-card">
-                                <div className="item-card__info">
-                                    <h3>Жаттықтырушы тағайындалмаған</h3>
-                                    <p>Таңдауды бастау үшін төмендегі батырманы басыңыз.</p>
-                                </div>
-                                <Link to="/athlete/find-coach" className="btn btn-primary">
-                                    <Search size={16} style={{marginRight: '8px'}}/>
-                                    Жаттықтырушы табу
-                                </Link>
-                            </div>
-                        )}
-
-                         <div className="item-card">
-                            <div className="item-card__info">
-                                <h3>Менің турнирлерім</h3>
-                                <p>Алдағы және өткен жарыстарды қарап шығыңыз.</p>
-                            </div>
-                            <Link to="/athlete/my-tournaments" className="btn btn-primary">
-                                 <Shield size={16} style={{marginRight: '8px'}}/>
-                                 Турнирлерді көру
-                            </Link>
-                        </div>
+                        <Link to="/profile" className="btn btn-primary">
+                            <Edit size={16} />
+                            Профильді өңдеу
+                        </Link>
                     </div>
-                )}
+
+                    {/* Tournaments Card */}
+                    <div className="item-card">
+                       <div className="item-card__info">
+                           <h3><Shield size={18} /> Менің турнирлерім</h3>
+                           <p>Алдағы және өткен жарыстарды қарап шығыңыз.</p>
+                       </div>
+                       <Link to="/athlete/my-tournaments" className="btn btn-primary">
+                            Турнирлерді көру
+                       </Link>
+                   </div>
+                </div>
             </main>
         </div>
     );

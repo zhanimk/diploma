@@ -1,175 +1,241 @@
 /*
-  PRO SPORT DESIGN SYSTEM - V3.1 (ENHANCED & MODERN) - Profile Page
-  Description: Applying the modern, professional design system to the user profile page.
+  PRO SPORT DESIGN SYSTEM - V1 (Profile Page)
+  Description: Dark-themed, modern styles for the user profile view and edit form.
 */
 
-/* =========================================
-   1. Global Variables & Base (Consistent with Coach Dashboard)
-   ========================================= */
-
 :root {
-  --brand-primary-dark: #0A1931;
-  --brand-secondary-dark: #182C4A; /* Used for cards */
-  --brand-accent: #3A7DFF;
-  --text-primary-dark: #F0F4F8;
-  --text-secondary-dark: #A9B4C2;
-  --border-color-dark: #2A3B5A;
-  --bg-input: #0A1931; /* Darker input background for depth */
+    --brand-primary: #0A1931;
+    --brand-secondary: #182C4A;
+    --brand-accent: #3A7DFF;
+    --text-light: #F0F4F8;
+    --text-dark: #A9B4C2;
+    --border-color: #2A3B5A;
+    --background-light: #1E293B;
+    --background-dark: #0F172A;
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* =========================================
-   2. Page Layout
-   ========================================= */
-
 .profile-page-container {
-    padding: 1rem;
-    background-color: var(--brand-primary-dark);
-    min-height: calc(100vh - 80px);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 2rem 1rem;
+    min-height: 100%;
+    background-color: var(--brand-primary);
 }
 
 .profile-card {
-    max-width: 800px;
-    margin: 0 auto;
-    background-color: transparent; /* Remove card background, use page background */
-    border: none; /* Remove card border */
+    width: 100%;
+    max-width: 900px;
+    background-color: var(--background-dark);
     border-radius: 12px;
-    overflow: hidden;
+    padding: 2rem;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--card-shadow);
 }
 
 .profile-header {
-    padding: 1rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1rem;
     margin-bottom: 2rem;
-    border-bottom: 1px solid var(--border-color-dark);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .profile-header h2 {
-    font-size: 2.2rem;
-    font-weight: 800;
-    color: var(--text-primary-dark);
-    letter-spacing: -0.5px;
+    font-size: 1.75rem;
+    color: var(--text-light);
+    font-weight: 700;
 }
 
-.profile-header p { margin: 0.25rem 0 0 0; color: var(--text-secondary-dark); font-size: 1.1rem; }
+.profile-header p {
+    color: var(--text-dark);
+    font-size: 1rem;
+}
 
 /* =========================================
-   3. View Mode (Info Items)
+   Profile View Mode
    ========================================= */
-
-.profile-view { padding: 0; }
-
 .profile-view-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
 }
 
 .info-item {
-    background-color: var(--brand-secondary-dark);
-    border: 1px solid var(--border-color-dark);
-    border-radius: 12px;
-    padding: 1.25rem 1.5rem;
+    background-color: var(--background-light);
+    border-radius: 10px;
+    padding: 1.25rem;
     display: flex;
     align-items: center;
-    gap: 1.5rem;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    gap: 1rem;
 }
 
-.info-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+.info-item-icon {
+    color: var(--brand-accent);
 }
 
-.info-item-icon { 
-    color: var(--brand-accent); 
-    flex-shrink: 0; 
+.info-item-content {
+    display: flex;
+    flex-direction: column;
 }
 
-/* Dynamic Role-based Icon Colors */
-.profile-card.role-coach .info-item-icon { color: var(--gold, #FFC107); }
-.profile-card.role-admin .info-item-icon { color: var(--cyan, #17A2B8); }
+.info-item-label {
+    font-size: 0.8rem;
+    color: var(--text-dark);
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 0.2rem;
+}
 
-.info-item-content { display: flex; flex-direction: column; }
-.info-item-label { font-size: 0.85rem; color: var(--text-secondary-dark); margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.5px; }
-.info-item-value { font-size: 1.1rem; font-weight: 600; color: var(--text-primary-dark); }
+.info-item-value {
+    font-size: 1rem;
+    color: var(--text-light);
+    font-weight: 500;
+}
+
 
 /* =========================================
-   4. Edit Mode (Form Inputs)
+   Profile Form (Edit Mode)
    ========================================= */
 
-.profile-form { padding: 0; }
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-.input-group, .input-group-full { display: flex; flex-direction: column; }
-.input-group-full { grid-column: 1 / -1; }
-
-[class*="input-group"] label {
-    display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; 
-    font-weight: 500; margin-bottom: 0.5rem; color: var(--text-secondary-dark);
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
 }
 
-[class*="input-group"] input[type="text"], [class*="input-group"] input[type="email"],
-[class*="input-group"] input[type="tel"], [class*="input-group"] input[type="date"],
-[class*="input-group"] input[type="number"] {
-    width: 100%; 
-    padding: 0.8rem 1rem;
-    background-color: var(--bg-input);
-    border: 1px solid var(--border-color-dark);
-    color: var(--text-primary-dark);
-    border-radius: 8px; 
-    font-size: 1rem; 
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group.input-group-full {
+    grid-column: 1 / -1;
+}
+
+.input-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+
+.input-group input[type="text"],
+.input-group input[type="email"],
+.input-group input[type="tel"],
+.input-group input[type="date"],
+.input-group input[type="number"] {
+    width: 100%;
+    background-color: var(--background-light);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    font-size: 1rem;
+    color: var(--text-light);
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-[class*="input-group"] input:focus {
+.input-group input:focus {
     outline: none;
     border-color: var(--brand-accent);
-    box-shadow: 0 0 0 3px rgba(58, 125, 255, 0.2);
+    box-shadow: 0 0 0 3px rgba(58, 125, 255, 0.3);
 }
 
-/* Dynamic focus colors */
-.profile-card.role-coach [class*="input-group"] input:focus { border-color: var(--gold, #FFC107); box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2); }
-.profile-card.role-admin [class*="input-group"] input:focus { border-color: var(--cyan, #17A2B8); box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.2); }
+.gender-selection-profile label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+
+.gender-options-profile {
+    display: flex;
+    gap: 1rem;
+}
+
+.gender-options-profile label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    background-color: var(--background-light);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.85rem;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+    color: var(--text-light);
+}
+
+.gender-options-profile label.active {
+    background-color: var(--brand-accent);
+    border-color: var(--brand-accent);
+    color: white;
+}
+
+.gender-options-profile input[type="radio"] {
+    display: none;
+}
 
 
 /* =========================================
-   5. Action Buttons
+   Action Buttons
    ========================================= */
 
 .form-actions {
-    display: flex; 
-    justify-content: flex-end; 
-    gap: 1rem; 
-    padding: 2.5rem 0 1rem 0;
-    border-top: 1px solid var(--border-color-dark);
-    margin-top: 2.5rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
 }
 
-.btn-primary, .btn-secondary {
-    display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.7rem 1.5rem;
-    border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s ease;
-    text-transform: uppercase; letter-spacing: 0.5px;
+.btn-primary,
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
 }
 
-.btn-primary { background-color: var(--brand-accent); color: white; border: 1px solid var(--brand-accent); }
-.btn-primary:hover { background-color: #2563eb; transform: scale(1.05); }
+.btn-primary {
+    background-color: var(--brand-accent);
+    color: white;
+}
+.btn-primary:hover { background-color: #2968E8; }
 
-.btn-secondary { background-color: transparent; color: var(--text-secondary-dark); border: 1px solid var(--border-color-dark); }
-.btn-secondary:hover { background-color: var(--brand-secondary-dark); color: white; }
-
-/* Dynamic button colors */
-.profile-card.role-coach .btn-primary { background-color: var(--gold, #FFC107); border-color: var(--gold, #FFC107); color: #000; }
-.profile-card.role-coach .btn-primary:hover { background-color: #e6a700; }
+.btn-secondary {
+    background-color: var(--background-light);
+    color: var(--text-light);
+    border-color: var(--border-color);
+}
+.btn-secondary:hover { background-color: var(--border-color); }
 
 
 /* =========================================
-   6. Responsive Design
+   Responsive Adjustments
    ========================================= */
 
 @media (max-width: 768px) {
-    .profile-page-container { padding: 1rem; }
-    .profile-header { text-align: center; }
-    .profile-header h2 { font-size: 1.8rem; }
-    .form-grid { grid-template-columns: 1fr; }
-    .input-group-full { grid-column: auto; }
-    .form-actions { flex-direction: column; gap: 0.75rem; }
-    .form-actions button { width: 100%; justify-content: center; }
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    .input-group.input-group-full {
+        grid-column: auto;
+    }
+    .profile-card {
+        padding: 1.5rem;
+    }
 }

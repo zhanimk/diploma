@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { ArrowLeft, Check, X, FileText, Download, User, Weight, Cake, ShieldCheck, ShieldAlert } from 'lucide-react';
+import { ArrowLeft, Check, X, Download, User, Weight, Cake } from 'lucide-react';
 import './AdminApplicationDetails.css';
 
 const AdminApplicationDetails = () => {
@@ -83,9 +83,6 @@ const AdminApplicationDetails = () => {
     if (!application) {
         return <div className="loading-indicator">Өтінім табылмады.</div>;
     }
-
-    const medicalCertUrl = getDocumentLink(application.documents, 'MEDICAL_CERTIFICATE');
-    const insuranceUrl = getDocumentLink(application.documents, 'INSURANCE');
 
     return (
         <div className="application-details-container admin-container">

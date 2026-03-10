@@ -1,30 +1,25 @@
-/*
-  PRO SPORT DESIGN SYSTEM - V4 (DYNAMIC & MODERN)
-  Description: Complete redesign of dashboard cards for a professional, data-forward look.
-  Focus on typography, interactive feedback, and clean layout.
-*/
 
-/* =========================================
-   1. Base & Layout (Re-established)
-   ========================================= */
 :root {
-    --brand-primary-dark: #0A1931;
-    --brand-secondary-dark: #182C4A;
+    --brand-primary: #0A1931;
+    --brand-secondary: #182C4A;
     --brand-accent: #3A7DFF;
-    --text-primary-dark: #F0F4F8;
-    --text-secondary-dark: #A9B4C2;
-    --border-color-dark: #2A3B5A;
+    --text-light: #F0F4F8;
+    --text-dark: #A9B4C2;
+    --border-color: #2A3B5A;
+    --background-light: #1E293B;
+    --background-dark: #0F172A;
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
 
-    /* Card Specific Gradients */
-    --grad-blue-start: #2563EB;
-    --grad-blue-end: #3A7DFF;
-    --grad-purple-start: #7C3AED;
-    --grad-purple-end: #8B5CF6;
-    --grad-green-start: #059669;
-    --grad-green-end: #10B981;
+    --color-blue: #3A7DFF;
+    --color-purple: #8B5CF6;
+    --color-green: #10B981;
 }
 
-.coach-dashboard-grid {
+/* =========================================
+   Base Layout
+   ========================================= */
+
+.container.coach-dashboard-grid {
     display: grid;
     grid-template-columns: 240px 1fr;
     gap: 2rem;
@@ -33,146 +28,187 @@
     margin: 0 auto;
 }
 
-.coach-dashboard-content .page-header {
-    margin-bottom: 2rem;
-    border-bottom: 1px solid var(--border-color-dark);
-    padding-bottom: 1rem;
+.coach-dashboard-nav {
+    background-color: var(--background-dark);
+    border-radius: 12px;
+    padding: 1rem;
 }
 
-.coach-dashboard-content .page-header h1 { font-size: 2.5rem; font-weight: 800; color: var(--text-primary-dark); }
-.coach-dashboard-content .page-header p { font-size: 1.1rem; color: var(--text-secondary-dark); margin-top: 0.25rem; }
+.coach-dashboard-nav h3 {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.coach-dashboard-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.coach-dashboard-nav li a {
+    display: flex;
+    align-items: center;
+    padding: 0.85rem 1rem;
+    color: var(--text-dark);
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.coach-dashboard-nav li a:hover {
+    background-color: var(--background-light);
+    color: var(--text-light);
+}
+
+.coach-dashboard-nav li a.active {
+    background-color: var(--brand-accent);
+    color: white;
+}
+
+.coach-dashboard-content .page-header {
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.coach-dashboard-content .page-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-light);
+}
+
+.header-tag {
+    background-color: var(--background-light);
+    color: var(--text-dark);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
 
 /* =========================================
-   2. NEW Stat Cards (V4 Design)
+   V2 Stat Cards
    ========================================= */
 
-.stats-grid-coach {
+.stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
 }
 
-.stat-card-link {
-    text-decoration: none;
+.stat-card-v2 {
+    background-color: var(--background-dark);
     border-radius: 12px;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-    overflow: hidden; /* To contain pseudo-elements */
-    position: relative;
-}
-
-.stat-card-link:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-}
-
-.stat-card-v4 {
+    padding: 1.5rem;
+    text-decoration: none;
+    color: var(--text-light);
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
     display: flex;
-    align-items: center;
+    flex-direction: column;
     justify-content: space-between;
-    padding: 1.5rem 2rem;
-    color: white;
-    min-height: 140px;
-    position: relative;
 }
 
-/* --- Gradient Backgrounds --- */
-.stat-card-v4.card-blue { background: linear-gradient(135deg, var(--grad-blue-start), var(--grad-blue-end)); }
-.stat-card-v4.card-purple { background: linear-gradient(135deg, var(--grad-purple-start), var(--grad-purple-end)); }
-.stat-card-v4.card-green { background: linear-gradient(135deg, var(--grad-green-start), var(--grad-green-end)); }
+.stat-card-v2:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
 
+.stat-card-v2.card-blue:hover { border-color: var(--color-blue); }
+.stat-card-v2.card-purple:hover { border-color: var(--color-purple); }
+.stat-card-v2.card-green:hover { border-color: var(--color-green); }
 
-.stat-card-v4__icon-wrapper {
+.stat-card-v2__header {
     display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.stat-card-v2__icon {
+    border-radius: 8px;
+    padding: 10px;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: rgba(255, 255, 255, 0.8);
-    opacity: 0.8;
-    transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-.stat-card-link:hover .stat-card-v4__icon-wrapper { transform: scale(1.1); opacity: 1; }
+.card-blue .stat-card-v2__icon { background-color: rgba(58, 125, 255, 0.1); color: var(--color-blue); }
+.card-purple .stat-card-v2__icon { background-color: rgba(139, 92, 246, 0.1); color: var(--color-purple); }
+.card-green .stat-card-v2__icon { background-color: rgba(16, 185, 129, 0.1); color: var(--color-green); }
 
-.stat-card-v4__content { text-align: right; }
-
-.stat-card-v4__value {
-    font-size: 3.5rem; /* Much larger */
-    font-weight: 800;
-    line-height: 1.1;
-    letter-spacing: -1.5px;
+.stat-card-v2__value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-light);
 }
 
-.stat-card-v4__label {
-    font-size: 1rem;
+.stat-card-v2__body {
+    margin-bottom: 1.5rem;
+}
+
+.stat-card-v2__label {
+    font-size: 1.1rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.9);
-    margin-top: 0.25rem;
+    color: var(--text-dark);
 }
 
-/* =========================================
-   3. Sidebar (Keep consistent)
-   ========================================= */
-.coach-dashboard-nav { background: transparent; padding: 0; }
-.coach-dashboard-nav h3 { font-size: 0.8rem; color: var(--text-secondary-dark); text-transform: uppercase; letter-spacing: 1px; margin: 0 0 1rem 0.5rem; }
-.coach-dashboard-nav ul { list-style: none; padding: 0; margin: 0; }
-.coach-dashboard-nav li a {
-    display: flex; align-items: center; padding: 0.9rem 1rem; text-decoration: none;
-    color: var(--text-secondary-dark); border-radius: 8px; font-weight: 500;
-    transition: background-color 0.2s, color 0.2s, border-left 0.2s; margin-bottom: 0.5rem;
-    border-left: 4px solid transparent;
-}
-.coach-dashboard-nav li a:hover { background-color: rgba(58, 125, 255, 0.05); color: var(--text-primary-dark); }
-.coach-dashboard-nav li a.active {
-    background-color: rgba(58, 125, 255, 0.1); color: #FFF; font-weight: 600;
-    border-left: 4px solid var(--brand-accent);
+.stat-card-v2__footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-dark);
+    opacity: 0;
+    transition: opacity 0.2s;
 }
 
+.stat-card-v2:hover .stat-card-v2__footer {
+    opacity: 1;
+}
+
+.stat-card-v2__footer .lucide {
+    margin-left: 0.5rem;
+}
+
+
 /* =========================================
-   4. Mobile Responsiveness
+   Responsive Adjustments
    ========================================= */
+
 @media (max-width: 992px) {
-    .coach-dashboard-grid {
-        grid-template-columns: 1fr; /* Stack nav and content */
-        gap: 1.5rem;
-    }
-
-    .coach-dashboard-nav {
-        margin-bottom: 1rem;
+    .container.coach-dashboard-grid {
+        grid-template-columns: 1fr;
     }
 }
 
 @media (max-width: 768px) {
-    .coach-dashboard-grid {
-        padding: 1rem;
+    .coach-dashboard-nav ul {
+        flex-direction: row;
+        justify-content: space-around;
     }
-
-    .coach-dashboard-content .page-header h1 {
-        font-size: 1.8rem;
+    .coach-dashboard-nav h3 {
+        display: none;
     }
-
-    .coach-dashboard-content .page-header p {
-        font-size: 1rem;
+    .coach-dashboard-nav li a {
+        font-size: 0.8rem; /* smaller text */
+        flex-direction: column;
+        padding: 0.5rem;
     }
-
-    .stat-card-v4 {
-        padding: 1rem 1.5rem;
-        min-height: 120px;
-    }
-
-    .stat-card-v4__value {
-        font-size: 2.8rem;
-    }
-
-    .stat-card-v4__label {
-        font-size: 0.9rem;
-    }
-
-    .stat-card-v4__icon-wrapper svg {
-      width: 40px;
-      height: 40px;
+    .coach-dashboard-nav li a .lucide {
+        margin-right: 0;
+        margin-bottom: 0.25rem;
     }
 }
-
-
-
-/* Cleanup old styles */
-.stat-card-main, .item-card-coach, .stat-card-main__icon, .stat-card-main__body { display: none; }

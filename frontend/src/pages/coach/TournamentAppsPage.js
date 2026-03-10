@@ -2,9 +2,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { Shield, Calendar, Users, Eye, User, Weight } from 'lucide-react';
+import { Shield, Users, Eye, User, Weight } from 'lucide-react';
 import './CoachDashboard.css'; // Main dashboard layout
-import './MyAthletes.css';   // Specific styles for cards and actions
 
 // ====================================================================
 //  Individual Application Card Component
@@ -59,9 +58,9 @@ const ApplicationCard = ({ application }) => {
 
 
 // ====================================================================
-//  Main CoachApplications Component
+//  Main TournamentAppsPage Component
 // ====================================================================
-const CoachApplications = () => {
+const TournamentAppsPage = () => {
     const [applications, setApplications] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -90,7 +89,7 @@ const CoachApplications = () => {
                     <li><Link to="/coach/dashboard">Басты бет</Link></li>
                     <li><Link to="/coach/my-athletes">Менің спортшыларым</Link></li>
                     <li><Link to="/coach/applications" className="active">Турнирлік өтінімдер</Link></li>
-                    <li><Link to="/coach/requests">Қосылу сұраныстары</Link></li>
+                    <li><Link to="/coach/requests">Спортшылардың сұраныстары</Link></li>
                 </ul>
             </nav>
             <main className="coach-dashboard-content">
@@ -103,7 +102,7 @@ const CoachApplications = () => {
                 {error && <div className="error-message">{error}</div>}
 
                 {!loading && !error && (
-                    <div className="athletes-container"> {/* Reusing the container style */}
+                    <div className="list-container"> {/* Changed from athletes-container for consistency */}
                         {applications.length > 0 ? applications.map(app => (
                             <ApplicationCard key={app._id} application={app} />
                         )) : (
@@ -118,4 +117,4 @@ const CoachApplications = () => {
     );
 };
 
-export default CoachApplications;
+export default TournamentAppsPage;

@@ -25,6 +25,8 @@ app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/tournaments', require('./routes/tournamentRoutes'));
 // Добавляем маршруты для заявок
 app.use('/api/applications', require('./routes/applicationRoutes'));
+// Добавляем маршруты для клубов
+app.use('/api/clubs', require('./routes/clubRoutes'));
 
 
 // --- Обработка ошибок ---

@@ -1,0 +1,185 @@
+/*
+  PRO SPORT DESIGN SYSTEM - V1 (Edit Athlete Form)
+  Description: Dark-themed, modern styles for the athlete editing page.
+*/
+
+:root {
+    --brand-primary: #0A1931;
+    --brand-secondary: #182C4A;
+    --brand-accent: #3A7DFF;
+    --text-light: #F0F4F8;
+    --text-dark: #A9B4C2;
+    --border-color: #2A3B5A;
+    --background-light: #1E293B;
+    --background-dark: #0F172A;
+    --danger: #EF4444;
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.edit-athlete-page-layout {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align to the top */
+    padding: 2rem 1rem;
+    min-height: 100vh; /* Full viewport height */
+    background-color: var(--brand-primary);
+}
+
+.edit-athlete-container {
+    width: 100%;
+    max-width: 700px;
+    background-color: var(--background-dark);
+    border-radius: 12px;
+    padding: 2rem;
+    border: 1px solid var(--border-color);
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: none;
+    color: var(--text-dark);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 1.5rem;
+    padding: 0;
+    transition: color 0.2s;
+}
+
+.btn-back:hover {
+    color: var(--text-light);
+}
+
+.edit-athlete-header {
+    text-align: left;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.edit-athlete-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-light);
+    margin: 0;
+}
+
+.edit-athlete-header p {
+    font-size: 1rem;
+    color: var(--text-dark);
+    margin-top: 0.25rem;
+}
+
+.edit-athlete-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+}
+
+/* Input Group V2 */
+.input-group-v2 {
+    display: flex;
+    align-items: center;
+    background-color: var(--background-light);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    transition: border-color 0.2s;
+}
+
+.input-group-v2:focus-within {
+    border-color: var(--brand-accent);
+}
+
+.input-group-v2__icon {
+    padding: 0.85rem;
+    color: var(--text-dark);
+}
+
+.input-group-v2__input {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 0.85rem 0.85rem 0.85rem 0; /* Adjust padding */
+    color: var(--text-light);
+    font-size: 1rem;
+}
+
+.input-group-v2__input::placeholder {
+    color: var(--text-dark);
+}
+
+.input-group-v2__input:focus {
+    outline: none;
+}
+
+/* Fix for date picker icon color */
+.input-group-v2__input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.6);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--brand-accent);
+    color: white;
+    border: 1px solid var(--brand-accent);
+}
+
+.btn-primary:hover {
+    background-color: #2968E8;
+    border-color: #2968E8;
+}
+
+.btn-primary:disabled {
+    background-color: #2A3B5A;
+    border-color: #2A3B5A;
+    color: #A9B4C2;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--text-dark);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--background-light);
+    color: var(--text-light);
+    border-color: var(--background-light);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    .edit-athlete-container {
+        padding: 1.5rem;
+    }
+}
