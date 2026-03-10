@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
-import { getTournamentById, registerForTournament, generateGrid } from '../../store/tournamentSlice';
-import GridDisplay from '../../components/tournaments/GridDisplay'; // Import GridDisplay
+import { useParams, Link } from 'react-router-dom'; // <-- Импортируем Link
+import { getTournamentById, generateGrid } from '../../store/tournamentSlice';
+import GridDisplay from '../../components/tournaments/GridDisplay';
 
 const TournamentDetailScreen = () => {
     const { id } = useParams();
@@ -11,26 +11,23 @@ const TournamentDetailScreen = () => {
     const { tournament, loading, error } = useSelector((state) => state.tournaments);
     const { user } = useSelector((state) => state.auth);
 
-    const [weightCategory, setWeightCategory] = useState('');
-    const [ageCategory, setAgeCategory] = useState('');
-
     useEffect(() => {
         dispatch(getTournamentById(id));
     }, [dispatch, id]);
 
-    const isRegistered = tournament?.participants.some(p => p.user._id === user?._id);
+    // Проверяем, зарегистрирован ли ТЕКУЩИЙ пользователь (если он спортсмен)
+    const isCurrentUserRegistered = tournament?.participants.some(p => p.user._id === user?._id);
 
-    const handleRegister = (e) => {
-        e.preventDefault();
-        dispatch(registerForTournament({ id, weightCategory, ageCategory }));
-    };
+    // --- НОВАЯ ЛОГИКА ---
+    // Условия для отображения кнопки управления регистрацией для тренера
+    const canManageRegistration = user?.role === 'coach' && tournament?.status === 'REGISTRATION_OPEN';
+
+    // Условие для генерации сетки (остается без изменений)
+    const canGenerateGrid = user?.role === 'Admin' && tournament?.status === 'REGISTRATION_CLOSED' && (!tournament.grid || tournament.grid.length === 0);
 
     const handleGenerateGrid = () => {
         dispatch(generateGrid(id));
     };
-
-    const canRegister = user?.role === 'Athlete' && tournament?.status === 'Registration Open' && !isRegistered;
-    const canGenerateGrid = user?.role === 'Admin' && tournament?.status === 'Registration Closed' && (!tournament.grid || tournament.grid.length === 0);
 
     return (
         <div>
@@ -44,32 +41,25 @@ const TournamentDetailScreen = () => {
                     <p>Registration Deadline: {new Date(tournament.registrationDeadline).toLocaleDateString()}</p>
                     <p>Status: {tournament.status}</p>
 
-                    {canRegister && (
-                        <form onSubmit={handleRegister}>
-                            <h3>Register for this Tournament</h3>
-                            <div>
-                                <label>Weight Category (kg):</label>
-                                <input 
-                                    type="number" 
-                                    value={weightCategory} 
-                                    onChange={(e) => setWeightCategory(e.target.value)} 
-                                    required 
-                                />
-                            </div>
-                            <div>
-                                <label>Age Category:</label>
-                                <input 
-                                    type="number" 
-                                    value={ageCategory} 
-                                    onChange={(e) => setAgeCategory(e.target.value)} 
-                                    required 
-                                />
-                            </div>
-                            <button type="submit" disabled={loading}>Register</button>
-                        </form>
-                    )}
-                    {isRegistered && <p>You are already registered for this tournament.</p>}
+                    {/* --- ИЗМЕНЕНИЯ -- */}
+                    {/* Убираем старую форму регистрации для спортсменов */}
 
+                    {/* Если пользователь - спортсмен, показываем ему статус регистрации */}
+                    {user?.role === 'athlete' && isCurrentUserRegistered && (
+                        <p style={{ color: 'green', fontWeight: 'bold' }}>Вы зарегистрированы на этот турнир.</p>
+                    )}
+                    {user?.role === 'athlete' && !isCurrentUserRegistered && tournament?.status === 'REGISTRATION_OPEN' && (
+                        <p style={{ color: 'blue' }}>Для регистрации на турнир обратитесь к своему тренеру.</p>
+                    )}
+
+                    {/* Если пользователь - тренер, показываем ему кнопку для регистрации */}
+                    {canManageRegistration && (
+                        <Link to={`/tournaments/${id}/register-athlete`} className="f-btn-main">
+                            Зарегистрировать спортсмена
+                        </Link>
+                    )}
+
+                    {/* Кнопка генерации сетки для админа */}
                     {canGenerateGrid && (
                         <div>
                             <button onClick={handleGenerateGrid} disabled={loading}>

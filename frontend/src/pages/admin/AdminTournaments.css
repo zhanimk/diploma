@@ -1,0 +1,227 @@
+
+/* --- Жалпы контейнер стилі --- */
+.admin-container {
+    background-color: transparent; /* AdminLayout фоны көрінеді */
+    border: none;
+    padding: 1rem 2rem;
+    margin: 0;
+    max-width: 100%;
+    box-shadow: none;
+}
+
+.admin-tournaments-header {
+    margin-bottom: 1.5rem;
+}
+
+.admin-tournaments-header h1 {
+    font-size: 2rem;
+    color: #E2E8F0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* --- Статистикалық карточкалар --- */
+.stats-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background-color: #0B1120;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    border-bottom-width: 4px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card-icon {
+    flex-shrink: 0;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.stat-card-info p {
+    margin: 0;
+    color: #94A3B8;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+}
+
+.stat-card-info span {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #F1F5F9;
+}
+
+/* --- Кестені басқару элементтері --- */
+.table-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    background-color: #0B1120;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #1E293B;
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    width: 350px;
+}
+
+.search-bar svg {
+    color: #94A3B8;
+    margin-right: 0.5rem;
+}
+
+.search-bar input {
+    background: transparent;
+    border: none;
+    color: #E2E8F0;
+    outline: none;
+    font-size: 1rem;
+    width: 100%;
+}
+
+.btn-primary {
+    background-color: #38BDF8;
+    color: #0B1120;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #7DD3FC;
+    text-decoration: none;
+}
+
+.loading-indicator {
+    text-align: center;
+    padding: 3rem;
+    font-size: 1.2rem;
+}
+
+/* --- Кесте стильдері --- */
+.tournaments-table-container {
+    overflow-x: auto;
+    background-color: #0B1120;
+    padding: 0.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tournaments-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tournaments-table th, .tournaments-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #1E293B;
+}
+
+.tournaments-table tr:last-child td {
+    border-bottom: none;
+}
+
+.tournaments-table th {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: #94A3B8;
+}
+
+.tournaments-table tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.tournaments-table tbody tr:hover {
+    background-color: rgba(30, 41, 59, 0.5);
+}
+
+.status-badge {
+    padding: 0.25rem 0.6rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: capitalize;
+}
+
+.status-registration_open {
+    background-color: rgba(34, 197, 94, 0.2);
+    color: #22C55E;
+}
+
+.status-registration_closed {
+    background-color: rgba(239, 68, 68, 0.2);
+    color: #EF4444;
+}
+
+.status-ongoing {
+    background-color: rgba(234, 179, 8, 0.2);
+    color: #EAB308;
+}
+
+.status-completed {
+    background-color: rgba(148, 163, 184, 0.2);
+    color: #94A3B8;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btn-action {
+    padding: 0.5rem;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94A3B8;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.btn-action:hover {
+    color: #E2E8F0;
+}
+
+.btn-view:hover { background-color: rgba(56, 189, 248, 0.1); border-color: #38BDF8; }
+.btn-edit:hover { background-color: rgba(234, 179, 8, 0.1); border-color: #EAB308; }
+.btn-delete:hover { background-color: rgba(239, 68, 68, 0.1); border-color: #EF4444; }
+
+
+.no-results {
+    text-align: center;
+    padding: 3rem;
+    color: #94A3B8;
+}

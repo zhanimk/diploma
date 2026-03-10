@@ -25,6 +25,12 @@ const userSchema = new mongoose.Schema({
         enum: ['athlete', 'coach', 'judge', 'admin'],
         default: 'athlete'
     },
+    // --- ДОБАВЛЕНО ПОЛЕ ПОЛА ---
+    gender: {
+        type: String,
+        required: true,
+        enum: ['male', 'female']
+    },
     phoneNumber: {
         type: String,
         required: false
@@ -32,6 +38,10 @@ const userSchema = new mongoose.Schema({
     dateOfBirth: {
         type: Date,
         required: false
+    },
+    weight: {
+        type: Number,
+        required: false 
     },
     club: {
         type: String,
@@ -41,22 +51,18 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: false
     },
-    // Поле для спортсмена: ссылка на его тренера
     coach: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-    // Поле для тренера: список его учеников
     students: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }],
-    // Новое поле для тренера: запросы от спортсменов
     studentRequests: [{
         student: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
         status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' }
     }],
-    // Старое поле, которое мы больше не будем использовать
     coachRequests: [{
         coach: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' }
@@ -65,12 +71,10 @@ const userSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Метод для сравнения введенного пароля с хешированным
 userSchema.methods.matchPassword = async function(enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };
 
-// Middleware для хеширования пароля перед сохранением
 userSchema.pre('save', async function(next) {
     if (!this.isModified('password')) {
         return next();

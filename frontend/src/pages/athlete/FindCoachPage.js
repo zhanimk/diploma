@@ -1,76 +1,84 @@
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import './Dashboard.css'; 
+import { Link } from 'react-router-dom';
+import './AthleteDashboard.css'; 
+import { UserPlus } from 'lucide-react';
 
 const FindCoachPage = () => {
     const [coaches, setCoaches] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [sentRequests, setSentRequests] = useState([]); 
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchCoaches = async () => {
             try {
-                // Используем новый, безопасный эндпоинт
+                setLoading(true);
                 const { data } = await axios.get('/api/users/coaches');
-                setCoaches(data); // Фильтрация больше не нужна
-            } catch (error) {
-                console.error('Failed to fetch coaches', error);
-                toast.error('Жаттықтырушылар тізімін жүктей алмады.');
+                setCoaches(data);
+            } catch (err) {
+                setError("Жаттықтырушылар тізімін алу кезінде қате.");
             } finally {
                 setLoading(false);
             }
         };
-
         fetchCoaches();
     }, []);
 
-    const handleSendRequest = async (coachId) => {
-        const requestPromise = axios.post('/api/users/athlete/send-request', { coachId })
-            .then(res => {
-                setSentRequests(prev => [...prev, coachId]); 
-                return res.data.message;
-            });
+    const handleRequest = (coachId) => {
+        const promise = axios.post('/api/users/athlete/send-request', { coachId })
+            .then(response => response.data.message);
 
-        toast.promise(requestPromise, {
+        toast.promise(promise, {
             loading: 'Сұраныс жіберілуде...',
-            success: (message) => <b>{message || 'Сұраныс сәтті жіберілді!'}</b>,
-            error: (err) => {
-                const errorMessage = err.response?.data?.message || 'Сұранысты жіберу кезінде қате.';
-                return <b>{errorMessage}</b>;
-            },
+            success: (message) => <b>{message}</b>,
+            error: (err) => <b>{err.response?.data?.message || "Сұраныс жіберу мүмкін болмады."}</b>
         });
     };
 
-    if (loading) {
-        return <div className="container">Жүктеу...</div>;
-    }
-
     return (
-        <div className="container">
-            <h2>Жаттықтырушыны табу</h2>
-            <p>Төменде қолжетімді жаттықтырушылардың тізімі келтірілген. Өзіңізге сұраныс жіберу үшін біреуін таңдаңыз.</p>
-            <div className="coaches-list">
-                {coaches.length > 0 ? (
-                    coaches.map(coach => (
-                        <div key={coach._id} className="card coach-card">
-                            <h4>{coach.firstName} {coach.lastName}</h4>
-                            <p><strong>Email:</strong> {coach.email}</p>
-                            <p><strong>Қала:</strong> {coach.city || 'Көрсетілмеген'}</p>
-                            <p><strong>Клуб:</strong> {coach.club || 'Көрсетілмеген'}</p>
-                            <button 
-                                onClick={() => handleSendRequest(coach._id)}
-                                disabled={sentRequests.includes(coach._id)} 
-                                className="f-btn-main"
-                            >
-                                {sentRequests.includes(coach._id) ? 'Сұраныс жіберілді' : 'Сұраныс жіберу'}
-                            </button>
-                        </div>
-                    ))
-                ) : (
-                    <p>Қазіргі уақытта қолжетімді жаттықтырушылар жоқ.</p>
+        <div className="container athlete-dashboard-grid">
+            <nav className="athlete-dashboard-nav">
+                <h3>Навигация</h3>
+                <ul>
+                    <li><Link to="/athlete/dashboard">Басты бет</Link></li>
+                    <li><Link to="/athlete/my-tournaments">Менің турнирлерім</Link></li>
+                    {/* --- ДОБАВЛЕН НОВЫЙ ПУНКТ МЕНЮ --- */}
+                    <li><Link to="/athlete/results">Нәтижелер тарихы</Link></li>
+                    <li><Link to="/athlete/find-coach" className="active">Жаттықтырушы табу</Link></li>
+                </ul>
+            </nav>
+            <main className="athlete-dashboard-content">
+                <header className="page-header">
+                    <h1>Жаттықтырушы табу</h1>
+                    <p>Қосылуға болатын жаттықтырушылардың тізімі.</p>
+                </header>
+
+                {loading && <p>Жүктелуде...</p>}
+                {error && <div className="error-message">{error}</div>}
+
+                {!loading && !error && (
+                    <div className="list-container">
+                        {coaches.length > 0 ? coaches.map(coach => (
+                            <div key={coach._id} className="item-card">
+                                <div className="item-card__info">
+                                    <h3>{coach.firstName} {coach.lastName}</h3>
+                                    <p>Email: {coach.email}</p>
+                                </div>
+                                <button onClick={() => handleRequest(coach._id)} className="btn btn-primary">
+                                    <UserPlus size={16} style={{marginRight: '8px'}}/>
+                                    Сұраныс жіберу
+                                </button>
+                            </div>
+                        )) : (
+                            <div className="empty-state">
+                                <p>Қазіргі уақытта жаттықтырушылар қолжетімді емес.</p>
+                            </div>
+                        )}
+                    </div>
                 )}
-            </div>
+            </main>
         </div>
     );
 };

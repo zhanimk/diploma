@@ -1,66 +1,77 @@
+
 const mongoose = require('mongoose');
 
+// Санаттарға арналған ішкі схема
+const categorySchema = new mongoose.Schema({
+    gender: {
+        type: String,
+        required: [true, 'Жынысы міндетті'],
+        enum: ['male', 'female']
+    },
+    ageFrom: { 
+        type: Number, 
+        required: [true, 'Бастапқы жас міндетті'] 
+    },
+    ageTo: { 
+        type: Number, 
+        required: [true, 'Соңғы жас міндетті'] 
+    },
+    // Осы санатқа жататын салмақ дәрежелерінің массиві
+    weights: {
+        type: [Number],
+        required: [true, 'Салмақ дәрежелері міндетті']
+    }
+}, { _id: false });
+
+// Турнирдің негізгі схемасы
 const tournamentSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: [true, 'Турнир атауы міндетті'],
+        trim: true,
     },
     date: {
         type: Date,
-        required: true
+        required: [true, 'Өткізілу күні міндетті'],
     },
     location: {
         type: String,
-        required: true
+        required: [true, 'Өткізілу орны міндетті'],
     },
     registrationDeadline: {
         type: Date,
-        required: true
+        required: [true, 'Тіркелудің соңғы мерзімі міндетті'],
     },
     tatamiCount: {
         type: Number,
-        required: true,
-        min: 1
+        required: [true, 'Татами саны міндетті'],
+        min: 1,
     },
-    weightCategories: [{
-        type: String,
-        required: true
-    }],
-    ageCategories: [{
-        type: String,
-        required: true
-    }],
-    organizer: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'User'
-    },
-    participants: [{
-        user: { 
-            type: mongoose.Schema.Types.ObjectId, 
-            ref: 'User' 
-        },
-        weightCategory: { 
-            type: String, 
-            required: true 
-        },
-        ageCategory: { 
-            type: String, 
-            required: true 
-        }
-    }],
-    grid: {
-        type: mongoose.Schema.Types.Mixed
-    },
+    // Турнирге арналған санаттар массиві
+    categories: [categorySchema],
     status: {
         type: String,
         required: true,
-        enum: ['PENDING', 'REGISTRATION_OPEN', 'REGISTRATION_CLOSED', 'IN_PROGRESS', 'COMPLETED'],
-        default: 'PENDING'
+        enum: ['PLANNED', 'REGISTRATION_OPEN', 'REGISTRATION_CLOSED', 'ONGOING', 'COMPLETED'],
+        default: 'PLANNED',
+    },
+    // Ережелер (PDF) файлына сілтеме
+    regulationsPdf: {
+        type: String, // Файлдың URL немесе жолы
+    },
+    // Турнирді құрған әкімші
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     }
 }, {
-    timestamps: true
+    timestamps: true,
 });
+
+// README-ге сәйкес, өтінімдер жеке коллекцияда сақталуы керек.
+// Бұл модель тек турнирдің негізгі метадеректерін сақтайды.
+// Қатысушылар мен өтінімдер 'Applications' коллекциясында болады.
 
 const Tournament = mongoose.model('Tournament', tournamentSchema);
 

@@ -1,46 +1,60 @@
+
 const express = require('express');
 const router = express.Router();
 
-// Импортируем контроллеры
+// Импорт всех необходимых контроллеров
 const {
-  registerUser,
-  loginUser,
-  getUserProfile,
-  updateUserProfile,
-  getAllUsers,
-  getCoaches, // <-- Добавляем новый контроллер
-  sendRequestToCoach,       
-  getStudentRequests,       
-  respondToStudentRequest,    
-  getCoachStudents,
-  removeStudent,
+    registerUser,
+    loginUser,
+    getUserProfile,
+    updateUserProfile,
+    getAllUsers,
+    getCoaches,
+    sendRequestToCoach,
+    getStudentRequests,
+    respondToStudentRequest,
+    getMyAthletes,
+    removeStudent,
+    unlinkCoach,
+    getAthleteTournaments,
+    updateAthleteProfileByCoach,
+    getUserById,
+    registerAthleteByCoach // --- ИМПОРТИРУЕМ НОВУЮ ФУНКЦИЮ
 } = require('../controllers/userController');
 
-// Импортируем middleware для защиты маршрутов
-const { protect, coach, athlete, admin } = require('../middleware/authMiddleware');
+// Импорт всех необходимых middleware
+const { protect, admin, coach, athlete } = require('../middleware/authMiddleware');
 
-// --- Основные маршруты ---
+// --- ОБЩИЕ МАРШРУТЫ ---
 router.post('/register', registerUser);
 router.post('/login', loginUser);
+router.get('/coaches', getCoaches);
 
-// --- Маршруты для получения списка тренеров (для всех авторизованных) ---
-router.get('/coaches', protect, getCoaches); // <-- Новый маршрут
-
-// --- Профиль ---
+// --- МАРШРУТЫ ПРОФИЛЯ ---
 router.route('/profile')
-  .get(protect, getUserProfile)
-  .put(protect, updateUserProfile); 
+    .get(protect, getUserProfile)
+    .put(protect, updateUserProfile);
 
-// --- Маршруты для админа ---
-router.get('/', protect, admin, getAllUsers); // <-- Уточняем, что это только для админа
+router.get('/profile/:id', protect, coach, getUserById);
 
-// --- Маршруты для спортсмена (Athlete) ---
+// --- МАРШРУТЫ СПОРТСМЕНА (Athlete) ---
 router.post('/athlete/send-request', protect, athlete, sendRequestToCoach);
+router.put('/profile/unlink-coach', protect, athlete, unlinkCoach);
 
-// --- Маршруты для тренера (Coach) ---
-router.get('/coach/students', protect, coach, getCoachStudents);
-router.put('/coach/remove-student', protect, coach, removeStudent);
+// --- МАРШРУТЫ ТРЕНЕРА (Coach) ---
+router.post('/coach/register-athlete', protect, coach, registerAthleteByCoach); // --- ДОБАВЛЯЕМ НОВЫЙ МАРШРУТ
+router.get('/coach/my-athletes', protect, coach, getMyAthletes);
 router.get('/coach/student-requests', protect, coach, getStudentRequests);
 router.put('/coach/respond-request', protect, coach, respondToStudentRequest);
+router.put('/coach/remove-student', protect, coach, removeStudent);
+router.put('/coach/update-athlete/:athleteId', protect, coach, updateAthleteProfileByCoach);
+
+// --- МАРШРУТЫ АДМИНИСТРАТОРА (Admin) ---
+router.get('/', protect, admin, getAllUsers);
+
+// --- ПУБЛИЧНЫЙ МАРШРУТ ДЛЯ ПОЛУЧЕНИЯ ДАННЫХ ПО ID ---
+router.get('/:id', getUserById);
+
+router.get('/:id/history', getAthleteTournaments);
 
 module.exports = router;

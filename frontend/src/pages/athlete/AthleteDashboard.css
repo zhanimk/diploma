@@ -1,34 +1,200 @@
-/* AthleteDashboard.css */
+/*
+  Athlete Dashboard Unified Styles - DARK THEME + RESPONSIVE
+  Description: A modern, dark theme for the athlete's dashboard, consistent with the coach's view and fully responsive.
+*/
 
-.dashboard-container {
-    padding: 2rem;
-    background-color: #f0f2f5;
+/* =========================================
+   1. Core & Layout
+   ========================================= */
+
+:root {
+  --brand-primary-dark: #0A1931; /* Deep space blue */
+  --brand-secondary-dark: #182C4A; /* Slightly lighter navy */
+  --brand-accent: #3A7DFF; /* Bright accent blue */
+  --text-primary-dark: #F0F4F8; /* Soft white */
+  --text-secondary-dark: #A9B4C2; /* Muted grey */
+  --border-color-dark: #2A3B5A;
 }
 
-.dashboard-header {
-    margin-bottom: 2rem;
-}
-
-.dashboard-header h1 {
-    font-size: 2rem;
-    font-weight: 700;
-}
-
-.dashboard-grid {
+.athlete-dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
+    grid-template-columns: 240px 1fr;
+    gap: 2.5rem;
+    padding-top: 1.5rem;
+    max-width: 1350px;
+    margin: 0 auto;
 }
 
-.dashboard-card {
-    background-color: #fff;
+.athlete-dashboard-content .page-header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color-dark);
+}
+
+/* =========================================
+   2. Sidebar Navigation
+   ========================================= */
+
+.athlete-dashboard-nav {
+    background-color: var(--brand-secondary-dark);
+    border-radius: 12px;
     padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color-dark);
+    height: fit-content;
 }
 
-.dashboard-card h2 {
+.athlete-dashboard-nav h3 {
+    font-size: 0.8rem;
+    color: var(--text-secondary-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin: 0 0.5rem 1rem;
+}
+
+.athlete-dashboard-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.athlete-dashboard-nav li a {
+    display: flex;
+    align-items: center;
+    padding: 0.9rem 1.2rem;
+    text-decoration: none;
+    color: var(--text-primary-dark);
+    border-radius: 8px;
+    font-weight: 500;
+    transition: background-color 0.2s, color 0.2s;
+    margin-bottom: 0.35rem;
+}
+
+.athlete-dashboard-nav li a:hover {
+    background-color: rgba(58, 125, 255, 0.1);
+}
+
+.athlete-dashboard-nav li a.active {
+    background-color: var(--brand-accent);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(58, 125, 255, 0.3);
+}
+
+/* =========================================
+   3. Main Content & Cards
+   ========================================= */
+
+.athlete-dashboard-content .page-header h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--text-primary-dark);
+}
+
+.athlete-dashboard-content .page-header p {
+    font-size: 1.1rem;
+    color: var(--text-secondary-dark);
+    margin-top: 0.5rem;
+}
+
+.list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.item-card, .stat-card-main {
+    background-color: var(--brand-secondary-dark);
+    border: 1px solid var(--border-color-dark);
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    transition: border-color 0.2s, transform 0.2s;
+}
+
+.item-card:hover, .stat-card-main:hover {
+    transform: translateY(-4px);
+    border-color: var(--brand-accent);
+}
+
+.item-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.item-card__info h3 {
+    margin: 0 0 0.25rem;
     font-size: 1.25rem;
     font-weight: 600;
-    margin-bottom: 1rem;
+    color: var(--text-primary-dark);
+}
+
+.item-card__info p {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--text-secondary-dark);
+}
+
+/* =========================================
+   4. Buttons & States
+   ========================================= */
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn:active { transform: translateY(1px); }
+.btn.btn-primary { background-color: var(--brand-accent); color: white; }
+.btn.btn-primary:hover { background-color: #276efc; }
+
+.empty-state {
+    text-align: center;
+    padding: 4rem;
+    background-color: var(--brand-secondary-dark);
+    border: 1px dashed var(--border-color-dark);
+    border-radius: 12px;
+}
+
+/* =========================================
+   5. MOBILE RESPONSIVENESS
+   ========================================= */
+
+@media (max-width: 992px) {
+    .athlete-dashboard-grid {
+        grid-template-columns: 200px 1fr;
+        gap: 1.5rem;
+    }
+    .page-header h1 { font-size: 1.8rem; }
+}
+
+@media (max-width: 768px) {
+    .athlete-dashboard-grid {
+        /* Stack sidebar and content on top of each other */
+        grid-template-columns: 1fr;
+    }
+
+    .athlete-dashboard-nav {
+        /* You might want a hamburger menu in a real app,
+           but for now, we'll just stack it. */
+        margin-bottom: 2rem;
+    }
+
+    .item-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .item-card, .stat-card-main {
+        padding: 1.2rem;
+    }
+
+    .page-header h1 { font-size: 1.6rem; }
+    .page-header p { font-size: 1rem; }
 }

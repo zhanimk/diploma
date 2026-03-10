@@ -3,25 +3,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import './AthleteDashboard.css'; 
-import { Shield, Calendar, MapPin, Award, Clock, CheckCircle, XCircle } from 'lucide-react';
+import './AthleteDashboard.css'; // Используем тот же стиль
+import { Trophy, Calendar, MapPin, Shield, BarChart2 } from 'lucide-react';
 
-const StatusBadge = ({ status }) => {
-    const statusConfig = {
-        pending: { text: 'На рассмотрении', icon: <Clock size={14} />, color: '#ffc107' },
-        approved: { text: 'Подтверждена', icon: <CheckCircle size={14} />, color: '#28a745' },
-        rejected: { text: 'Отклонена', icon: <XCircle size={14} />, color: '#dc3545' }
-    };
-    const currentStatus = statusConfig[status] || statusConfig.pending;
-    return (
-        <p style={{ display: 'flex', alignItems: 'center', gap: '8px', color: currentStatus.color, fontWeight: 'bold', marginTop: '10px' }}>
-            {currentStatus.icon}
-            Статус: {currentStatus.text}
-        </p>
-    );
-};
-
-const MyTournaments = () => {
+const AthleteResultsPage = () => {
     const [applications, setApplications] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -29,42 +14,48 @@ const MyTournaments = () => {
 
     const hasCoach = user && user.coach;
 
-    const fetchTournaments = useCallback(async () => {
+    const fetchResults = useCallback(async () => {
         try {
             setLoading(true);
+            // Мы будем использовать тот же эндпоинт, что и для "Моих турниров",
+            // так как он уже возвращает заявки с результатами.
             const { data } = await axios.get('/api/applications/athlete-tournaments');
-            setApplications(data);
+            // Фильтруем заявки, оставляя только те, где есть результаты
+            const completedApps = data.filter(app => app.results && app.results.length > 0);
+            setApplications(completedApps);
             setError(null);
         } catch (err) {
-            setError("Турнирлер туралы ақпаратты алу кезінде қате.");
+            setError("Нәтижелер туралы ақпаратты алу кезінде қате.");
+            console.error(err);
         } finally {
             setLoading(false);
         }
     }, []);
 
     useEffect(() => {
-        fetchTournaments();
-    }, [fetchTournaments]);
+        fetchResults();
+    }, [fetchResults]);
 
     return (
         <div className="container athlete-dashboard-grid">
+            {/* --- НАВИГАЦИЯ --- */}
             <nav className="athlete-dashboard-nav">
                 <h3>Навигация</h3>
                 <ul>
                     <li><Link to="/athlete/dashboard">Басты бет</Link></li>
-                    <li><Link to="/athlete/my-tournaments" className="active">Менің турнирлерім</Link></li>
-                    {/* --- ДОБАВЛЕН НОВЫЙ ПУНКТ МЕНЮ --- */}
-                    <li><Link to="/athlete/results">Нәтижелер тарихы</Link></li>
+                    <li><Link to="/athlete/my-tournaments">Менің турнирлерім</Link></li>
+                    <li><Link to="/athlete/results" className="active">Нәтижелер тарихы</Link></li>
                     {!hasCoach && (
                         <li><Link to="/athlete/find-coach">Жаттықтырушы табу</Link></li>
                     )}
                 </ul>
             </nav>
 
+            {/* --- КОНТЕНТ СТРАНИЦЫ --- */}
             <main className="athlete-dashboard-content">
                 <header className="page-header">
-                    <h1>Менің турнирлерім</h1>
-                    <p>Сіздің қатысуыңызбен өткен жарыстар, олардың статусы және нәтижелері.</p>
+                    <h1>Нәтижелер тарихы</h1>
+                    <p>Сіздің аяқталған турнирлердегі жетістіктеріңіз бен нәтижелеріңіз.</p>
                 </header>
 
                 {loading && <p>Жүктелуде...</p>}
@@ -74,31 +65,36 @@ const MyTournaments = () => {
                     <div className="list-container">
                         {applications.length > 0 ? applications.map(app => {
                             const athleteResult = app.results?.find(result => result.athlete === user._id);
-
-                            return app.tournament && (
+                            
+                            return app.tournament && athleteResult ? (
                                 <div key={app._id} className="item-card">
                                     <div className="item-card__info">
                                         <h3><Shield size={18} style={{marginRight: '8px'}}/>{app.tournament.name}</h3>
                                         <p><Calendar size={14} style={{marginRight: '8px'}}/>{new Date(app.tournament.date).toLocaleDateString()}</p>
                                         <p><MapPin size={14} style={{marginRight: '8px'}}/>{app.tournament.location || 'Орын көрсетілмеген'}</p>
                                         
-                                        <StatusBadge status={app.status} />
-
-                                        {athleteResult && typeof athleteResult.place === 'number' && (
-                                            <p style={{marginTop: '10px', fontWeight: 'bold', color: 'var(--text-primary-dark)'}}>
-                                                <Award size={16} color="#ffc107" style={{marginRight: '8px'}}/> 
-                                                Орын: {athleteResult.place}
+                                        {/* Отображаем занятое место */}
+                                        {typeof athleteResult.place === 'number' && (
+                                            <p style={{marginTop: '15px', fontWeight: 'bold', fontSize: '1.1rem', color: 'var(--primary-color)', display: 'flex', alignItems: 'center'}}>
+                                                <Trophy size={18} style={{marginRight: '8px'}}/> 
+                                                Нәтиже: {athleteResult.place}-орын
                                             </p>
                                         )}
+
+                                        {/* TODO: Placeholder для будущей статистики боев */}
+                                        <p style={{marginTop: '10px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center'}}>
+                                            <BarChart2 size={14} style={{marginRight: '8px'}}/>
+                                            Жеңіс/жеңіліс статистикасы (жақында)
+                                        </p>
                                     </div>
                                     <Link to={`/tournaments/${app.tournament._id}`} className="btn btn-secondary">
                                         Толығырақ
                                     </Link>
                                 </div>
-                            );
+                            ) : null;
                         }) : (
                             <div className="empty-state">
-                                <p>Сіз әлі ешбір турнирге тіркелмегенсіз. Жаттықтырушыңыздан сұраңыз.</p>
+                                <p>Аяқталған турнирлер бойынша нәтижелер әлі жоқ.</p>
                             </div>
                         )}
                     </div>
@@ -108,4 +104,4 @@ const MyTournaments = () => {
     );
 };
 
-export default MyTournaments;
+export default AthleteResultsPage;

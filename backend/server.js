@@ -23,6 +23,9 @@ app.use(cors());
 app.use('/api/users', require('./routes/userRoutes'));
 // Добавляем маршруты для турниров
 app.use('/api/tournaments', require('./routes/tournamentRoutes'));
+// Добавляем маршруты для заявок
+app.use('/api/applications', require('./routes/applicationRoutes'));
+
 
 // --- Обработка ошибок ---
 app.use(notFound);

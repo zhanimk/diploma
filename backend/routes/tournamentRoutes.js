@@ -1,38 +1,28 @@
+
 const express = require('express');
 const router = express.Router();
-const { 
+const {
     createTournament,
-    getTournaments,
+    getAllTournaments, // For public
+    getAllTournamentsForAdmin, // For Admin
     getTournamentById,
-    registerForTournament,
-    generateGrid,
-    updateMatchResult
+    updateTournament,
+    deleteTournament,
 } = require('../controllers/tournamentController');
-const { protect, admin, athlete } = require('../middleware/authMiddleware');
-const { adminOrJudge } = require('../middleware/adminOrJudge');
+const { protect, admin } = require('../middleware/authMiddleware');
 
-// @desc    Create a new tournament and get all tournaments
-// @route   POST /api/tournaments and GET /api/tournaments
-// @access  Private/Admin for POST, Public for GET
+// Admin-specific route to get ALL tournaments
+router.route('/admin').get(protect, admin, getAllTournamentsForAdmin);
+
+// Public routes
 router.route('/')
-    .post(protect, admin, createTournament)
-    .get(getTournaments);
+    .post(protect, admin, createTournament) // Create is still admin-only
+    .get(getAllTournaments);               // Public GET for REGISTRATION_OPEN tournaments
 
-// @desc    Get tournament by ID
-// @route   GET /api/tournaments/:id
-// @access  Public
-router.route('/:id').get(getTournamentById);
-
-// @desc    Register for a tournament
-// @route   POST /api/tournaments/:id/register
-// @access  Private/Athlete
-router.route('/:id/register').post(protect, athlete, registerForTournament);
-
-// @desc    Generate a tournament grid or update match results
-// @route   POST /api/tournaments/:id/grid and PUT /api/tournaments/:id/grid
-// @access  Private/Admin or Private/Judge
-router.route('/:id/grid')
-    .post(protect, adminOrJudge, generateGrid)
-    .put(protect, adminOrJudge, updateMatchResult);
+// Routes by ID
+router.route('/:id')
+    .get(getTournamentById)                 // Public
+    .put(protect, admin, updateTournament)    // Admin only
+    .delete(protect, admin, deleteTournament); // Admin only
 
 module.exports = router;

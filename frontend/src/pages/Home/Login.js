@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../../store/authSlice";
-import axios from 'axios'; // Используем axios
-import setAuthToken from '../../utils/setAuthToken'; // Импортируем
+import axios from 'axios';
+import setAuthToken from '../../utils/setAuthToken';
 import toast from 'react-hot-toast';
 import { Mail, Lock, Eye, EyeOff, LogIn } from "lucide-react";
 import "./Auth.css";
@@ -19,26 +20,15 @@ export default function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+  // Redux-тан аутентификация күйін аламыз (ДҰРЫС ЖОЛМЕН)
+  const { user } = useSelector((state) => state.auth);
 
-    const loginPromise = new Promise(async (resolve, reject) => {
-      try {
-        // Используем axios для запроса
-        const { data } = await axios.post("/api/users/login", { email, password });
-
-        // Устанавливаем токен для всех последующих запросов
-        setAuthToken(data.token);
-
-        // Сохраняем пользователя в Redux (и localStorage через authSlice)
-        dispatch(setUser(data));
-        
-        resolve(data); 
-
-        // Перенаправляем пользователя в зависимости от роли
-        switch (data.role) {
+  // Қайта бағыттау үшін useEffect
+  useEffect(() => {
+    // Егер `user` объектісі пайда болса, бағыттауды орындаймыз
+    if (user) {
+      const timer = setTimeout(() => {
+        switch (user.role) {
           case "admin":
             navigate("/admin/dashboard");
             break;
@@ -52,6 +42,23 @@ export default function Login() {
             navigate("/athlete/dashboard");
             break;
         }
+      }, 500); // toast хабарламасының көрінуіне сәл уақыт береміз
+
+      return () => clearTimeout(timer);
+    }
+  }, [user, navigate]);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    const loginPromise = new Promise(async (resolve, reject) => {
+      try {
+        const { data } = await axios.post("/api/users/login", { email, password });
+        setAuthToken(data.token);
+        dispatch(setUser(data));
+        resolve(data);
       } catch (err) {
         const message = err.response?.data?.message || "Пошта немесе құпия сөз қате.";
         reject(message);

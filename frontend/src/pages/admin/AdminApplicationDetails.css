@@ -1,0 +1,252 @@
+
+.application-details-container {
+    padding: 1rem 2rem;
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #94A3B8;
+    text-decoration: none;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.btn-back:hover {
+    color: #E2E8F0;
+    text-decoration: none;
+}
+
+.details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.details-header h1 {
+    margin: 0;
+    font-size: 2rem;
+    color: #E2E8F0;
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.header-actions .btn-action {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.header-actions .btn-action:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-approve {
+    background-color: #22C55E;
+    color: #fff;
+}
+
+.btn-reject {
+    background-color: #EF4444;
+    color: #fff;
+}
+
+/* Ақпараттық карточкалар */
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.detail-card {
+    background-color: #0B1120;
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.detail-card h4 {
+    margin: 0 0 0.5rem 0;
+    color: #94A3B8;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.detail-card p {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #F1F5F9;
+}
+
+.detail-card span {
+    font-size: 0.9rem;
+    color: #64748B;
+}
+
+.status-text {
+    font-weight: 700;
+    text-transform: uppercase;
+}
+.status-pending { color: #F59E0B; }
+.status-approved { color: #22C55E; }
+.status-rejected { color: #EF4444; }
+
+
+/* Спортшылар секциясы */
+.athletes-section {
+    margin-top: 2rem;
+}
+
+.athletes-section h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.5rem;
+    color: #E2E8F0;
+    margin-bottom: 1rem;
+}
+
+.athletes-table-container {
+    background-color: #0B1120;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.athletes-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.athletes-table th, .athletes-table td {
+    padding: 1rem 1.25rem;
+    text-align: left;
+    border-bottom: 1px solid #1E293B;
+    vertical-align: middle;
+}
+
+.athletes-table tr:last-child td {
+    border-bottom: none;
+}
+
+.athletes-table th {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: #94A3B8;
+    background-color: rgba(30, 41, 59, 0.3);
+}
+
+.athletes-table td {
+    color: #CBD5E1;
+    gap: 0.75rem;
+}
+
+.athletes-table td > svg {
+    flex-shrink: 0;
+}
+
+.documents-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 0.5rem !important;
+}
+
+.document-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #38BDF8;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+
+.document-link:hover {
+    color: #7DD3FC;
+    text-decoration: underline;
+}
+
+.document-missing {
+    font-size: 0.9rem;
+    color: #64748B;
+    font-style: italic;
+}
+
+.verification-cell {
+    justify-content: center;
+}
+
+
+/* --- Switch Toggle Стилдері --- */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #374151; /* Сұр фон */
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #22C55E; /* Жасыл фон */
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #22C55E;
+}
+
+input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
