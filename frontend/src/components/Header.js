@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { logout } from '../store/authSlice';
 // --- Иконки ---
 import { User, LogOut, Menu, X, LayoutDashboard, Shield, Star, Award } from 'lucide-react'; 
-import './Header.css'; // Будем переписывать этот файл
+import './Header.css';
 
 export default function Header() {
   const { user } = useSelector((state) => state.auth);
@@ -14,19 +14,19 @@ export default function Header() {
 
   const handleLogout = () => {
     dispatch(logout());
-    localStorage.removeItem('token');
+    // Remove token from local storage if you are storing it there
+    localStorage.removeItem('userInfo');
     navigate('/');
     setMobileMenuOpen(false); 
   };
   
-  // --- Функция для определения пути к дашборду и цвета/иконки для роли ---
+  // --- Функция для определения пути к дашборду, профилю и стилю для роли ---
   const getRoleMeta = (role) => {
     switch (role) {
-      case 'athlete': return { path: '/athlete/dashboard', color: 'blue', Icon: Award };
-      case 'coach': return { path: '/coach/dashboard', color: 'gold', Icon: Star };
-      case 'admin': return { path: '/admin/dashboard', color: 'teal', Icon: Shield };
-      case 'judge': return { path: '/judge/dashboard', color: 'silver', Icon: User }; // Пример
-      default: return { path: '/', color: 'default', Icon: User };
+      case 'athlete': return { path: '/athlete/dashboard', profilePath: '/athlete/profile', color: 'blue', Icon: Award };
+      case 'coach': return { path: '/coach/dashboard', profilePath: '/coach/profile', color: 'gold', Icon: Star };
+      case 'admin': return { path: '/admin/dashboard', profilePath: '/admin/dashboard', color: 'teal', Icon: Shield }; // Admins might not have a separate profile page
+      default: return { path: '/', profilePath: '/', color: 'default', Icon: User };
     }
   }
 
@@ -50,13 +50,8 @@ export default function Header() {
 
   return (
     <>
-      {/* 
-        Этот div создает отступ, чтобы контент не заезжал под фиксированный хедер.
-        Класс .is-scrolled будет добавляться при прокрутке.
-      */}
       <div className="header-space">
         <header className="new-header">
-          {/* Элементы для футуристичного дизайна */}
           <div className="new-header__bg"></div>
           <div className="new-header__grid-lines"></div>
 
@@ -69,7 +64,6 @@ export default function Header() {
               <div className="new-logo__text">JUDO<span>ARENA</span></div>
             </Link>
             
-            {/* Навигация для десктопа */}
             <nav className="new-nav">
               <Link to="/#about" className="new-nav__item">Платформа</Link>
               <Link to="/#skills" className="new-nav__item">Техникалар</Link>
@@ -78,7 +72,6 @@ export default function Header() {
 
             <div className="new-actions">
               {user ? (
-                // --- МЕНЮ ПРОФИЛЯ ---
                 <div className="profile-menu" data-role-color={roleMeta.color}>
                   <div className="profile-menu__trigger">
                     <div className="profile-info">
@@ -87,9 +80,7 @@ export default function Header() {
                     </div>
                     <div className="avatar">
                         <div className="avatar__border"></div>
-                        <div className="avatar__placeholder">
-                            <roleMeta.Icon size={18} />
-                        </div>
+                        <div className="avatar__placeholder"><roleMeta.Icon size={18} /></div>
                     </div>
                   </div>
 
@@ -103,6 +94,11 @@ export default function Header() {
                        <LayoutDashboard size={16} />
                        <span>Басқару панелі</span>
                      </Link>
+                     <Link to={roleMeta.profilePath} className="dropdown__item">
+                       <User size={16} />
+                       <span>Профиль</span>
+                     </Link>
+                     <div className="dropdown__divider"></div>
                      <button onClick={handleLogout} className="dropdown__item is-logout">
                        <LogOut size={16} />
                        <span>Шығу</span>
@@ -110,14 +106,12 @@ export default function Header() {
                   </div>
                 </div>
               ) : (
-                // --- КНОПКИ ВХОДА И РЕГИСТРАЦИИ ---
                 <div className="auth-buttons">
                   <Link to="/login" className="btn-secondary">Кіру</Link>
                   <Link to="/register" className="btn-primary"><span>Тіркелу</span></Link>
                 </div>
               )}
               
-              {/* --- КНОПКА ГАМБУРГЕР --- */}
               <button className="mobile-toggle" onClick={() => setMobileMenuOpen(true)}>
                 <Menu size={24} />
               </button>
@@ -126,7 +120,6 @@ export default function Header() {
         </header>
       </div>
 
-      {/* --- МОБИЛЬНОЕ МЕНЮ --- */}
       {isMobileMenuOpen && (
         <nav className="mobile-fullscreen-nav">
           <button className="mobile-fullscreen-nav__close" onClick={() => setMobileMenuOpen(false)}>
@@ -144,8 +137,10 @@ export default function Header() {
               </>
             ) : (
                 <>
-                <Link to={roleMeta.path} className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Басқару панелі</Link>
-                <button onClick={handleLogout} className="mobile-nav-link is-logout">Шығу</button>
+                  <Link to={roleMeta.path} className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Басқару панелі</Link>
+                  <Link to={roleMeta.profilePath} className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Профиль</Link>
+                  <div className="mobile-nav-divider"></div>
+                  <button onClick={handleLogout} className="mobile-nav-link is-logout">Шығу</button>
                 </>
             )}
           </div>

@@ -6,14 +6,13 @@ const asyncHandler = require('express-async-handler');
 // @route   POST /api/clubs
 // @access  Private/Coach
 const createClub = asyncHandler(async (req, res) => {
-    const { name, city } = req.body;
+    const { name, city, logo } = req.body;
 
     if (!name || !city) {
         res.status(400);
         throw new Error('Please provide all required fields: name, city');
     }
 
-    // Check if the coach already has a club
     const existingClub = await Club.findOne({ coach: req.user._id });
     if (existingClub) {
         res.status(400);
@@ -23,10 +22,15 @@ const createClub = asyncHandler(async (req, res) => {
     const club = new Club({
         name,
         city,
+        logo, // Добавлено сохранение логотипа при создании
         coach: req.user._id,
     });
 
     const createdClub = await club.save();
+    
+    // Также обновим пользователя, чтобы он содержал ссылку на клуб
+    await User.findByIdAndUpdate(req.user._id, { club: createdClub._id });
+
     res.status(201).json(createdClub);
 });
 
@@ -34,7 +38,6 @@ const createClub = asyncHandler(async (req, res) => {
 // @route   GET /api/clubs
 // @access  Public
 const getClubs = asyncHandler(async (req, res) => {
-    // Find clubs where the coach field exists and is not null
     const clubs = await Club.find({ coach: { $exists: true, $ne: null } });
     res.json(clubs);
 });
@@ -45,8 +48,9 @@ const getClubs = asyncHandler(async (req, res) => {
 const getMyClub = asyncHandler(async (req, res) => {
     const club = await Club.findOne({ coach: req.user._id });
     if (!club) {
-        res.status(404);
-        throw new Error('Club not found. Please create one.');
+        // Это не ошибка, просто у тренера еще нет клуба.
+        // Отправляем null, клиент решит, что показать.
+        return res.json(null); 
     }
 
     const pendingAthletes = await User.find({
@@ -59,6 +63,30 @@ const getMyClub = asyncHandler(async (req, res) => {
         pendingAthletes,
     });
 });
+
+// @desc    Update the coach's own club details
+// @route   PUT /api/clubs/my-club
+// @access  Private/Coach
+const updateMyClub = asyncHandler(async (req, res) => {
+    const { name, city, logo } = req.body; // Получаем все поля
+
+    const club = await Club.findOne({ coach: req.user._id });
+
+    if (!club) {
+        res.status(404);
+        throw new Error('Клуб не найден. Вы не можете редактировать клуб, которого не существует.');
+    }
+
+    // Обновляем все поля
+    club.name = name || club.name;
+    club.city = city || club.city;
+    club.logo = logo; // Обновляем логотип (может быть и пустой строкой)
+
+    const updatedClub = await club.save();
+
+    res.json(updatedClub);
+});
+
 
 // @desc    Get all approved athletes for a coach's club
 // @route   GET /api/clubs/my-athletes
@@ -82,16 +110,11 @@ const getMyAthletes = asyncHandler(async (req, res) => {
 // @route   PUT /api/clubs/respond-request
 // @access  Private/Coach
 const respondToRequest = asyncHandler(async (req, res) => {
-    const { athleteId, status } = req.body; // status should be 'approved' or 'rejected'
+    const { athleteId, status } = req.body; 
 
-    if (!athleteId || !status) {
+    if (!athleteId || !status || !['approved', 'rejected'].includes(status)) {
         res.status(400);
-        throw new Error('Please provide athleteId and status.');
-    }
-
-    if (!['approved', 'rejected'].includes(status)) {
-        res.status(400);
-        throw new Error('Invalid status. Must be "approved" or "rejected".');
+        throw new Error('Invalid input data.');
     }
 
     const club = await Club.findOne({ coach: req.user._id });
@@ -102,13 +125,18 @@ const respondToRequest = asyncHandler(async (req, res) => {
 
     const athlete = await User.findById(athleteId);
 
-    // Check if the athlete actually applied to this coach's club
-    if (!athlete || !athlete.club.equals(club._id) || athlete.clubStatus !== 'pending') {
+    if (!athlete || !athlete.club || !athlete.club.equals(club._id) || athlete.clubStatus !== 'pending') {
         res.status(404);
         throw new Error('Athlete not found or request is not pending for this club.');
     }
 
-    athlete.clubStatus = status;
+    if (status === 'rejected') {
+        athlete.club = undefined;
+        athlete.clubStatus = 'none';
+    } else {
+        athlete.clubStatus = status;
+    }
+    
     await athlete.save();
 
     res.json({ message: `Athlete request has been ${status}.` });
@@ -133,14 +161,7 @@ const registerAthleteByCoach = asyncHandler(async (req, res) => {
     }
 
     const athlete = await User.create({
-        firstName,
-        lastName,
-        email,
-        password,
-        gender,
-        dateOfBirth,
-        city,
-        rank,
+        firstName, lastName, email, password, gender, dateOfBirth, city, rank,
         role: 'athlete',
         club: club._id,
         clubStatus: 'approved',
@@ -159,6 +180,7 @@ module.exports = {
     createClub,
     getClubs,
     getMyClub,
+    updateMyClub,
     getMyAthletes,
     respondToRequest,
     registerAthleteByCoach,

@@ -17,7 +17,10 @@ const clubSchema = mongoose.Schema(
             type: String,
             required: [true, 'Please add a city'],
         },
-        // You can add more details about the club here if needed
+        logo: {
+            type: String, // URL to the club logo
+            default: '', // Default to an empty string
+        },
     },
     {
         timestamps: true,

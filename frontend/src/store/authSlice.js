@@ -14,18 +14,21 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    // This reducer is now the single source of truth for setting user data.
     setUser: (state, action) => {
-      // When updating user info (like profile), the token might not be in the payload.
-      // To preserve the token, we merge the new user data from the action payload
-      // with the existing user data in the state.
       const updatedUser = { ...state.user, ...action.payload };
-
       state.user = updatedUser;
       state.isAuthenticated = !!updatedUser;
-      
-      // Save the complete, merged user data back to localStorage.
       localStorage.setItem('userInfo', JSON.stringify(updatedUser));
+    },
+    setClub: (state, action) => {
+      if (state.user && state.user.club) {
+        // Merge the updated club data into the existing user state
+        const updatedClub = { ...state.user.club, ...action.payload };
+        const updatedUser = { ...state.user, club: updatedClub };
+        
+        state.user = updatedUser;
+        localStorage.setItem('userInfo', JSON.stringify(updatedUser));
+      }
     },
     logout: (state) => {
       state.user = null;
@@ -35,6 +38,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { setUser, logout } = authSlice.actions;
+export const { setUser, setClub, logout } = authSlice.actions;
 
 export default authSlice.reducer;

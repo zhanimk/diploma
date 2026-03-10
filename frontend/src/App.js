@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
-import setAuthToken from './utils/setAuthToken'; // Импортируем нашу утилиту
+import setAuthToken from './utils/setAuthToken';
 
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -13,20 +13,27 @@ import Login from './pages/Home/Login';
 import Register from './pages/Home/Registration';
 import TournamentListScreen from './pages/tournaments/TournamentListScreen';
 import TournamentDetailScreen from './pages/tournaments/TournamentDetailScreen';
+import ProfileRedirectPage from './pages/profile/ProfileRedirectPage'; // Страница-редирект
+
+// Страницы спортсмена
 import AthleteDashboard from './pages/athlete/AthleteDashboard';
+import AthleteProfile from './pages/athlete/AthleteProfile';
 import FindCoachPage from './pages/athlete/FindCoachPage';
 import MyTournaments from './pages/athlete/MyTournaments';
 import AthleteResultsPage from './pages/athlete/AthleteResultsPage';
+
+// Страницы тренера
 import CoachDashboard from './pages/coach/CoachDashboard';
+import CoachProfile from './pages/coach/CoachProfile';
 import AthleteListPage from './pages/coach/AthleteListPage';
 import TournamentAppsPage from './pages/coach/TournamentAppsPage';
 import AthleteRequestsPage from './pages/coach/AthleteRequestsPage';
 import AddAthletePage from './pages/coach/AddAthletePage';
 import EditAthletePage from './pages/coach/EditAthletePage';
-import ProfilePage from './pages/profile/ProfilePage';
+
 import { Toaster } from 'react-hot-toast';
 
-// Админ-панель компоненттері
+// Админ-панель
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminTournaments from './pages/admin/AdminTournaments';
@@ -34,7 +41,6 @@ import CreateTournament from './pages/admin/CreateTournament';
 import AdminApplications from './pages/admin/AdminApplications';
 import AdminApplicationDetails from './pages/admin/AdminApplicationDetails';
 
-// Check for token and set auth headers
 const userInfo = JSON.parse(localStorage.getItem('userInfo'));
 if (userInfo && userInfo.token) {
     setAuthToken(userInfo.token);
@@ -44,8 +50,8 @@ const App = () => {
     const location = useLocation();
     const isAdminPage = location.pathname.startsWith('/admin');
     const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
+    const isUserDashboard = location.pathname.startsWith('/athlete') || location.pathname.startsWith('/coach');
 
-    // Render Admin layout for admin pages
     if (isAdminPage) {
         return (
             <Routes>
@@ -60,7 +66,6 @@ const App = () => {
         );
     }
 
-    // Render main layout (with or without Header/Footer)
     return (
         <div className="App">
             {!isAuthPage && <Header />}
@@ -74,17 +79,19 @@ const App = () => {
                     <Route path="/tournaments" element={<TournamentListScreen />} />
                     <Route path="/tournaments/:id" element={<TournamentDetailScreen />} />
 
-                    {/* Общий приватный маршрут для профиля */}
-                    <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+                    {/* Перенаправление со старого профиля */}
+                    <Route path="/profile" element={<PrivateRoute><ProfileRedirectPage /></PrivateRoute>} />
 
                     {/* Приватные маршруты спортсмена */}
                     <Route path="/athlete/dashboard" element={<PrivateRoute><AthleteDashboard /></PrivateRoute>} />
+                    <Route path="/athlete/profile" element={<PrivateRoute><AthleteProfile /></PrivateRoute>} />
                     <Route path="/athlete/find-coach" element={<PrivateRoute><FindCoachPage /></PrivateRoute>} />
                     <Route path="/athlete/my-tournaments" element={<PrivateRoute><MyTournaments /></PrivateRoute>} />
                     <Route path="/athlete/results" element={<PrivateRoute><AthleteResultsPage /></PrivateRoute>} />
 
                     {/* Приватные маршруты тренера */}
                     <Route path="/coach/dashboard" element={<PrivateRoute><CoachDashboard /></PrivateRoute>} />
+                    <Route path="/coach/profile" element={<PrivateRoute><CoachProfile /></PrivateRoute>} />
                     <Route path="/coach/my-athletes" element={<PrivateRoute><AthleteListPage /></PrivateRoute>} />
                     <Route path="/coach/applications" element={<PrivateRoute><TournamentAppsPage /></PrivateRoute>} />
                     <Route path="/coach/requests" element={<PrivateRoute><AthleteRequestsPage /></PrivateRoute>} />
@@ -93,7 +100,7 @@ const App = () => {
 
                 </Routes>
             </main>
-            {!isAuthPage && <Footer />}
+            {!isAuthPage && !isUserDashboard && <Footer />}
         </div>
     );
 };

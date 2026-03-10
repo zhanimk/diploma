@@ -1,35 +1,46 @@
 require('dotenv').config();
+const path = require('path');
 const express = require('express');
 const connectDB = require('./config/db');
 const cors = require('cors');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
-// Подключаемся к базе данных
 connectDB();
 
 const app = express();
 
-// Middleware для обработки JSON
 app.use(express.json());
-// Middleware для обработки данных из форм
 app.use(express.urlencoded({ extended: false }));
-
-// Middleware для CORS
 app.use(cors());
 
-
-// --- Маршруты ---
-// Все маршруты, начинающиеся с /api/users, будут обрабатываться файлом userRoutes
+// --- API Routes ---
 app.use('/api/users', require('./routes/userRoutes'));
-// Добавляем маршруты для турниров
 app.use('/api/tournaments', require('./routes/tournamentRoutes'));
-// Добавляем маршруты для заявок
 app.use('/api/applications', require('./routes/applicationRoutes'));
-// Добавляем маршруты для клубов
 app.use('/api/clubs', require('./routes/clubRoutes'));
+app.use('/api/upload', require('./routes/uploadRoutes'));
+
+// --- Static Folder Setup ---
+const dirname = path.resolve();
+// Corrected path: It should be relative to the project root where 'uploads' is located.
+app.use('/uploads', express.static(path.join(dirname, '/uploads')));
 
 
-// --- Обработка ошибок ---
+// --- Production Build ---
+if (process.env.NODE_ENV === 'production') {
+    // Serve frontend build
+    app.use(express.static(path.join(dirname, '/frontend/build')));
+
+    app.get('* ', (req, res) => 
+        res.sendFile(path.resolve(dirname, 'frontend', 'build', 'index.html'))
+    );
+} else {
+    app.get('/', (req, res) => {
+        res.send("API is running...");
+    });
+}
+
+// --- Error Handling ---
 app.use(notFound);
 app.use(errorHandler);
 
