@@ -3,26 +3,29 @@ const express = require('express');
 const router = express.Router();
 const {
     createTournament,
-    getAllTournaments, // For public
-    getAllTournamentsForAdmin, // For Admin
+    getAllTournaments,
+    getAllTournamentsForAdmin,
     getTournamentById,
     updateTournament,
     deleteTournament,
+    generateTournamentGrid,
+    getTournamentGrids, // Наш новый контроллер
 } = require('../controllers/tournamentController');
 const { protect, admin } = require('../middleware/authMiddleware');
 
-// Admin-specific route to get ALL tournaments
 router.route('/admin').get(protect, admin, getAllTournamentsForAdmin);
 
-// Public routes
 router.route('/')
-    .post(protect, admin, createTournament) // Create is still admin-only
-    .get(getAllTournaments);               // Public GET for REGISTRATION_OPEN tournaments
+    .post(protect, admin, createTournament)
+    .get(getAllTournaments);
 
-// Routes by ID
 router.route('/:id')
-    .get(getTournamentById)                 // Public
-    .put(protect, admin, updateTournament)    // Admin only
-    .delete(protect, admin, deleteTournament); // Admin only
+    .get(getTournamentById)
+    .put(protect, admin, updateTournament)
+    .delete(protect, admin, deleteTournament);
+
+// Grid-related routes
+router.route('/:id/generate-grid').post(protect, admin, generateTournamentGrid);
+router.route('/:id/grids').get(protect, admin, getTournamentGrids); // Новый роут для получения сеток
 
 module.exports = router;

@@ -2,7 +2,7 @@ const Club = require('../models/clubModel');
 const User = require('../models/userModel');
 const asyncHandler = require('express-async-handler');
 
-// @desc    Create a new club
+// @desc    Create or Update a club
 // @route   POST /api/clubs
 // @access  Private/Coach
 const createClub = asyncHandler(async (req, res) => {
@@ -14,21 +14,33 @@ const createClub = asyncHandler(async (req, res) => {
     }
 
     const existingClub = await Club.findOne({ coach: req.user._id });
+
+    // If club exists, update it (UPSERT logic)
     if (existingClub) {
-        res.status(400);
-        throw new Error('You have already created a club.');
+        existingClub.name = name || existingClub.name;
+        existingClub.city = city || existingClub.city;
+        // Allow logo to be updated or cleared
+        existingClub.logo = logo !== undefined ? logo : existingClub.logo;
+
+        const updatedClub = await existingClub.save();
+        
+        // Make sure user has the club linked
+        await User.findByIdAndUpdate(req.user._id, { club: updatedClub._id });
+
+        return res.json(updatedClub);
     }
 
+    // If club does not exist, create a new one
     const club = new Club({
         name,
         city,
-        logo, // Добавлено сохранение логотипа при создании
+        logo,
         coach: req.user._id,
     });
 
     const createdClub = await club.save();
     
-    // Также обновим пользователя, чтобы он содержал ссылку на клуб
+    // Link the new club to the user
     await User.findByIdAndUpdate(req.user._id, { club: createdClub._id });
 
     res.status(201).json(createdClub);
@@ -48,8 +60,6 @@ const getClubs = asyncHandler(async (req, res) => {
 const getMyClub = asyncHandler(async (req, res) => {
     const club = await Club.findOne({ coach: req.user._id });
     if (!club) {
-        // Это не ошибка, просто у тренера еще нет клуба.
-        // Отправляем null, клиент решит, что показать.
         return res.json(null); 
     }
 
@@ -68,7 +78,7 @@ const getMyClub = asyncHandler(async (req, res) => {
 // @route   PUT /api/clubs/my-club
 // @access  Private/Coach
 const updateMyClub = asyncHandler(async (req, res) => {
-    const { name, city, logo } = req.body; // Получаем все поля
+    const { name, city, logo } = req.body;
 
     const club = await Club.findOne({ coach: req.user._id });
 
@@ -77,10 +87,9 @@ const updateMyClub = asyncHandler(async (req, res) => {
         throw new Error('Клуб не найден. Вы не можете редактировать клуб, которого не существует.');
     }
 
-    // Обновляем все поля
     club.name = name || club.name;
     club.city = city || club.city;
-    club.logo = logo; // Обновляем логотип (может быть и пустой строкой)
+    club.logo = logo !== undefined ? logo : club.logo; 
 
     const updatedClub = await club.save();
 

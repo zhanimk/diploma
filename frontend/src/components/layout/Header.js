@@ -1,7 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { logout } from '../store/authSlice';
+import { logout } from '../../store/authSlice'; // Corrected path
 // --- Иконки ---
 import { User, LogOut, Menu, X, LayoutDashboard, Shield, Star, Award } from 'lucide-react'; 
 import './Header.css';
@@ -14,25 +15,22 @@ export default function Header() {
 
   const handleLogout = () => {
     dispatch(logout());
-    // Remove token from local storage if you are storing it there
     localStorage.removeItem('userInfo');
     navigate('/');
     setMobileMenuOpen(false); 
   };
   
-  // --- Функция для определения пути к дашборду, профилю и стилю для роли ---
   const getRoleMeta = (role) => {
     switch (role) {
       case 'athlete': return { path: '/athlete/dashboard', profilePath: '/athlete/profile', color: 'blue', Icon: Award };
       case 'coach': return { path: '/coach/dashboard', profilePath: '/coach/profile', color: 'gold', Icon: Star };
-      case 'admin': return { path: '/admin/dashboard', profilePath: '/admin/dashboard', color: 'teal', Icon: Shield }; // Admins might not have a separate profile page
+      case 'admin': return { path: '/admin/dashboard', profilePath: '/admin/dashboard', color: 'teal', Icon: Shield };
       default: return { path: '/', profilePath: '/', color: 'default', Icon: User };
     }
   }
 
   const roleMeta = user ? getRoleMeta(user.role) : getRoleMeta(null);
 
-  // --- Эффект сжатия хедера при скролле ---
   useEffect(() => {
     const handleScroll = () => {
       const headerSpace = document.querySelector('.header-space');

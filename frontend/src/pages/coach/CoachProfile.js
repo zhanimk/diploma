@@ -1,70 +1,94 @@
+
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUser, setClub } from '../../store/authSlice';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { User, Mail, MapPin, Edit, X, Save, ArrowLeft, Home, UploadCloud } from 'lucide-react';
+import { User, Mail, MapPin, Edit, X, Save, ArrowLeft, UploadCloud, Building, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { kazakhstanCities } from '../../utils/kazakhstanCities'; // Импортируем города
 import './CoachProfile.css';
 
-// Компонент для отображения информации (без изменений)
-const InfoItem = ({ icon, label, value, isLogo = false }) => (
-    <div className="info-item">
-        <div className="info-item-icon">{icon}</div>
-        <div className="info-item-content">
-            <span className="info-item-label">{label}</span>
-            {isLogo ? (
-                value ? <img src={value} alt="Club Logo" className="info-item-logo" /> : <span className="info-item-value">Жоқ</span>
-            ) : (
-                <span className="info-item-value">{value || 'Көрсетілмеген'}</span>
-            )}
-        </div>
-    </div>
-);
-
-// Упрощенный компонент управления клубом
-const ClubManagement = () => {
+const CoachProfile = () => {
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const { user: userInfo } = useSelector((state) => state.auth);
-    const existingClub = userInfo?.club; // Получаем клуб из профиля пользователя
 
-    // Состояние формы инициализируется данными существующего клуба или пустыми строками
-    const [formData, setFormData] = useState({
-        name: existingClub?.name || '',
-        city: existingClub?.city || '',
-        logo: existingClub?.logo || '',
-    });
-    
-    const [isEditing, setIsEditing] = useState(!existingClub);
+    const [profileData, setProfileData] = useState({ firstName: '', lastName: '', email: '', city: '', gender: 'male' });
+    const [clubData, setClubData] = useState({ name: '', city: '', logo: '' });
+
+    const [isEditingProfile, setIsEditingProfile] = useState(false);
+    const [isEditingClub, setIsEditingClub] = useState(false);
     const [uploading, setUploading] = useState(false);
 
-    // Эффект для синхронизации формы, если данные клуба из Redux изменятся
     useEffect(() => {
-        if (existingClub) {
-            setFormData({
-                name: existingClub.name || '',
-                city: existingClub.city || '',
-                logo: existingClub.logo || '',
+        if (userInfo) {
+            setProfileData({ 
+                firstName: userInfo.firstName || '', lastName: userInfo.lastName || '', 
+                email: userInfo.email || '', city: userInfo.city || '', gender: userInfo.gender || 'male' 
             });
-            setIsEditing(false); // Если клуб есть, по умолчанию режим просмотра
-        } else {
-            setIsEditing(true); // Если клуба нет, всегда режим редактирования
+            if (userInfo.club) {
+                setClubData({ name: userInfo.club.name || '', city: userInfo.club.city || '', logo: userInfo.club.logo || '' });
+                setIsEditingClub(false);
+            } else {
+                setIsEditingClub(true);
+            }
         }
-    }, [existingClub]);
+    }, [userInfo]);
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+    // --- Функции для управления состоянием редактирования --- //
+
+    const startEditingProfile = () => {
+        // Заполняем форму актуальными данными перед открытием
+        setProfileData({ 
+            firstName: userInfo.firstName || '', lastName: userInfo.lastName || '', 
+            email: userInfo.email || '', city: userInfo.city || '', gender: userInfo.gender || 'male' 
+        });
+        setIsEditingProfile(true);
     };
 
-    const handleCancel = () => {
-        if (existingClub) {
-            setFormData({ // Сброс к сохраненным данным
-                name: existingClub.name || '',
-                city: existingClub.city || '',
-                logo: existingClub.logo || '',
+    const startEditingClub = () => {
+        // Заполняем форму актуальными данными перед открытием
+        if (userInfo.club) {
+            setClubData({ 
+                name: userInfo.club.name || '', 
+                city: userInfo.club.city || '', 
+                logo: userInfo.club.logo || '' 
             });
-            setIsEditing(false);
         }
+        setIsEditingClub(true);
+    };
+
+    // --- Обработчики --- //
+
+    const handleProfileChange = (e) => setProfileData({ ...profileData, [e.target.name]: e.target.value });
+    const handleClubChange = (e) => setClubData({ ...clubData, [e.target.name]: e.target.value });
+
+    const handleProfileSubmit = (e) => {
+        e.preventDefault();
+        toast.promise(axios.put('/api/users/profile', profileData), {
+            loading: 'Профиль жаңартылуда...',
+            success: (res) => {
+                dispatch(setUser(res.data));
+                setIsEditingProfile(false);
+                return 'Профиль сәтті жаңартылды!';
+            },
+            error: (err) => err.response?.data?.message || 'Қате орын алды',
+        });
+    };
+
+    const handleClubSubmit = (e) => {
+        e.preventDefault();
+        const request = userInfo?.club ? axios.put('/api/clubs/my-club', clubData) : axios.post('/api/clubs', clubData);
+        toast.promise(request, {
+            loading: 'Клуб ақпараты сақталуда...',
+            success: (response) => {
+                dispatch(setClub(response.data));
+                setIsEditingClub(false);
+                return 'Клуб сәтті сақталды!';
+            },
+            error: (err) => err.response?.data?.message || 'Қате орын алды',
+        });
     };
 
     const uploadFileHandler = async (e) => {
@@ -76,7 +100,7 @@ const ClubManagement = () => {
         const toastId = toast.loading('Логотип жүктелуде...');
         try {
             const { data } = await axios.post('/api/upload', bodyFormData);
-            setFormData({ ...formData, logo: data.image }); // Обновляем только лого в форме
+            setClubData({ ...clubData, logo: data.image });
             toast.success('Логотип сәтті жүктелді!', { id: toastId });
         } catch (error) {
             toast.error('Логотипті жүктеу кезінде қате орын алды.', { id: toastId });
@@ -85,157 +109,107 @@ const ClubManagement = () => {
         }
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const requestData = { name: formData.name, city: formData.city, logo: formData.logo };
-        
-        const promise = existingClub
-            // Если клуб существует - отправляем PUT запрос на ИЗМЕНЕНИЕ
-            ? axios.put('/api/clubs/my-club', requestData)
-            // Если клуба не существует - отправляем POST запрос на СОЗДАНИЕ
-            : axios.post('/api/clubs', requestData);
-
-        toast.promise(
-            promise,
-            {
-                loading: 'Ақпарат сақталуда...',
-                success: (response) => {
-                    dispatch(setClub(response.data));
-                    setIsEditing(false);
-                    return 'Клуб сәтті сақталды!';
-                },
-                error: (err) => err.response?.data?.message || 'Қате орын алды',
-            }
-        );
-    };
-
-    if (isEditing) {
-        return (
-            <div className="profile-section-card">
-                <form onSubmit={handleSubmit}>
-                    <div className="form-section-header">
-                        <h3>{existingClub ? 'Клуб ақпаратын өзгерту' : 'Клуб ақпаратын толтырыңыз'}</h3>
-                        <p>Өзіңіздің ресми клуб ақпаратыңызды толтырыңыз</p>
-                    </div>
-                    <div className="form-grid">
-                        <div className="input-group"><label><Home size={14}/> Клуб атауы</label><input type="text" name="name" value={formData.name} onChange={handleChange} /></div>
-                        <div className="input-group"><label><MapPin size={14}/> Клуб қаласы</label><input type="text" name="city" value={formData.city} onChange={handleChange} /></div>
-                        <div className="input-group input-group-full">
-                            <label><UploadCloud size={14}/> Клуб логотипі</label>
-                            <input type="text" name="logo" value={formData.logo} placeholder="Логотип URL" readOnly />
-                            <input type="file" id="logoUpload" className="file-input" onChange={uploadFileHandler} disabled={uploading}/>
-                            <label htmlFor="logoUpload" className={`btn btn-secondary file-btn ${uploading ? 'disabled' : ''}`}>{uploading ? 'Жүктелуде...' : 'Файл таңдау'}</label>
-                        </div>
-                        {formData.logo && <div className="logo-preview"><img src={formData.logo} alt="Logo Preview"/></div>}
-                    </div>
-                    <div className="form-actions">
-                         {existingClub && <button type="button" onClick={handleCancel} className="btn btn-secondary"><X size={18} /> Болдырмау</button>}
-                         <button type="submit" className="btn btn-primary" disabled={uploading}><Save size={18} /> Сақтау</button>
-                    </div>
-                </form>
-            </div>
-        );
-    }
-
     return (
-        <div className="profile-section-card">
-            <div className="profile-view">
-                <div className="profile-header">
-                    <div><h2>Менің клубым</h2><p>Клуб ақпаратын қараңыз және басқарыңыз</p></div>
-                    <button onClick={() => setIsEditing(true)} className="btn btn-primary-icon"><Edit size={18} /></button>
+        <div className="coach-profile-container">
+            <header className="profile-page-header">
+                <button onClick={() => navigate(-1)} className="back-button"><ArrowLeft size={20} /></button>
+                <div>
+                    <h1>Профильді басқару</h1>
+                    <p>Жеке ақпаратты және клуб деректерін жаңартыңыз.</p>
                 </div>
-                <div className="profile-view-grid">
-                    <InfoItem icon={<Home size={20} />} label="Клуб" value={existingClub?.name} />
-                    <InfoItem icon={<MapPin size={20} />} label="Клуб қаласы" value={existingClub?.city} />
-                    <InfoItem icon={<Home size={20} />} label="Клуб логотипі" value={existingClub?.logo} isLogo={true} />
-                </div>
-            </div>
-        </div>
-    );
-}
+            </header>
 
-// Основной компонент страницы (логика профиля пользователя без изменений)
-const CoachProfile = () => {
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const { user: userInfo } = useSelector((state) => state.auth);
-    const [isEditingProfile, setIsEditingProfile] = useState(false);
-    const [profileData, setProfileData] = useState({});
-
-    useEffect(() => {
-        if (userInfo) {
-            setProfileData({ 
-                firstName: userInfo.firstName || '', lastName: userInfo.lastName || '', 
-                email: userInfo.email || '', city: userInfo.city || '', 
-                gender: userInfo.gender || 'male' 
-            });
-        }
-    }, [userInfo]);
-
-    const handleProfileChange = (e) => setProfileData({ ...profileData, [e.target.name]: e.target.value });
-
-    const handleProfileSubmit = (e) => {
-        e.preventDefault();
-        toast.promise(
-            axios.put('/api/users/profile', profileData),
-            {
-                loading: 'Профиль жаңартылуда...',
-                success: (res) => {
-                    dispatch(setUser(res.data));
-                    setIsEditingProfile(false);
-                    return 'Профиль сәтті жаңартылды!';
-                },
-                error: (err) => err.response?.data?.message || 'Профильді жаңарту кезінде қате орын алды',
-            }
-        );
-    };
-
-    return (
-        <div className="profile-page-container">
-            <button onClick={() => navigate(-1)} className="btn-back"><ArrowLeft size={20} /><span>Артқа</span></button>
-            <div className="profile-layout">
-                {/* Компонент профиля пользователя */}
-                <div className="profile-section-card">
+            <div className="profile-grid">
+                <div className="profile-card">
+                    <div className="card-header">
+                        <h2>Жеке ақпарат</h2>
+                        <button onClick={isEditingProfile ? () => setIsEditingProfile(false) : startEditingProfile} className="edit-button">
+                            {isEditingProfile ? <X size={18} /> : <Edit size={18} />}
+                        </button>
+                    </div>
                     {isEditingProfile ? (
-                        <form onSubmit={handleProfileSubmit}>
-                             <div className="form-section-header"><h3>Жеке ақпарат</h3></div>
-                             <div className="form-grid">
-                                <div className="input-group"><label><User size={14}/> Аты</label><input type="text" name="firstName" value={profileData.firstName} onChange={handleProfileChange} /></div>
-                                <div className="input-group"><label><User size={14}/> Тегі</label><input type="text" name="lastName" value={profileData.lastName} onChange={handleProfileChange} /></div>
-                                <div className="input-group input-group-full"><label><Mail size={14}/> Email</label><input type="email" name="email" value={profileData.email} onChange={handleProfileChange} /></div>
-                                <div className="input-group"><label><MapPin size={14}/> Қала</label><input type="text" name="city" value={profileData.city} onChange={handleProfileChange} /></div>
-                                <div className="input-group input-group-full gender-selection-profile"><label>Жынысы</label>
-                                    <div className="gender-options-profile">
-                                        <label className={profileData.gender === 'male' ? 'active' : ''}><input type="radio" name="gender" value="male" checked={profileData.gender === 'male'} onChange={handleProfileChange}/>Ер</label>
-                                        <label className={profileData.gender === 'female' ? 'active' : ''}><input type="radio" name="gender" value="female" checked={profileData.gender === 'female'} onChange={handleProfileChange}/>Әйел</label>
-                                    </div>
-                                </div>
+                        <form onSubmit={handleProfileSubmit} className="card-body">
+                            <div className="input-wrapper"><User size={16} className="input-icon" /><input type="text" name="firstName" placeholder="Аты" value={profileData.firstName} onChange={handleProfileChange} /></div>
+                            <div className="input-wrapper"><User size={16} className="input-icon" /><input type="text" name="lastName" placeholder="Тегі" value={profileData.lastName} onChange={handleProfileChange} /></div>
+                            <div className="input-wrapper"><Mail size={16} className="input-icon" /><input type="email" name="email" placeholder="Email" value={profileData.email} onChange={handleProfileChange} /></div>
+                            <div className="input-wrapper">
+                                <MapPin size={16} className="input-icon" />
+                                <select name="city" value={profileData.city} onChange={handleProfileChange}>
+                                    <option value="">Қаланы таңдаңыз</option>
+                                    {kazakhstanCities.map(city => <option key={city} value={city}>{city}</option>)}
+                                </select>
                             </div>
-                            <div className="form-actions">
-                                <button type="button" onClick={() => setIsEditingProfile(false)} className="btn btn-secondary"><X size={18} /> Болдырмау</button>
-                                <button type="submit" className="btn btn-primary"><Save size={18} /> Сақтау</button>
+                            <div className="gender-selector">
+                                <label className={profileData.gender === 'male' ? 'active' : ''}><input type="radio" name="gender" value="male" checked={profileData.gender === 'male'} onChange={handleProfileChange}/>Ер</label>
+                                <label className={profileData.gender === 'female' ? 'active' : ''}><input type="radio" name="gender" value="female" checked={profileData.gender === 'female'} onChange={handleProfileChange}/>Әйел</label>
                             </div>
+                            <button type="submit" className="save-button"><Save size={18}/> Сақтау</button>
                         </form>
                     ) : (
-                        <div className="profile-view">
-                            <div className="profile-header">
-                                <div><h2>Жеке профиль</h2><p>Жеке ақпаратыңызды қараңыз</p></div>
-                                <button onClick={() => setIsEditingProfile(true)} className="btn btn-primary-icon"><Edit size={18} /></button>
-                            </div>
-                             <div className="profile-view-grid">
-                                <InfoItem icon={<User size={20} />} label="Аты, Тегі" value={`${profileData.firstName} ${profileData.lastName}`} />
-                                <InfoItem icon={<Mail size={20} />} label="Email" value={profileData.email} />
-                                <InfoItem icon={<MapPin size={20} />} label="Қала" value={profileData.city} />
-                                <InfoItem icon={<User size={20} />} label="Жынысы" value={profileData.gender === 'male' ? 'Ер' : 'Әйел'} />
-                            </div>
+                        <div className="card-body view-mode">
+                            <InfoRow icon={<User size={18}/>} label="Аты-жөні" value={`${userInfo.firstName || ''} ${userInfo.lastName || ''}`} />
+                            <InfoRow icon={<Mail size={18}/>} label="Email" value={userInfo.email} />
+                            <InfoRow icon={<MapPin size={18}/>} label="Қала" value={userInfo.city || 'Көрсетілмеген'} />
+                            <InfoRow icon={<User size={18}/>} label="Жынысы" value={userInfo.gender === 'male' ? 'Ер' : 'Әйел'} />
                         </div>
                     )}
                 </div>
-                {/* Новый, исправленный компонент управления клубом */}
-                <ClubManagement />
+
+                <div className="profile-card">
+                    <div className="card-header">
+                        <h2>Менің клубым</h2>
+                        {!isEditingClub && userInfo?.club && (
+                            <button onClick={startEditingClub} className="edit-button"><Edit size={18} /></button>
+                        )}
+                    </div>
+                    {isEditingClub ? (
+                        <form onSubmit={handleClubSubmit} className="card-body">
+                            <div className="input-wrapper"><Building size={16} className="input-icon" /><input type="text" name="name" placeholder="Клуб атауы" value={clubData.name} onChange={handleClubChange} /></div>
+                            <div className="input-wrapper">
+                                <MapPin size={16} className="input-icon" />
+                                <select name="city" value={clubData.city} onChange={handleClubChange}>
+                                    <option value="">Клуб қаласын таңдаңыз</option>
+                                    {kazakhstanCities.map(city => <option key={city} value={city}>{city}</option>)}
+                                </select>
+                            </div>
+                            <div className="file-upload-area">
+                                {clubData.logo ? (
+                                    <div className="logo-preview-wrapper"><img src={clubData.logo} alt="Логотип" /><button type="button" className="remove-logo-button" onClick={() => setClubData({...clubData, logo: ''})}><X size={16}/></button></div>
+                                ) : (
+                                    <label htmlFor="logoUpload" className="file-upload-label"><UploadCloud size={32} /><span>Логотипті жүктеңіз</span><p>PNG, JPG, SVG</p></label>
+                                )}
+                                <input type="file" id="logoUpload" onChange={uploadFileHandler} disabled={uploading} style={{ display: 'none' }}/>
+                            </div>
+                            <button type="submit" className="save-button" disabled={uploading}>{uploading ? 'Жүктелуде...' : <><Save size={18}/> Сақтау</>}</button>
+                            {userInfo?.club && <button type="button" className="cancel-button" onClick={() => setIsEditingClub(false)}>Болдырмау</button>}
+                        </form>
+                    ) : (
+                         <div className="card-body view-mode">
+                            {userInfo && userInfo.club ? (
+                                <>
+                                    <div className="club-logo-view">{userInfo.club.logo ? <img src={userInfo.club.logo} alt={`${userInfo.club.name} logo`}/> : <div className="logo-placeholder"><Building/></div>}</div>
+                                    <InfoRow icon={<Star size={18}/>} label="Клуб" value={userInfo.club.name} />
+                                    <InfoRow icon={<MapPin size={18}/>} label="Қала" value={userInfo.club.city} />
+                                </> 
+                            ) : (
+                                <div className="empty-state">Клуб туралы ақпарат жоқ. Жаңа клуб қосу үшін өңдеу режиміне өтіңіз.</div>
+                            )}
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
 };
+
+const InfoRow = ({ icon, label, value }) => (
+    <div className="info-row">
+        <div className="info-icon-wrapper">{icon}</div>
+        <div>
+            <span className="info-label">{label}</span>
+            <span className="info-value">{value}</span>
+        </div>
+    </div>
+);
 
 export default CoachProfile;

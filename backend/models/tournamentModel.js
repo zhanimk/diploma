@@ -1,7 +1,6 @@
 
 const mongoose = require('mongoose');
 
-// Санаттарға арналған ішкі схема
 const categorySchema = new mongoose.Schema({
     gender: {
         type: String,
@@ -16,14 +15,12 @@ const categorySchema = new mongoose.Schema({
         type: Number, 
         required: [true, 'Соңғы жас міндетті'] 
     },
-    // Осы санатқа жататын салмақ дәрежелерінің массиві
     weights: {
         type: [Number],
         required: [true, 'Салмақ дәрежелері міндетті']
     }
 }, { _id: false });
 
-// Турнирдің негізгі схемасы
 const tournamentSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -47,19 +44,16 @@ const tournamentSchema = new mongoose.Schema({
         required: [true, 'Татами саны міндетті'],
         min: 1,
     },
-    // Турнирге арналған санаттар массиві
     categories: [categorySchema],
     status: {
         type: String,
         required: true,
-        enum: ['PLANNED', 'REGISTRATION_OPEN', 'REGISTRATION_CLOSED', 'ONGOING', 'COMPLETED'],
+        enum: ['PLANNED', 'REGISTRATION_OPEN', 'REGISTRATION_CLOSED', 'GRID_GENERATED', 'ONGOING', 'COMPLETED'],
         default: 'PLANNED',
     },
-    // Ережелер (PDF) файлына сілтеме
     regulationsPdf: {
-        type: String, // Файлдың URL немесе жолы
+        type: String, 
     },
-    // Турнирді құрған әкімші
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -68,10 +62,6 @@ const tournamentSchema = new mongoose.Schema({
 }, {
     timestamps: true,
 });
-
-// README-ге сәйкес, өтінімдер жеке коллекцияда сақталуы керек.
-// Бұл модель тек турнирдің негізгі метадеректерін сақтайды.
-// Қатысушылар мен өтінімдер 'Applications' коллекциясында болады.
 
 const Tournament = mongoose.model('Tournament', tournamentSchema);
 

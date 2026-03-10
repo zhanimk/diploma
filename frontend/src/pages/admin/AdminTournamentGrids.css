@@ -1,0 +1,138 @@
+
+.admin-grids-page {
+    padding: 2rem;
+}
+
+.admin-grids-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 1rem;
+}
+
+.tournament-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a202c;
+}
+
+.tournament-date {
+    font-size: 1rem;
+    color: #718096;
+    margin-top: 0.25rem;
+}
+
+.grids-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2rem;
+}
+
+.category-sidebar h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #2d3748;
+}
+
+.category-sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.category-sidebar li {
+    padding: 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid #edf2f7;
+    transition: background-color 0.2s;
+    font-weight: 500;
+}
+
+.category-sidebar li:last-child {
+    border-bottom: none;
+}
+
+.category-sidebar li:hover {
+    background-color: #f7fafc;
+}
+
+.category-sidebar li.active {
+    background-color: #4A5568;
+    color: #fff;
+    font-weight: 600;
+}
+
+.athlete-count {
+    display: block;
+    font-size: 0.8rem;
+    color: #a0aec0;
+    margin-top: 4px;
+}
+
+.category-sidebar li.active .athlete-count {
+    color: #e2e8f0;
+}
+
+.grid-display {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.grid-content h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.no-grid-selected {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: #a0aec0;
+    font-size: 1.2rem;
+}
+
+/* Стили для таблиц и сеток */
+.grid-container h4 {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.round-robin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.round-robin-table th, .round-robin-table td {
+    border: 1px solid #e2e8f0;
+    padding: 0.75rem;
+    text-align: center;
+}
+
+.round-robin-table th {
+    background-color: #f7fafc;
+}
+
+.olympic-grid {
+    /* Стили для олимпийской сетки в будущем */
+    padding: 1rem;
+    border: 1px dashed #cbd5e0;
+    border-radius: 8px;
+}

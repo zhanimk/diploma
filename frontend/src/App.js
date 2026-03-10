@@ -1,28 +1,29 @@
+
 import React from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import setAuthToken from './utils/setAuthToken';
 
-import Header from './components/Header';
-import Footer from './components/Footer';
-import PrivateRoute from './components/PrivateRoute';
-import AdminRoute from './components/AdminRoute';
+import Header from './components/layout/Header';
+import Footer from './components/layout/Footer';
+import PrivateRoute from './components/routing/PrivateRoute';
+import AdminRoute from './components/routing/AdminRoute';
 
-// Импорт страниц
+// --- Основные страницы ---
 import HomePage from './pages/Home/HomePage';
 import Login from './pages/Home/Login';
 import Register from './pages/Home/Registration';
 import TournamentListScreen from './pages/tournaments/TournamentListScreen';
 import TournamentDetailScreen from './pages/tournaments/TournamentDetailScreen';
-import ProfileRedirectPage from './pages/profile/ProfileRedirectPage'; // Страница-редирект
+import ProfileRedirectPage from './pages/profile/ProfileRedirectPage';
 
-// Страницы спортсмена
+// --- Страницы спортсмена ---
 import AthleteDashboard from './pages/athlete/AthleteDashboard';
 import AthleteProfile from './pages/athlete/AthleteProfile';
 import FindCoachPage from './pages/athlete/FindCoachPage';
 import MyTournaments from './pages/athlete/MyTournaments';
 import AthleteResultsPage from './pages/athlete/AthleteResultsPage';
 
-// Страницы тренера
+// --- Страницы тренера ---
 import CoachDashboard from './pages/coach/CoachDashboard';
 import CoachProfile from './pages/coach/CoachProfile';
 import AthleteListPage from './pages/coach/AthleteListPage';
@@ -33,13 +34,14 @@ import EditAthletePage from './pages/coach/EditAthletePage';
 
 import { Toaster } from 'react-hot-toast';
 
-// Админ-панель
+// --- Админ-панель ---
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminTournaments from './pages/admin/AdminTournaments';
 import CreateTournament from './pages/admin/CreateTournament';
 import AdminApplications from './pages/admin/AdminApplications';
 import AdminApplicationDetails from './pages/admin/AdminApplicationDetails';
+import AdminTournamentGrids from './pages/admin/AdminTournamentGrids';
 
 const userInfo = JSON.parse(localStorage.getItem('userInfo'));
 if (userInfo && userInfo.token) {
@@ -52,6 +54,7 @@ const App = () => {
     const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
     const isUserDashboard = location.pathname.startsWith('/athlete') || location.pathname.startsWith('/coach');
 
+    // --- Маршруты для Админ-панели ---
     if (isAdminPage) {
         return (
             <Routes>
@@ -59,6 +62,8 @@ const App = () => {
                     <Route path="dashboard" element={<AdminDashboard />} />
                     <Route path="tournaments" element={<AdminTournaments />} />
                     <Route path="tournaments/create" element={<CreateTournament />} />
+                    <Route path="tournaments/edit/:id" element={<CreateTournament />} />
+                    <Route path="tournaments/grids/:id" element={<AdminTournamentGrids />} />
                     <Route path="applications" element={<AdminApplications />} />
                     <Route path="applications/:id" element={<AdminApplicationDetails />} />
                 </Route>
@@ -66,6 +71,7 @@ const App = () => {
         );
     }
 
+    // --- Основные маршруты приложения ---
     return (
         <div className="App">
             {!isAuthPage && <Header />}
@@ -97,7 +103,6 @@ const App = () => {
                     <Route path="/coach/requests" element={<PrivateRoute><AthleteRequestsPage /></PrivateRoute>} />
                     <Route path="/coach/register-athlete" element={<PrivateRoute><AddAthletePage /></PrivateRoute>} />
                     <Route path="/coach/edit-athlete/:athleteId" element={<PrivateRoute><EditAthletePage /></PrivateRoute>} />
-
                 </Routes>
             </main>
             {!isAuthPage && !isUserDashboard && <Footer />}
