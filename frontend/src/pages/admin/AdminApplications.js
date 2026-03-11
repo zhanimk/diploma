@@ -1,109 +1,73 @@
 
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import toast from 'react-hot-toast';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { FileText, Search, CheckCircle, XCircle, Clock, Eye } from 'lucide-react';
+import { getApplications } from '../../store/applicationSlice';
 import './AdminApplications.css';
 
 const AdminApplications = () => {
-    const [applications, setApplications] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [searchTerm, setSearchTerm] = useState('');
-
-    const fetchApplications = async () => {
-        try {
-            setLoading(true);
-            // НАҚТЫ API СҰРАНЫСЫ
-            const { data } = await axios.get('/api/applications');
-            setApplications(data);
-        } catch (error) {
-            const message = error.response?.data?.message || 'Өтінімдерді жүктеу кезінде қате пайда болды.';
-            toast.error(message);
-            console.error("Fetch error:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const dispatch = useDispatch();
+    const { applications, loading, error } = useSelector(state => state.applications);
 
     useEffect(() => {
-        fetchApplications();
-    }, []);
+        dispatch(getApplications());
+    }, [dispatch]);
 
-    const filteredApplications = applications.filter(app =>
-        (app.tournament?.name.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-        (`${app.coach?.user?.firstName || ''} ${app.coach?.user?.lastName || ''}`.toLowerCase()).includes(searchTerm.toLowerCase())
-    );
-
-    const getStatusComponent = (status) => {
-        const statusMap = {
-            PENDING: { icon: <Clock size={16} />, text: 'Күтілуде', className: 'status-pending' },
-            APPROVED: { icon: <CheckCircle size={16} />, text: 'Қабылданды', className: 'status-approved' },
-            REJECTED: { icon: <XCircle size={16} />, text: 'Қабылданбады', className: 'status-rejected' },
-        };
-        const currentStatus = statusMap[status] || statusMap.PENDING;
-        return (
-            <span className={`status-badge ${currentStatus.className}`}>
-                {currentStatus.icon}
-                <span>{currentStatus.text}</span>
-            </span>
-        );
-    };
+    const getStatusClass = (status) => {
+        switch (status) {
+            case 'Approved': return 'status-approved';
+            case 'Pending': return 'status-pending';
+            case 'Rejected': return 'status-rejected';
+            default: return '';
+        }
+    }
 
     return (
-        <div className="admin-applications admin-container">
-            <header className="admin-applications-header">
-                <h1><FileText size={32} /> Турнирге Өтінімдер</h1>
-            </header>
+        <div className="admin-applications-container">
+            <h1>Өтінімдер (Заявки)</h1>
 
-            <div className="table-controls">
-                <div className="search-bar">
-                    <Search size={20} />
-                    <input
-                        type="text"
-                        placeholder="Турнир немесе тренер бойынша іздеу..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
+            <div className="content-block">
+                <div className="toolbar">
+                    <input type="text" placeholder="Іздеу..." className="search-input" />
                 </div>
-            </div>
 
-            {loading ? (
-                <div className="loading-indicator">Жүктелуде...</div>
-            ) : (
-                <div className="applications-table-container">
+                {loading ? (
+                    <p>Загрузка...</p>
+                ) : error ? (
+                    <p>Ошибка: {error}</p>
+                ) : (
                     <table className="applications-table">
                         <thead>
                             <tr>
                                 <th>Турнир</th>
-                                <th>Команда (Тренер)</th>
-                                <th>Спортшылар саны</th>
+                                <th>Команда</th>
+                                <th>Спортсмендер</th>
+                                <th>Күні</th>
                                 <th>Статус</th>
                                 <th>Әрекеттер</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredApplications.length > 0 ? filteredApplications.map(app => (
+                            {applications.map(app => (
                                 <tr key={app._id}>
-                                    <td>{app.tournament?.name || 'Турнир аты жоқ'}</td>
-                                    <td>{app.coach?.user ? `${app.coach.user.firstName} ${app.coach.user.lastName}` : 'Тренер жоқ'}</td>
+                                    <td>{app.tournament?.name || '-'}</td>
+                                    <td>{app.team?.name || '-'}</td>
                                     <td>{app.athletes?.length || 0}</td>
-                                    <td>{getStatusComponent(app.status)}</td>
+                                    <td>{new Date(app.createdAt).toLocaleDateString()}</td>
+                                    <td>
+                                        <span className={`status-badge ${getStatusClass(app.status)}`}>
+                                            {app.status}
+                                        </span>
+                                    </td>
                                     <td className="action-buttons">
-                                        <Link to={`/admin/applications/${app._id}`} className="btn-action btn-view" title="Өтінімді қарау">
-                                            <Eye size={18} />
-                                        </Link>
+                                        <Link to={`/admin/applications/${app._id}`} className="action-btn view-btn">👁️</Link>
                                     </td>
                                 </tr>
-                            )) : (
-                                <tr>
-                                    <td colSpan="5" className="no-results">Өтінімдер табылмады.</td>
-                                </tr>
-                            )}
+                            ))}
                         </tbody>
                     </table>
-                </div>
-            )}
+                )}
+            </div>
         </div>
     );
 };

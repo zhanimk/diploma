@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './AthleteDashboard.css'; 
 import { User, Shield, Edit, Clock, CheckCircle, XCircle, HelpCircle } from 'lucide-react';
+import { setUser } from '../../store/authSlice';
 
 const ClubStatusCard = ({ profile, loading }) => {
     if (loading) {
@@ -64,23 +65,44 @@ const ClubStatusCard = ({ profile, loading }) => {
 
 const AthleteDashboard = () => {
     const { user } = useSelector((state) => state.auth);
-    const [profile, setProfile] = useState(null);
+    const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchProfile = async () => {
-            setLoading(true);
-            try {
-                // This endpoint now populates club information
-                const { data } = await axios.get('/api/users/profile');
-                setProfile(data);
-            } catch (error) {
-                console.error("Профиль деректерін алу қатесі:", error);
+    const fetchProfile = useCallback(async () => {
+        try {
+            // Add cache-control headers to prevent browser caching
+            const { data } = await axios.get('/api/users/profile', {
+                headers: {
+                    'Cache-Control': 'no-cache',
+                    'Pragma': 'no-cache',
+                    'Expires': '0',
+                },
+            });
+            dispatch(setUser(data)); 
+        } catch (error) {
+            console.error("Профиль деректерін алу қатесі:", error);
+        } finally {
+            if (loading) {
+                setLoading(false);
             }
-            setLoading(false);
-        };
+        }
+    }, [dispatch, loading]);
+
+    useEffect(() => {
         fetchProfile();
-    }, []);
+
+        let intervalId = null;
+        // Only poll if the status is explicitly pending
+        if (user?.clubStatus === 'pending') {
+            intervalId = setInterval(fetchProfile, 5000); // Poll every 5 seconds
+        }
+
+        return () => {
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
+        };
+    }, [user?.clubStatus, fetchProfile]);
 
     return (
         <div className="container athlete-dashboard-grid">
@@ -101,10 +123,8 @@ const AthleteDashboard = () => {
                 </header>
 
                 <div className="list-container">
-                    {/* Club Status Card */}
-                    <ClubStatusCard profile={profile} loading={loading} />
+                    <ClubStatusCard profile={user} loading={loading} />
 
-                    {/* Profile Card */}
                     <div className="item-card">
                         <div className="item-card__info">
                             <h3><User size={18} /> Жеке деректер</h3>
@@ -116,7 +136,6 @@ const AthleteDashboard = () => {
                         </Link>
                     </div>
 
-                    {/* Tournaments Card */}
                     <div className="item-card">
                        <div className="item-card__info">
                            <h3><Shield size={18} /> Менің турнирлерім</h3>

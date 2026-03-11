@@ -28,7 +28,8 @@ const AthleteRequestsPage = () => {
     }, [fetchRequests]);
 
     const handleResponse = (athleteId, status) => {
-        const promise = axios.put('/api/users/coach/respond-request', { athleteId, status })
+        // CORRECTED: The endpoint now correctly includes the /coach prefix.
+        const promise = axios.post('/api/users/coach/handle-request', { athleteId, status })
             .then(() => {
                 fetchRequests(); // Re-fetch on success
             });

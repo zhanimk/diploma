@@ -1,0 +1,551 @@
+
+/* =========================================
+   1. ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
+   ========================================= */
+:root {
+    --bg-dark: #0a0e1a;
+    --bg-panel: rgba(30, 41, 59, 0.4);
+    --border-glass: rgba(255, 255, 255, 0.1);
+    --blue: #3b82f6;
+    --gold: #f59e0b;
+    --cyan: #06b6d4;
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* =========================================
+   2. ОСНОВНОЙ КОНТЕЙНЕР И ФОРМА
+   ========================================= */
+.auth-container { 
+    display: flex; 
+    min-height: 100vh; 
+    width: 100%; 
+    background-color: var(--bg-dark);
+    background-image: 
+        radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.1), transparent 40%),
+        radial-gradient(circle at 85% 30%, rgba(245, 158, 11, 0.08), transparent 40%);
+    font-family: "Inter", sans-serif; 
+    overflow: hidden; 
+    color: var(--text-main); 
+    font-size: 16px; /* Increased base font size */
+}
+.auth-form-wrapper { 
+    flex: 1; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    padding: 2.5rem; 
+    overflow-y: auto; 
+}
+.auth-card { 
+    width: 100%; 
+    max-width: 500px;
+    background: rgba(17, 24, 39, 0.6);
+    border-radius: 24px;
+    border: 1px solid var(--border-glass);
+    padding: 3rem;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+.auth-header { 
+    text-align: center; 
+    margin-bottom: 2.5rem; 
+}
+.auth-header h2 { 
+    font-size: 2.5rem; 
+    font-weight: 800; 
+    margin-bottom: 0.75rem; 
+}
+.auth-header p { 
+    color: var(--text-muted); 
+    font-size: 1.1rem; 
+}
+
+/* =========================================
+   3. ВИЗУАЛЬНАЯ ЧАСТЬ (СЛЕВА)
+   ========================================= */
+.auth-visual { 
+    flex: 1.2; 
+    position: relative; 
+    display: flex; 
+    flex-direction: column; 
+    padding: 4rem; 
+    background: linear-gradient(145deg, #111827 0%, #0c1b3a 100%);
+    justify-content: center;
+}
+.auth-visual__bg { 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background-image: 
+        radial-gradient(circle at 20% 50%, rgba(255,255,255,0.04) 0%, transparent 35%),
+        url('data:image/svg+xml;utf8,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="rgba(255,255,255,0.03)" fill-opacity="0.4"><path d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/></g></g></svg>');
+    z-index: 1; 
+    opacity: 0.5;
+}
+.auth-visual__content { 
+    position: relative; 
+    z-index: 2; 
+}
+.brand-logo { 
+    font-family: "Montserrat", sans-serif; 
+    font-size: 2.2rem; 
+    font-weight: 900; 
+    letter-spacing: -1px; 
+    position: absolute;
+    top: 4rem;
+    left: 4rem;
+}
+.brand-logo span { 
+    color: var(--blue); 
+}
+.quote-box h1 { 
+    font-family: "Montserrat", sans-serif; 
+    font-size: 4rem; 
+    font-weight: 800; 
+    line-height: 1.15; 
+    margin-bottom: 1.5rem; 
+    text-transform: uppercase; 
+}
+.quote-box p { 
+    font-size: 1.2rem; 
+    color: var(--text-muted); 
+    max-width: 500px; 
+    line-height: 1.7; 
+}
+.admin-badge { 
+    display: inline-flex; 
+    align-items: center; 
+    gap: 10px; 
+    padding: 8px 18px; 
+    border-radius: 30px; 
+    font-size: 0.9rem; 
+    font-weight: 700; 
+    margin-bottom: 2rem; 
+    backdrop-filter: blur(5px);
+}
+.badge-athlete { 
+    background-color: rgba(59, 130, 246, 0.15); 
+    border: 1px solid rgba(59, 130, 246, 0.5); 
+    color: #a5b4fc; 
+}
+.badge-coach { 
+    background-color: rgba(245, 158, 11, 0.15); 
+    border: 1px solid rgba(245, 158, 11, 0.5); 
+    color: #fcd34d;
+}
+
+/* =========================================
+   4. ВЫБОР РОЛЕЙ
+   ========================================= */
+.role-selector-grid { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 1.5rem; 
+    margin-bottom: 3rem; 
+}
+.role-option { 
+    background: transparent; 
+    border: 1px solid var(--border-glass); 
+    border-radius: 16px; 
+    padding: 2rem; 
+    cursor: pointer; 
+    text-align: center; 
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+.role-option::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 40%);
+    transition: var(--transition);
+    opacity: 0;
+    transform: scale(0.5);
+}
+.role-option:hover { 
+    background: rgba(255, 255, 255, 0.05); 
+    transform: translateY(-5px); 
+    border-color: rgba(255, 255, 255, 0.15);
+}
+.role-option:hover::before {
+    opacity: 1;
+    transform: scale(1);
+}
+.role-ico { 
+    margin-bottom: 1.25rem; 
+    transition: var(--transition);
+    color: var(--text-muted);
+}
+.role-txt span { 
+    display: block; 
+    font-weight: 600; 
+    font-size: 1.2rem; 
+    color: var(--text-main); 
+    transition: var(--transition);
+}
+.role-txt small { 
+    font-size: 0.9rem; 
+    color: var(--text-muted); 
+    margin-top: 5px; 
+    transition: var(--transition);
+}
+.role-option.selected { 
+    background: rgba(59, 130, 246, 0.1); 
+    border-color: var(--blue); 
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(59, 130, 246, 0.1), 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+.role-option.selected .role-ico { 
+    color: var(--blue); 
+    transform: scale(1.15); 
+}
+.role-option.selected .role-txt span {
+    color: var(--text-main);
+}
+.role-option.selected .role-txt small {
+    color: var(--blue);
+}
+.role-option:nth-child(2).selected { 
+    background: rgba(245, 158, 11, 0.1); 
+    border-color: var(--gold);
+    box-shadow: 0 10px 20px rgba(245, 158, 11, 0.1), 0 0 0 4px rgba(245, 158, 11, 0.2);
+}
+.role-option:nth-child(2).selected .role-ico { 
+    color: var(--gold); 
+}
+.role-option:nth-child(2).selected .role-txt small {
+    color: var(--gold);
+}
+
+
+/* =========================================
+   5. ИНПУТЫ И ПОЛЯ ВВОДА
+   ========================================= */
+.form-fields { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 1.5rem; 
+}
+.input-group {
+    position: relative;
+}
+.input-group input, .input-group select {
+    width: 100%;
+    padding: 1.2rem 1.2rem 1.2rem 3.5rem;
+    background: #131b2d;
+    border: 1px solid var(--border-glass);
+    border-radius: 12px;
+    color: var(--text-main);
+    font-size: 1rem;
+    outline: none;
+    transition: var(--transition);
+    -webkit-appearance: none;
+}
+.input-group:focus-within input, .input-group:focus-within select {
+    border-color: var(--blue);
+    background: #18233a;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+.icon-wrapper {
+    position: absolute;
+    left: 1px;
+    top: 1px;
+    bottom: 1px;
+    width: 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    border-right: 1px solid var(--border-glass);
+    transition: var(--transition);
+    border-radius: 11px 0 0 11px;
+}
+.input-group:focus-within .icon-wrapper {
+    color: var(--blue);
+    border-color: var(--blue);
+}
+.eye-btn {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0.5rem;
+}
+.eye-btn:hover { 
+    color: var(--blue); 
+}
+
+/* --- Стили для выбора пола --- */
+.gender-selection {
+    display: flex;
+    background: #131b2d;
+    border: 1px solid var(--border-glass);
+    border-radius: 12px;
+    padding: 4px;
+    align-items: stretch;
+}
+.gender-selection .icon-wrapper {
+    position: static;
+}
+.gender-options {
+    display: flex;
+    flex-grow: 1;
+    gap: 4px;
+}
+.gender-options label {
+    flex: 1;
+    text-align: center;
+    padding: 0.8rem 0;
+    cursor: pointer;
+    transition: var(--transition);
+    border-radius: 9px;
+    position: relative;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+.gender-options label:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+}
+.gender-options label.active {
+    background: var(--blue);
+    color: white;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+}
+.gender-options input { display: none; }
+
+
+/* =========================================
+   6. ПРОГРЕСС-БАР, КНОПКИ, ПОДВАЛ
+   ========================================= */
+.progress-bar { 
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    margin-bottom: 3rem; 
+    gap: 1rem;
+}
+.progress-bar .step { 
+    text-align: center;
+    position: relative;
+}
+.progress-bar .step .dot { 
+    width: 36px; 
+    height: 36px; 
+    border-radius: 50%; 
+    background-color: #1e293b; 
+    color: var(--text-muted); 
+    display: inline-flex; 
+    justify-content: center; 
+    align-items: center; 
+    font-weight: bold; 
+    font-size: 1rem;
+    transition: var(--transition); 
+    border: 2px solid #334155; 
+    margin-bottom: 0.75rem;
+}
+.progress-bar .step.active .dot { 
+    background-color: var(--blue); 
+    border-color: var(--blue); 
+    transform: scale(1.1); 
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+    color: white;
+}
+.progress-bar .step.completed .dot { 
+    background-color: transparent; 
+    border-color: var(--blue);
+    color: var(--blue);
+}
+.progress-bar .step .label { 
+    font-size: 0.85rem; 
+    font-weight: 500;
+    color: var(--text-muted); 
+    transition: var(--transition); 
+}
+.progress-bar .step.active .label, 
+.progress-bar .step.completed .label { 
+    color: white; 
+    font-weight: 600; 
+}
+
+.form-navigation { 
+    display: flex; 
+    justify-content: space-between; 
+    margin-top: 2.5rem; 
+    gap: 1rem;
+}
+.form-navigation .btn { 
+    padding: 1rem 2rem; 
+    border: none; 
+    border-radius: 12px; 
+    cursor: pointer; 
+    font-weight: 700; 
+    font-size: 1rem;
+    transition: var(--transition); 
+    flex-grow: 1;
+}
+.form-navigation .btn-secondary { 
+    background-color: #334155; 
+    color: white; 
+    border: 1px solid #475569;
+}
+.form-navigation .btn-secondary:hover { 
+    background-color: #475569; 
+    transform: translateY(-2px);
+}
+.form-navigation .btn-primary { 
+    background: linear-gradient(to right, #3b82f6, #60a5fa);
+    color: white; 
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+}
+.form-navigation .btn-primary:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+}
+.form-navigation .btn:disabled { 
+    opacity: 0.5; 
+    cursor: not-allowed; 
+    transform: none; 
+    box-shadow: none; 
+}
+
+.auth-footer { 
+    margin-top: 3rem; 
+    text-align: center; 
+    color: var(--text-muted); 
+    font-size: 1rem; 
+}
+.auth-footer a { 
+    color: var(--blue); 
+    text-decoration: none; 
+    font-weight: 600; 
+    margin-left: 8px; 
+}
+.auth-footer a:hover { 
+    text-decoration: underline; 
+    color: #60a5fa;
+}
+
+.error-alert { 
+    background: rgba(239, 68, 68, 0.1); 
+    border: 1px solid rgba(239, 68, 68, 0.4); 
+    color: #fca5a5; 
+    padding: 1.25rem; 
+    border-radius: 12px; 
+    margin-bottom: 2.5rem; 
+    font-size: 1rem; 
+    text-align: center; 
+    font-weight: 500;
+}
+
+@media (max-width: 1024px) { 
+    .auth-visual { 
+        display: none; 
+    } 
+    .auth-form-wrapper { 
+        padding: 1.5rem; 
+        align-items: flex-start; 
+        padding-top: 5rem; 
+    }
+    .auth-card {
+        padding: 2rem;
+    }
+}
+@media (max-width: 500px) {
+    .auth-card {
+        padding: 1.5rem;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        backdrop-filter: none;
+    }
+    .auth-header h2 {
+        font-size: 2rem;
+    }
+    .progress-bar {
+        gap: 0.5rem;
+    }
+    .progress-bar .step .label {
+        font-size: 0.75rem;
+    }
+    .form-navigation {
+        flex-direction: column;
+    }
+}
+
+/* =========================================
+   7. СТИЛИ ДЛЯ СТРАНИЦЫ ВХОДА
+   ========================================= */
+
+.login-options-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+.forgot-link-sm {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.forgot-link-sm:hover {
+    color: var(--blue);
+    text-decoration: underline;
+}
+
+.submit-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1.1rem;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: var(--transition);
+    background: linear-gradient(to right, #3b82f6, #60a5fa);
+    color: white;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+}
+
+.submit-btn:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+}
+
+.submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.loader-spin {
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}

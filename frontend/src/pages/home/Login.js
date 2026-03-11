@@ -20,12 +20,9 @@ export default function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // Redux-тан аутентификация күйін аламыз (ДҰРЫС ЖОЛМЕН)
   const { user } = useSelector((state) => state.auth);
 
-  // Қайта бағыттау үшін useEffect
   useEffect(() => {
-    // Егер `user` объектісі пайда болса, бағыттауды орындаймыз
     if (user) {
       const timer = setTimeout(() => {
         switch (user.role) {
@@ -42,7 +39,7 @@ export default function Login() {
             navigate("/athlete/dashboard");
             break;
         }
-      }, 500); // toast хабарламасының көрінуіне сәл уақыт береміз
+      }, 500); 
 
       return () => clearTimeout(timer);
     }
@@ -89,7 +86,7 @@ export default function Login() {
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
             className="quote-box"
           >
             <h1>
@@ -104,17 +101,23 @@ export default function Login() {
       </div>
 
       <div className="auth-form-wrapper">
-        <div className="auth-card">
+        <motion.div 
+            className="auth-card"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+        >
           <div className="auth-header">
             <h2>Жүйеге кіру</h2>
             <p>Деректерді енгізіп, жалғастырыңыз</p>
           </div>
 
           <AnimatePresence>
-            {error && !loading && (
+            {error && (
               <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
+                initial={{ height: 0, opacity: 0, marginBottom: 0 }}
+                animate={{ height: "auto", opacity: 1, marginBottom: '2.5rem' }}
+                exit={{ height: 0, opacity: 0, marginBottom: 0 }}
                 className="error-alert"
               >
                 ⚠️ {error}
@@ -125,10 +128,10 @@ export default function Login() {
           <form onSubmit={handleLogin}>
             <div className="form-fields">
               <div className="input-group">
-                <div className="icon-wrapper"><Mail size={18} /></div>
+                <div className="icon-wrapper"><Mail size={20} /></div>
                 <input
                   type="email"
-                  placeholder="Email поштаңыз"
+                  placeholder="Электронды поштаңыз"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -136,7 +139,7 @@ export default function Login() {
               </div>
 
               <div className="input-group">
-                <div className="icon-wrapper"><Lock size={18} /></div>
+                <div className="icon-wrapper"><Lock size={20} /></div>
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="Құпия сөз"
@@ -149,7 +152,7 @@ export default function Login() {
                   className="eye-btn"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
             </div>
@@ -165,7 +168,8 @@ export default function Login() {
                 <span className="loader-spin"></span>
               ) : (
                 <>
-                  Кіру <LogIn size={18} style={{ marginLeft: 8 }} />
+                  <LogIn size={20} />
+                  Кіру
                 </>
               )}
             </button>
@@ -174,7 +178,7 @@ export default function Login() {
           <div className="auth-footer">
             Аккаунтыңыз жоқ па? <Link to="/register">Тіркелу</Link>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

@@ -16,6 +16,10 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    phone: { // Added phone field
+        type: String,
+        required: false // Making it optional
+    },
     password: {
         type: String,
         required: true
@@ -43,31 +47,22 @@ const userSchema = new mongoose.Schema({
     // --- Athlete-specific fields ---
     weight: {
         type: Number,
-        required: false // Weight might be set during tournament registration
+        required: false
     },
-    // The club the athlete wants to join or belongs to
     club: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Club',
-        // Required for athletes, but not for other roles
-        required: function() { return this.role === 'athlete'; } 
+        required: false 
     },
-    // Status of the athlete's membership in the club
     clubStatus: {
         type: String,
         enum: ['pending', 'approved', 'rejected'],
-        default: 'pending',
-        // Required for athletes, but not for other roles
-        required: function() { return this.role === 'athlete'; }
+        required: false
     },
-    rank: { // As per TZ "спортивный разряд/кю"
+    rank: { 
         type: String,
         required: false
     },
-
-    // --- Coach-specific fields ---
-    // A coach manages a club. We find the club by looking for a Club where the coach's ID matches.
-    // The `students` and `studentRequests` arrays are now obsolete.
 
 }, {
     timestamps: true
@@ -75,12 +70,10 @@ const userSchema = new mongoose.Schema({
 
 // --- METHODS ---
 
-// Password matching method
 userSchema.methods.matchPassword = async function(enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };
 
-// Password hashing middleware
 userSchema.pre('save', async function(next) {
     if (!this.isModified('password')) {
         return next();

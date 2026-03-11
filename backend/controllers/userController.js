@@ -9,7 +9,7 @@ const generateToken = require('../utils/generateToken');
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
     const {
-        firstName, lastName, email, password, role, gender, dateOfBirth, city, rank, club: clubId // clubId from the form
+        firstName, lastName, email, phone, password, role, gender, dateOfBirth, city, rank, club: clubId
     } = req.body;
 
     const userExists = await User.findOne({ email });
@@ -18,15 +18,12 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new Error('User with this email already exists.');
     }
 
+    // Base user object now includes phone
     const userObject = {
-        firstName, lastName, email, password, role, gender, dateOfBirth, city, rank
+        firstName, lastName, email, phone, password, role, gender, dateOfBirth, city, rank
     };
 
-    if (role === 'athlete') {
-        if (!clubId) {
-            res.status(400);
-            throw new Error('Athlete must select a club.');
-        }
+    if (role === 'athlete' && clubId) {
         const club = await Club.findById(clubId);
         if (!club) {
             res.status(404);
@@ -52,6 +49,9 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new Error('Invalid user data.');
     }
 });
+
+// Other functions remain the same...
+
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
@@ -103,7 +103,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     user.firstName = req.body.firstName || user.firstName;
     user.lastName = req.body.lastName || user.lastName;
     user.email = req.body.email || user.email;
-    user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
+    user.phone = req.body.phone || user.phone;
     user.dateOfBirth = req.body.dateOfBirth || user.dateOfBirth;
     user.city = req.body.city || user.city;
     user.gender = req.body.gender || user.gender;
@@ -119,14 +119,13 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
     const updatedUser = await user.save();
 
-    // CORRECTED RESPONSE: Return the same flat structure as login/register
     res.json({
         _id: updatedUser._id,
         firstName: updatedUser.firstName,
         lastName: updatedUser.lastName,
         email: updatedUser.email,
         role: updatedUser.role,
-        token: generateToken(updatedUser._id), // Crucially, include the token
+        token: generateToken(updatedUser._id), 
     });
 });
 
@@ -166,7 +165,7 @@ const updateAthleteProfileByCoach = asyncHandler(async (req, res) => {
 
     const athlete = await User.findById(athleteId);
 
-    if (!athlete || !athlete.club.equals(club._id)) {
+    if (!athlete || !athlete.club || !athlete.club.equals(club._id)) {
         res.status(404);
         throw new Error('Athlete not found in your club.');
     }
@@ -230,7 +229,7 @@ const handleAthleteRequest = asyncHandler(async (req, res) => {
 
     const athlete = await User.findById(athleteId);
 
-    if (!athlete || !athlete.club.equals(club._id) || athlete.clubStatus !== 'pending') {
+    if (!athlete || !athlete.club || !athlete.club.equals(club._id) || athlete.clubStatus !== 'pending') {
         res.status(404);
         throw new Error('No pending request found for this athlete in your club.');
     }
@@ -238,18 +237,22 @@ const handleAthleteRequest = asyncHandler(async (req, res) => {
     if (status === 'approved') {
         athlete.clubStatus = 'approved';
     } else if (status === 'rejected') {
+        // Now we can safely set club to null because it's not required.
         athlete.club = null;
-        athlete.clubStatus = 'rejected';
+        athlete.clubStatus = 'rejected'; 
     } else {
         res.status(400);
         throw new Error('Invalid status provided. Must be \'approved\' or \'rejected\'.');
     }
 
-    const updatedAthlete = await athlete.save();
+    const savedAthlete = await athlete.save();
+    
+    // Refetch the updated athlete with populated club data
+    const updatedAthleteWithClub = await User.findById(savedAthlete._id).populate('club', 'name city');
 
     res.json({
         message: `Athlete request has been ${status}.`,
-        athlete: updatedAthlete,
+        athlete: updatedAthleteWithClub,
     });
 });
 

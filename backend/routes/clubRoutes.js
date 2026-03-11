@@ -3,27 +3,30 @@ const router = express.Router();
 const {
     createClub,
     getClubs,
+    deleteClub, // Importing the new controller function
     getMyClub,
-    updateMyClub, // Import the new function
+    updateMyClub,
     getMyAthletes,
     respondToRequest,
-    registerAthleteByCoach,
+    registerAthleteByCoach
 } = require('../controllers/clubController');
-const { protect, coach } = require('../middleware/authMiddleware');
+const { protect, coach, admin } = require('../middleware/authMiddleware');
 
-// @route   /api/clubs
-
-// --- Public Routes ---
+// Public route to get all clubs
 router.get('/', getClubs);
 
-// --- Coach Routes (Protected) ---
-router.post('/', protect, coach, createClub);
+// Coach routes for managing their own club
 router.route('/my-club')
     .get(protect, coach, getMyClub)
-    .put(protect, coach, updateMyClub); // Add the new PUT route
+    .put(protect, coach, updateMyClub);
+
+router.post('/', protect, coach, createClub); // For creating/updating a club
 
 router.get('/my-athletes', protect, coach, getMyAthletes);
 router.put('/respond-request', protect, coach, respondToRequest);
 router.post('/register-athlete', protect, coach, registerAthleteByCoach);
+
+// Admin route to delete a club
+router.delete('/:id', protect, admin, deleteClub);
 
 module.exports = router;

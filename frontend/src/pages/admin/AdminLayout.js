@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { NavLink, useNavigate, Outlet } from 'react-router-dom';
-import { Shield, Calendar, Users, Settings, LogOut } from 'lucide-react';
+import { Shield, Calendar, Users, FileCheck, Settings, LogOut } from 'lucide-react';
 import './AdminLayout.css';
 import toast from 'react-hot-toast';
 
@@ -9,10 +9,7 @@ const AdminLayout = () => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        // Логика выхода
         localStorage.removeItem('userInfo');
-        // Очищаем заголовок авторизации в axios, если вы его устанавливали
-        // delete axios.defaults.headers.common['Authorization'];
         toast.success('Сіз жүйеден сәтті шықтыңыз!');
         navigate('/login');
     };
@@ -33,12 +30,12 @@ const AdminLayout = () => {
                         <Calendar size={20} />
                         <span>Турнирлер</span>
                     </NavLink>
-                    <NavLink to="/admin/users">
+                    <NavLink to="/admin/clubs">
                         <Users size={20} />
-                        <span>Пайдаланушылар</span>
+                        <span>Клубтар</span>
                     </NavLink>
                      <NavLink to="/admin/applications">
-                        <Users size={20} />
+                        <FileCheck size={20} />
                         <span>Өтінімдер</span>
                     </NavLink>
                     <NavLink to="/admin/settings">

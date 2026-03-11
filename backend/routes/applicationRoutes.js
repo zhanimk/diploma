@@ -1,4 +1,3 @@
-
 const express = require('express');
 const router = express.Router();
 
@@ -7,31 +6,26 @@ const {
     getAllApplications,
     getApplicationById,
     updateApplicationStatus,
-    verifyAthleteInApplication,
+    updateAthleteInApplication, // <-- Импортируем новую функцию
     getCoachApplications, 
     getAthleteTournaments 
 } = require('../controllers/applicationController');
 
-const { protect, coach, athlete, admin } = require('../middleware/authMiddleware');
+const { protect, coach, admin } = require('../middleware/authMiddleware');
 
-// --- Админ маршруттары ---
-router.route('/')
-    .get(protect, admin, getAllApplications) // Админ барлық өтінімді көреді
-    .post(protect, coach, createApplication); // Тренер жаңа өтінім жасайды
+// --- Маршруты для Тренера ---
+router.route('/').post(protect, coach, createApplication); // Тренер создает новую заявку
+router.get('/coach', protect, coach, getCoachApplications); // Тренер просматривает свои заявки
 
-router.route('/:id')
-    .get(protect, admin, getApplicationById); // Админ бір өтінімді ID бойынша көреді
+// --- Маршруты для Спортсмена ---
+router.get('/athlete', protect, getAthleteTournaments); // Спортсмен видит свои турниры
 
-router.route('/:id/status')
-    .put(protect, admin, updateApplicationStatus); // Админ статусты жаңартады
+// --- Маршруты для Админа ---
+router.route('/admin').get(protect, admin, getAllApplications); // Админ видит все заявки
+router.route('/:id').get(protect, admin, getApplicationById); // Админ видит заявку по ID
+router.route('/:id/status').put(protect, admin, updateApplicationStatus); // Админ обновляет статус заявки
 
-router.route('/verify-athlete')
-    .put(protect, admin, verifyAthleteInApplication); // Админ спортшыны верификациялайды
-
-
-// --- Тренер және Спортшы маршруттары ---
-router.get('/coach-applications', protect, coach, getCoachApplications);
-router.get('/athlete-tournaments', protect, athlete, getAthleteTournaments);
-
+// Новый маршрут для обновления данных спортсмена в заявке (взвешивание)
+router.route('/:id/athlete/:athleteEntryId').put(protect, admin, updateAthleteInApplication);
 
 module.exports = router;

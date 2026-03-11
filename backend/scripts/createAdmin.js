@@ -5,10 +5,10 @@ const path = require('path');
 const connectDB = require('../config/db');
 const User = require('../models/userModel');
 
+// Исправленный путь к .env файлу в папке backend
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const createAdmin = async () => {
-    // Байланысты process.exit() шақырмас бұрын жабуға арналған функция
     const closeConnectionAndExit = async () => {
         await mongoose.connection.close();
         process.exit();
@@ -31,14 +31,13 @@ const createAdmin = async () => {
             return;
         }
 
-        // Модельге сәйкес барлық міндетті өрістерді қосамыз
         const admin = await User.create({
             firstName: 'Admin',
             lastName: 'User',
             email: adminEmail,
             password: adminPassword,
             role: 'admin',
-            gender: 'male', // Стандартты мән
+            gender: 'male', 
             isConfirmed: true
         });
 

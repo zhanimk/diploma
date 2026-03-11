@@ -1,82 +1,35 @@
+/* AdminDashboard.css - Стили для карточек */
 
-/* --- Admin Dashboard негізгі контейнері --- */
-.admin-container {
-  background-color: #0B1120; /* Админ панелінің фоны */
-  border-radius: 12px;       /* Бұрыштарын дөңгелектеу */
-  border: 1px solid rgba(255, 255, 255, 0.05); /* Кішкене жарық шекара */
-  padding: 2rem;             /* Ішкі бос орын */
-  margin: 2rem auto;         /* Беттің ортасында орналасуы */
-  max-width: 1200px;         /* Максималды ені */
-  width: 100%;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Көлеңке */
-}
-
-.admin-dashboard .admin-header {
-    text-align: center;
-    margin-bottom: 2.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 1.5rem;
-}
-
-.admin-dashboard .admin-header h1 {
-    font-size: 2.5rem;
-    color: #E2E8F0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    margin-bottom: 0.5rem;
-}
-
-.admin-dashboard .admin-header p {
-    font-size: 1.1rem;
-    color: #94A3B8; /* Сұр түсті мәтін */
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-/* --- Навигациялық карточкалар --- */
-.admin-nav-cards {
+.dashboard-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 32px;
 }
 
-.nav-card {
-    background-color: rgba(30, 41, 59, 0.5); /* Жартылай мөлдір фон */
-    border-radius: 10px;
-    padding: 1.75rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+.card {
+    background-color: var(--admin-card-bg);
+    border: 1px solid var(--admin-border-color);
+    border-radius: 8px;
+    padding: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.nav-card:hover {
+.card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
-    border-color: #38BDF8; /* Көгілдір түспен ерекшелеу */
-    text-decoration: none;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
 }
 
-.nav-card svg {
-    margin-bottom: 1.5rem;
-    color: #38BDF8; /* Иконкалардың түсі */
-    width: 48px;
-    height: 48px;
+.card h3 {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--admin-text-secondary);
+    margin: 0 0 10px;
 }
 
-.nav-card-body h2 {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.5rem;
-    color: #F1F5F9; /* Карточка тақырыбының түсі */
-}
-
-.nav-card-body p {
+.card p {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--admin-text-primary);
     margin: 0;
-    color: #CBD5E1; /* Карточка мәтінінің түсі */
-    font-size: 0.95rem;
-    line-height: 1.5;
 }

@@ -1,200 +1,256 @@
-/*
-  Athlete Dashboard Unified Styles - DARK THEME + RESPONSIVE
-  Description: A modern, dark theme for the athlete's dashboard, consistent with the coach's view and fully responsive.
-*/
-
 /* =========================================
-   1. Core & Layout
+   ATHLETE DASHBOARD CSS 
+   (Единый стиль под глобальную тему сайта)
    ========================================= */
 
-:root {
-  --brand-primary-dark: #0A1931; /* Deep space blue */
-  --brand-secondary-dark: #182C4A; /* Slightly lighter navy */
-  --brand-accent: #3A7DFF; /* Bright accent blue */
-  --text-primary-dark: #F0F4F8; /* Soft white */
-  --text-secondary-dark: #A9B4C2; /* Muted grey */
-  --border-color-dark: #2A3B5A;
-}
-
+/* --- Главная сетка и лейаут --- */
 .athlete-dashboard-grid {
-    display: grid;
-    grid-template-columns: 240px 1fr;
-    gap: 2.5rem;
-    padding-top: 1.5rem;
-    max-width: 1350px;
-    margin: 0 auto;
-}
-
-.athlete-dashboard-content .page-header {
-    margin-bottom: 2.5rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid var(--border-color-dark);
-}
-
-/* =========================================
-   2. Sidebar Navigation
-   ========================================= */
-
-.athlete-dashboard-nav {
-    background-color: var(--brand-secondary-dark);
-    border-radius: 12px;
-    padding: 1.5rem;
-    border: 1px solid var(--border-color-dark);
-    height: fit-content;
-}
-
-.athlete-dashboard-nav h3 {
-    font-size: 0.8rem;
-    color: var(--text-secondary-dark);
+    display: flex;
+    min-height: 100vh;
+    /* Используем твой глобальный темный фон #020617 */
+    background-color: var(--bg); 
+    color: var(--text);
+    padding-top: 70px; /* Отступ под твой плавающий хедер */
+    animation: fadeIn 0.5s ease-out;
+  }
+  
+  /* --- Боковая навигация (Sidebar) --- */
+  .athlete-dashboard-nav {
+    width: 280px;
+    /* Фон сливается с общим, отделяется только тонкой линией */
+    background-color: var(--bg); 
+    border-right: 1px solid var(--border);
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .athlete-dashboard-nav h3 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 0.85rem;
+    color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.8px;
-    margin: 0 0.5rem 1rem;
-}
-
-.athlete-dashboard-nav ul {
+    letter-spacing: 0.05em;
+    margin-bottom: 1.5rem;
+    padding-left: 1rem;
+  }
+  
+  .athlete-dashboard-nav ul {
     list-style: none;
     padding: 0;
     margin: 0;
-}
-
-.athlete-dashboard-nav li a {
-    display: flex;
-    align-items: center;
-    padding: 0.9rem 1.2rem;
-    text-decoration: none;
-    color: var(--text-primary-dark);
-    border-radius: 8px;
-    font-weight: 500;
-    transition: background-color 0.2s, color 0.2s;
-    margin-bottom: 0.35rem;
-}
-
-.athlete-dashboard-nav li a:hover {
-    background-color: rgba(58, 125, 255, 0.1);
-}
-
-.athlete-dashboard-nav li a.active {
-    background-color: var(--brand-accent);
-    color: #ffffff;
-    box-shadow: 0 4px 12px rgba(58, 125, 255, 0.3);
-}
-
-/* =========================================
-   3. Main Content & Cards
-   ========================================= */
-
-.athlete-dashboard-content .page-header h1 {
-    font-size: 2.25rem;
-    font-weight: 700;
-    color: var(--text-primary-dark);
-}
-
-.athlete-dashboard-content .page-header p {
-    font-size: 1.1rem;
-    color: var(--text-secondary-dark);
-    margin-top: 0.5rem;
-}
-
-.list-container {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-}
-
-.item-card, .stat-card-main {
-    background-color: var(--brand-secondary-dark);
-    border: 1px solid var(--border-color-dark);
-    border-radius: 12px;
-    padding: 1.5rem 2rem;
-    transition: border-color 0.2s, transform 0.2s;
-}
-
-.item-card:hover, .stat-card-main:hover {
-    transform: translateY(-4px);
-    border-color: var(--brand-accent);
-}
-
-.item-card {
+    gap: 0.5rem;
+  }
+  
+  .athlete-dashboard-nav a {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-}
-
-.item-card__info h3 {
-    margin: 0 0 0.25rem;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--text-primary-dark);
-}
-
-.item-card__info p {
+    padding: 0.875rem 1rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 500;
+    border-radius: 0.75rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .athlete-dashboard-nav a:hover {
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text);
+    transform: translateX(4px);
+  }
+  
+  .athlete-dashboard-nav a.active {
+    /* Твой фирменный KZ Blue с прозрачностью */
+    background: rgba(0, 175, 236, 0.1); 
+    color: var(--accent);
+    border-left: 3px solid var(--accent);
+    padding-left: calc(1rem - 3px);
+  }
+  
+  /* --- Основной контент --- */
+  .athlete-dashboard-content {
+    flex: 1;
+    padding: 2.5rem 3rem;
+    overflow-y: auto;
+  }
+  
+  /* --- Шапка страницы (Wow-эффект) --- */
+  .page-header {
+    background: linear-gradient(135deg, rgba(0, 175, 236, 0.08) 0%, transparent 100%);
+    border: 1px solid rgba(0, 175, 236, 0.15);
+    border-radius: 1.5rem;
+    padding: 2.5rem;
+    margin-bottom: 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .page-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+    filter: blur(40px);
+    z-index: 0;
+  }
+  
+  .page-header h1 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    position: relative;
+    z-index: 1;
+    color: var(--text);
+  }
+  
+  .page-header p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
     margin: 0;
-    font-size: 1rem;
-    color: var(--text-secondary-dark);
-}
-
-/* =========================================
-   4. Buttons & States
-   ========================================= */
-
-.btn {
-    padding: 0.75rem 1.5rem;
+    max-width: 600px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* --- Сетка карточек --- */
+  .list-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  /* --- Карточки (Глассморфизм на базе твоей переменной --card) --- */
+  .item-card {
+    background: var(--card); /* #0a1329 */
+    border: 1px solid var(--border);
+    border-radius: 1.25rem;
+    padding: 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  .item-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(0, 175, 236, 0.3);
+    box-shadow: 0 12px 40px rgba(0, 175, 236, 0.15);
+  }
+  
+  .item-card__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-muted);
+    transition: all 0.3s ease;
+  }
+  
+  .item-card:hover .item-card__icon {
+    transform: scale(1.1);
+    color: var(--accent);
+    background: rgba(0, 175, 236, 0.1);
+  }
+  
+  .item-card__info {
+    flex: 1;
+  }
+  
+  .item-card__info h3 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 1.125rem;
+    margin: 0 0 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text);
+  }
+  
+  .item-card__info p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin: 0 0 1.25rem 0;
+  }
+  
+  /* --- Статусы клуба --- */
+  .status-pending { border-color: rgba(234, 179, 8, 0.3); }
+  .status-pending .item-card__icon { background: rgba(234, 179, 8, 0.15); color: #eab308; }
+  .status-pending h3 { color: #eab308; }
+  
+  .status-approved { border-color: rgba(34, 197, 94, 0.3); }
+  .status-approved .item-card__icon { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+  .status-approved h3 { color: #22c55e; }
+  
+  .status-rejected { border-color: rgba(239, 68, 68, 0.3); }
+  .status-rejected .item-card__icon { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+  .status-rejected h3 { color: #ef4444; }
+  
+  /* --- Кнопки --- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.75rem;
     font-size: 0.9rem;
     font-weight: 600;
-    border: none;
-    border-radius: 8px;
+    text-decoration: none;
     cursor: pointer;
-    transition: all 0.2s;
-}
-
-.btn:active { transform: translateY(1px); }
-.btn.btn-primary { background-color: var(--brand-accent); color: white; }
-.btn.btn-primary:hover { background-color: #276efc; }
-
-.empty-state {
-    text-align: center;
-    padding: 4rem;
-    background-color: var(--brand-secondary-dark);
-    border: 1px dashed var(--border-color-dark);
-    border-radius: 12px;
-}
-
-/* =========================================
-   5. MOBILE RESPONSIVENESS
-   ========================================= */
-
-@media (max-width: 992px) {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+  }
+  
+  .btn-primary {
+    background: var(--accent); /* #00afec */
+    color: #fff;
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px var(--accent-glow);
+    filter: brightness(1.1);
+  }
+  
+  /* --- Адаптивность --- */
+  @media (max-width: 768px) {
     .athlete-dashboard-grid {
-        grid-template-columns: 200px 1fr;
-        gap: 1.5rem;
+      flex-direction: column;
     }
-    .page-header h1 { font-size: 1.8rem; }
-}
-
-@media (max-width: 768px) {
-    .athlete-dashboard-grid {
-        /* Stack sidebar and content on top of each other */
-        grid-template-columns: 1fr;
-    }
-
     .athlete-dashboard-nav {
-        /* You might want a hamburger menu in a real app,
-           but for now, we'll just stack it. */
-        margin-bottom: 2rem;
+      width: 100%;
+      padding: 1rem;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
     }
-
-    .item-card {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1.5rem;
+    .athlete-dashboard-nav ul {
+      flex-direction: row;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
     }
-}
-
-@media (max-width: 480px) {
-    .item-card, .stat-card-main {
-        padding: 1.2rem;
+    .athlete-dashboard-content {
+      padding: 1.5rem;
     }
-
-    .page-header h1 { font-size: 1.6rem; }
-    .page-header p { font-size: 1rem; }
-}
+    .page-header {
+      padding: 1.5rem;
+    }
+    .page-header h1 {
+      font-size: 1.8rem;
+    }
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }

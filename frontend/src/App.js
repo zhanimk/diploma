@@ -9,9 +9,9 @@ import PrivateRoute from './components/routing/PrivateRoute';
 import AdminRoute from './components/routing/AdminRoute';
 
 // --- Основные страницы ---
-import HomePage from './pages/Home/HomePage';
-import Login from './pages/Home/Login';
-import Register from './pages/Home/Registration';
+import HomePage from './pages/home/HomePage';
+import Login from './pages/home/Login';
+import Register from './pages/home/Registration';
 import TournamentListScreen from './pages/tournaments/TournamentListScreen';
 import TournamentDetailScreen from './pages/tournaments/TournamentDetailScreen';
 import ProfileRedirectPage from './pages/profile/ProfileRedirectPage';
@@ -39,9 +39,11 @@ import AdminLayout from './pages/admin/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminTournaments from './pages/admin/AdminTournaments';
 import CreateTournament from './pages/admin/CreateTournament';
+import EditTournament from './pages/admin/EditTournament';
 import AdminApplications from './pages/admin/AdminApplications';
 import AdminApplicationDetails from './pages/admin/AdminApplicationDetails';
 import AdminTournamentGrids from './pages/admin/AdminTournamentGrids';
+import AdminClubs from './pages/admin/AdminClubs';
 
 const userInfo = JSON.parse(localStorage.getItem('userInfo'));
 if (userInfo && userInfo.token) {
@@ -62,10 +64,11 @@ const App = () => {
                     <Route path="dashboard" element={<AdminDashboard />} />
                     <Route path="tournaments" element={<AdminTournaments />} />
                     <Route path="tournaments/create" element={<CreateTournament />} />
-                    <Route path="tournaments/edit/:id" element={<CreateTournament />} />
+                    <Route path="tournaments/edit/:id" element={<EditTournament />} />
                     <Route path="tournaments/grids/:id" element={<AdminTournamentGrids />} />
                     <Route path="applications" element={<AdminApplications />} />
                     <Route path="applications/:id" element={<AdminApplicationDetails />} />
+                    <Route path="clubs" element={<AdminClubs />} />
                 </Route>
             </Routes>
         );
@@ -73,9 +76,9 @@ const App = () => {
 
     // --- Основные маршруты приложения ---
     return (
-        <div className="App">
+        <div className="app-container">
             {!isAuthPage && <Header />}
-            <main>
+            <main className="main-content">
                 <Toaster position="top-right" />
                 <Routes>
                     {/* Публичные маршруты */}

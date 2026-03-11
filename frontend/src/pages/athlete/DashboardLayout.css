@@ -1,8 +1,0 @@
-.dashboard-layout {
-    display: flex;
-}
-
-.dashboard-content {
-    flex-grow: 1; /* Занимает все оставшееся пространство */
-    padding: 2rem;
-}

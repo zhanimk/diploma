@@ -15,17 +15,20 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      const updatedUser = { ...state.user, ...action.payload };
+      // If the payload from login/register contains a token, we merge it with existing state
+      // to preserve other details. Otherwise, we assume it's a full profile update and replace the user object.
+      const updatedUser = action.payload.token 
+        ? { ...state.user, ...action.payload }
+        : action.payload;
+
       state.user = updatedUser;
       state.isAuthenticated = !!updatedUser;
       localStorage.setItem('userInfo', JSON.stringify(updatedUser));
     },
     setClub: (state, action) => {
-      if (state.user && state.user.club) {
-        // Merge the updated club data into the existing user state
-        const updatedClub = { ...state.user.club, ...action.payload };
-        const updatedUser = { ...state.user, club: updatedClub };
-        
+      if (state.user) {
+        // This reducer is used to update club details specifically, e.g., after a coach creates a club
+        const updatedUser = { ...state.user, club: action.payload };
         state.user = updatedUser;
         localStorage.setItem('userInfo', JSON.stringify(updatedUser));
       }

@@ -2,6 +2,8 @@ const Club = require('../models/clubModel');
 const User = require('../models/userModel');
 const asyncHandler = require('express-async-handler');
 
+// ... (existing functions like createClub, getClubs, etc.)
+
 // @desc    Create or Update a club
 // @route   POST /api/clubs
 // @access  Private/Coach
@@ -15,22 +17,18 @@ const createClub = asyncHandler(async (req, res) => {
 
     const existingClub = await Club.findOne({ coach: req.user._id });
 
-    // If club exists, update it (UPSERT logic)
     if (existingClub) {
         existingClub.name = name || existingClub.name;
         existingClub.city = city || existingClub.city;
-        // Allow logo to be updated or cleared
         existingClub.logo = logo !== undefined ? logo : existingClub.logo;
 
         const updatedClub = await existingClub.save();
         
-        // Make sure user has the club linked
         await User.findByIdAndUpdate(req.user._id, { club: updatedClub._id });
 
         return res.json(updatedClub);
     }
 
-    // If club does not exist, create a new one
     const club = new Club({
         name,
         city,
@@ -40,7 +38,6 @@ const createClub = asyncHandler(async (req, res) => {
 
     const createdClub = await club.save();
     
-    // Link the new club to the user
     await User.findByIdAndUpdate(req.user._id, { club: createdClub._id });
 
     res.status(201).json(createdClub);
@@ -50,13 +47,67 @@ const createClub = asyncHandler(async (req, res) => {
 // @route   GET /api/clubs
 // @access  Public
 const getClubs = asyncHandler(async (req, res) => {
-    const clubs = await Club.find({ coach: { $exists: true, $ne: null } });
-    res.json(clubs);
+    const clubs = await Club.find({ coach: { $exists: true, $ne: null } })
+        .populate('coach', 'firstName lastName phone')
+        .lean();
+
+    const clubsWithDetails = await Promise.all(clubs.map(async (club) => {
+        const athleteCount = await User.countDocuments({
+            club: club._id,
+            role: 'athlete',
+            clubStatus: 'approved'
+        });
+
+        const coachInfo = club.coach ? {
+            name: `${club.coach.firstName} ${club.coach.lastName}`,
+            phone: club.coach.phone || '—'
+        } : {
+            name: 'Тренер белгісіз',
+            phone: '—'
+        };
+
+        return {
+            _id: club._id,
+            name: club.name,
+            coachName: coachInfo.name,
+            coachPhone: coachInfo.phone,
+            athleteCount: athleteCount,
+            region: club.city,
+            logo: club.logo,
+        };
+    }));
+
+    res.json(clubsWithDetails);
 });
 
-// @desc    Get the coach's own club and pending athletes
-// @route   GET /api/clubs/my-club
-// @access  Private/Coach
+// @desc    Delete a club
+// @route   DELETE /api/clubs/:id
+// @access  Private/Admin
+const deleteClub = asyncHandler(async (req, res) => {
+    const clubId = req.params.id;
+
+    const club = await Club.findById(clubId);
+
+    if (!club) {
+        res.status(404);
+        throw new Error('Club not found');
+    }
+
+    // Step 1: Find all users associated with this club and clear their club affiliation
+    await User.updateMany(
+        { club: clubId },
+        { $unset: { club: "" }, $set: { clubStatus: 'none' } } 
+    );
+
+    // Step 2: Delete the club itself
+    await Club.findByIdAndDelete(clubId);
+
+    res.json({ message: 'Club removed and athletes unlinked successfully' });
+});
+
+
+// ... (other existing functions like getMyClub, updateMyClub, etc.)
+
 const getMyClub = asyncHandler(async (req, res) => {
     const club = await Club.findOne({ coach: req.user._id });
     if (!club) {
@@ -74,9 +125,6 @@ const getMyClub = asyncHandler(async (req, res) => {
     });
 });
 
-// @desc    Update the coach's own club details
-// @route   PUT /api/clubs/my-club
-// @access  Private/Coach
 const updateMyClub = asyncHandler(async (req, res) => {
     const { name, city, logo } = req.body;
 
@@ -96,10 +144,6 @@ const updateMyClub = asyncHandler(async (req, res) => {
     res.json(updatedClub);
 });
 
-
-// @desc    Get all approved athletes for a coach's club
-// @route   GET /api/clubs/my-athletes
-// @access  Private/Coach
 const getMyAthletes = asyncHandler(async (req, res) => {
     const club = await Club.findOne({ coach: req.user._id });
     if (!club) {
@@ -115,11 +159,8 @@ const getMyAthletes = asyncHandler(async (req, res) => {
     res.json(athletes);
 });
 
-// @desc    Respond to an athlete's club joining request
-// @route   PUT /api/clubs/respond-request
-// @access  Private/Coach
 const respondToRequest = asyncHandler(async (req, res) => {
-    const { athleteId, status } = req.body; 
+    const { athleteId, status } = req.body;
 
     if (!athleteId || !status || !['approved', 'rejected'].includes(status)) {
         res.status(400);
@@ -151,9 +192,6 @@ const respondToRequest = asyncHandler(async (req, res) => {
     res.json({ message: `Athlete request has been ${status}.` });
 });
 
-// @desc    Register a new athlete by a coach
-// @route   POST /api/clubs/register-athlete
-// @access  Private/Coach
 const registerAthleteByCoach = asyncHandler(async (req, res) => {
     const { firstName, lastName, email, password, gender, dateOfBirth, city, rank } = req.body;
 
@@ -188,6 +226,7 @@ const registerAthleteByCoach = asyncHandler(async (req, res) => {
 module.exports = {
     createClub,
     getClubs,
+    deleteClub, // Exporting the new function
     getMyClub,
     updateMyClub,
     getMyAthletes,

@@ -1,133 +1,165 @@
-
-:root {
-    --brand-primary: #0A1931;
-    --brand-secondary: #182C4A;
-    --brand-accent: #3A7DFF;
-    --text-light: #F0F4F8;
-    --text-dark: #A9B4C2;
-    --border-color: #2A3B5A;
-    --background-light: #1E293B;
-    --background-dark: #0F172A;
-    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-
-    --color-blue: #3A7DFF;
-    --color-purple: #8B5CF6;
-    --color-green: #10B981;
-}
-
 /* =========================================
-   Base Layout
+   COACH DASHBOARD CSS
+   (Синхронизирован с глобальной темой)
    ========================================= */
 
-.container.coach-dashboard-grid {
-    display: grid;
-    grid-template-columns: 240px 1fr;
-    gap: 2rem;
-    padding: 1.5rem;
-    max-width: 1400px;
-    margin: 0 auto;
+/* --- Главная сетка и лейаут --- */
+.coach-dashboard-grid {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--bg); /* #020617 */
+    color: var(--text);
+    padding-top: 70px; /* Отступ под плавающий хедер */
+    animation: fadeIn 0.5s ease-out;
 }
-
+  
+/* --- Боковая навигация (Sidebar) --- */
 .coach-dashboard-nav {
-    background-color: var(--background-dark);
-    border-radius: 12px;
-    padding: 1rem;
+    width: 280px;
+    background-color: var(--bg); 
+    border-right: 1px solid var(--border);
+    padding: 2.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
 }
-
+  
 .coach-dashboard-nav h3 {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--text-dark);
+    font-family: 'Unbounded', sans-serif;
+    font-size: 0.85rem;
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    padding: 0 1rem;
-    margin-bottom: 0.75rem;
+    margin-bottom: 1.5rem;
+    padding-left: 1rem;
 }
-
+  
 .coach-dashboard-nav ul {
     list-style: none;
     padding: 0;
     margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
-
-.coach-dashboard-nav li a {
+  
+.coach-dashboard-nav a {
     display: flex;
     align-items: center;
-    padding: 0.85rem 1rem;
-    color: var(--text-dark);
-    font-size: 1rem;
-    font-weight: 500;
+    padding: 0.875rem 1rem;
+    color: var(--text-muted);
     text-decoration: none;
-    border-radius: 8px;
-    margin-bottom: 0.5rem;
-    transition: background-color 0.2s, color 0.2s;
+    font-weight: 500;
+    border-radius: 0.75rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
-.coach-dashboard-nav li a:hover {
-    background-color: var(--background-light);
-    color: var(--text-light);
+  
+.coach-dashboard-nav a:hover {
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text);
+    transform: translateX(4px);
 }
-
-.coach-dashboard-nav li a.active {
-    background-color: var(--brand-accent);
-    color: white;
+  
+/* Тренерский акцент — золотой (KZ Gold) */
+.coach-dashboard-nav a.active {
+    background: rgba(241, 196, 15, 0.1); 
+    color: var(--kz-gold);
+    border-left: 3px solid var(--kz-gold);
+    padding-left: calc(1rem - 3px);
 }
-
-.coach-dashboard-content .page-header {
-    margin-bottom: 2rem;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 1rem;
+  
+/* --- Основной контент --- */
+.coach-dashboard-content {
+    flex: 1;
+    padding: 2.5rem 3rem;
+    overflow-y: auto;
+}
+  
+/* --- Шапка панели тренера --- */
+.page-header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.coach-dashboard-content .page-header h1 {
-    font-size: 2rem;
+.page-header h1 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 2.2rem;
     font-weight: 700;
-    color: var(--text-light);
+    color: var(--text);
+    margin-bottom: 0.5rem;
 }
 
 .header-tag {
-    background-color: var(--background-light);
-    color: var(--text-dark);
-    padding: 0.3rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 1rem;
+    background: rgba(241, 196, 15, 0.1);
+    color: var(--kz-gold);
+    border: 1px solid rgba(241, 196, 15, 0.2);
+    border-radius: 100px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
 }
 
-/* =========================================
-   V2 Stat Cards
-   ========================================= */
-
+/* --- Статистические карточки (StatCard V2) --- */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
+    margin-bottom: 3rem;
 }
 
 .stat-card-v2 {
-    background-color: var(--background-dark);
-    border-radius: 12px;
+    background: var(--card); /* #0a1329 */
+    border: 1px solid var(--border);
+    border-radius: 1.5rem;
     padding: 1.5rem;
-    text-decoration: none;
-    color: var(--text-light);
-    border: 1px solid var(--border-color);
-    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Легкое свечение на фоне карточки */
+.stat-card-v2::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    filter: blur(40px);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 0;
 }
 
 .stat-card-v2:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.15);
 }
 
-.stat-card-v2.card-blue:hover { border-color: var(--color-blue); }
-.stat-card-v2.card-purple:hover { border-color: var(--color-purple); }
-.stat-card-v2.card-green:hover { border-color: var(--color-green); }
+.stat-card-v2:hover::before {
+    opacity: 1;
+}
+
+/* Элементы поверх свечения */
+.stat-card-v2__header,
+.stat-card-v2__body,
+.stat-card-v2__footer {
+    position: relative;
+    z-index: 1;
+}
 
 .stat-card-v2__header {
     display: flex;
@@ -137,78 +169,305 @@
 }
 
 .stat-card-v2__icon {
-    border-radius: 8px;
-    padding: 10px;
-    display: inline-flex;
+    width: 48px;
+    height: 48px;
+    border-radius: 1rem;
+    display: flex;
     align-items: center;
     justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
 }
-
-.card-blue .stat-card-v2__icon { background-color: rgba(58, 125, 255, 0.1); color: var(--color-blue); }
-.card-purple .stat-card-v2__icon { background-color: rgba(139, 92, 246, 0.1); color: var(--color-purple); }
-.card-green .stat-card-v2__icon { background-color: rgba(16, 185, 129, 0.1); color: var(--color-green); }
 
 .stat-card-v2__value {
+    font-family: 'Unbounded', sans-serif;
     font-size: 2.5rem;
     font-weight: 700;
-    color: var(--text-light);
-}
-
-.stat-card-v2__body {
-    margin-bottom: 1.5rem;
+    line-height: 1;
 }
 
 .stat-card-v2__label {
-    font-size: 1.1rem;
+    font-size: 1rem;
+    color: var(--text-muted);
     font-weight: 500;
-    color: var(--text-dark);
 }
 
 .stat-card-v2__footer {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    font-size: 0.9rem;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    transition: color 0.3s ease;
+}
+
+/* Цветовые вариации карточек */
+.card-blue .stat-card-v2__icon { color: var(--accent); background: rgba(0, 175, 236, 0.1); }
+.card-blue .stat-card-v2__value { color: var(--accent); }
+.card-blue::before { background: var(--accent); }
+.card-blue:hover .stat-card-v2__footer { color: var(--accent); }
+
+.card-purple .stat-card-v2__icon { color: #a855f7; background: rgba(168, 85, 247, 0.1); }
+.card-purple .stat-card-v2__value { color: #a855f7; }
+.card-purple::before { background: #a855f7; }
+.card-purple:hover .stat-card-v2__footer { color: #a855f7; }
+
+.card-green .stat-card-v2__icon { color: #22c55e; background: rgba(34, 197, 94, 0.1); }
+.card-green .stat-card-v2__value { color: #22c55e; }
+.card-green::before { background: #22c55e; }
+.card-green:hover .stat-card-v2__footer { color: #22c55e; }
+
+/* --- Создание клуба (Create Club) --- */
+.create-club-container {
+    background: linear-gradient(135deg, var(--card) 0%, rgba(26, 31, 46, 0.5) 100%);
+    border: 1px solid var(--border);
+    border-radius: 1.5rem;
+    padding: 3rem;
+    text-align: center;
+    max-width: 600px;
+    margin: 4rem auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.create-club-container h2 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 1.8rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.create-club-container p {
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+}
+
+.create-club-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-group .icon-wrapper {
+    position: absolute;
+    left: 1rem;
+    color: var(--text-muted);
+    display: flex;
+}
+
+.input-group input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 1rem 1rem 1rem 3rem; /* Отступ под иконку */
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--kz-gold);
+    box-shadow: 0 0 0 3px rgba(241, 196, 15, 0.15);
+}
+
+.create-club-form .btn-primary {
+    background: linear-gradient(135deg, var(--kz-gold) 0%, #d4ac0d 100%);
+    color: #020617; /* Темный текст на золотом фоне */
+    padding: 1rem;
+    border-radius: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.create-club-form .btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(241, 196, 15, 0.4);
+}
+
+.create-club-form .btn-primary:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* --- Ошибки и загрузка --- */
+.error-alert {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    margin-bottom: 1.5rem;
     font-weight: 500;
-    color: var(--text-dark);
-    opacity: 0;
-    transition: opacity 0.2s;
 }
 
-.stat-card-v2:hover .stat-card-v2__footer {
-    opacity: 1;
+.loading-indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    font-weight: 500;
 }
 
-.stat-card-v2__footer .lucide {
-    margin-left: 0.5rem;
-}
-
-
-/* =========================================
-   Responsive Adjustments
-   ========================================= */
-
-@media (max-width: 992px) {
-    .container.coach-dashboard-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
+/* --- Адаптивность --- */
 @media (max-width: 768px) {
+    .coach-dashboard-grid {
+        flex-direction: column;
+    }
+    .coach-dashboard-nav {
+        width: 100%;
+        padding: 1rem;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
     .coach-dashboard-nav ul {
         flex-direction: row;
-        justify-content: space-around;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
     }
-    .coach-dashboard-nav h3 {
-        display: none;
+    .coach-dashboard-nav a {
+        white-space: nowrap;
     }
-    .coach-dashboard-nav li a {
-        font-size: 0.8rem; /* smaller text */
+    .coach-dashboard-content {
+        padding: 1.5rem;
+    }
+    .page-header {
         flex-direction: column;
-        padding: 0.5rem;
+        align-items: flex-start;
+        gap: 1rem;
     }
-    .coach-dashboard-nav li a .lucide {
-        margin-right: 0;
-        margin-bottom: 0.25rem;
+    .create-club-container {
+        padding: 2rem 1.5rem;
+        margin: 2rem auto;
     }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Стили для страницы запросов от атлетов --- */
+.athletes-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+.athlete-card-details {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 1.5rem;
+    padding: 1.5rem 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+.athlete-card-details:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+.card-header h3 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0;
+}
+.card-header-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+.action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.action-btn:hover {
+    transform: scale(1.05);
+}
+.success-btn {
+    color: #22c55e;
+}
+.success-btn:hover {
+    background-color: rgba(34, 197, 94, 0.1);
+    border-color: rgba(34, 197, 94, 0.4);
+}
+.danger-btn {
+    color: #ef4444;
+}
+.danger-btn:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.4);
+}
+.profile-fields-grid.compact {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+.profile-field.compact {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.profile-field__icon {
+    color: var(--text-muted);
+}
+.profile-field__label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+}
+.profile-field__value {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text);
+}
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background-color: var(--card);
+    border: 1px dashed var(--border);
+    border-radius: 1.5rem;
+}
+.empty-state p {
+    font-size: 1.1rem;
+    color: var(--text-muted);
 }

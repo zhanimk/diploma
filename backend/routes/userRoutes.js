@@ -17,20 +17,22 @@ const { protect, admin, coach } = require('../middleware/authMiddleware');
 // --- Public Routes ---
 router.post('/register', registerUser);
 router.post('/login', loginUser);
-router.get('/:id', getUserById);
-router.get('/:id/history', getAthleteTournaments); // Public access to tournament history
 
-// --- General Private Routes ---
+// --- General Private Routes (Profile must be before /:id) ---
 router.route('/profile')
     .get(protect, getUserProfile)
     .put(protect, updateUserProfile);
 
 // --- Coach Routes ---
 router.get('/coach/student-requests', protect, coach, getStudentRequests);
-router.put('/coach/respond-request', protect, coach, handleAthleteRequest);
 router.put('/update-athlete/:athleteId', protect, coach, updateAthleteProfileByCoach);
+router.post('/coach/handle-request', protect, coach, handleAthleteRequest);
 
 // --- Admin Routes ---
 router.get('/', protect, admin, getAllUsers);
+
+// --- Public routes that might conflict with others must be last ---
+router.get('/:id', getUserById);
+router.get('/:id/history', getAthleteTournaments);
 
 module.exports = router;
