@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { getClubs, deleteClub } from '../../store/clubSlice';
 import './AdminClubs.css';
 
 const AdminClubs = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { clubs, loading, error } = useSelector(state => state.clubs);
-    const { userInfo } = useSelector(state => state.auth);
 
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        // We dispatch getClubs. The backend middleware will ensure only admins can get the data.
         dispatch(getClubs());
     }, [dispatch]);
 
@@ -21,12 +21,14 @@ const AdminClubs = () => {
         }
     };
 
+    const viewHandler = (id) => {
+        navigate(`/admin/clubs/${id}`);
+    };
+
     const filteredClubs = clubs.filter(club =>
         club.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // The main render logic. It relies on Redux state (loading, error, or data) 
-    // to display the correct UI. This is robust and avoids race conditions.
     return (
         <div className="admin-clubs-container">
             <h1>Клубтар</h1>
@@ -45,7 +47,6 @@ const AdminClubs = () => {
                 {loading ? (
                     <p>Загрузка...</p>
                 ) : error ? (
-                    // If the API call fails (e.g., due to auth), the error will be shown here.
                     <p>Ошибка: {error}</p>
                 ) : (
                     <table className="clubs-table">
@@ -68,7 +69,12 @@ const AdminClubs = () => {
                                     <td>{club.athleteCount !== undefined ? club.athleteCount : 0}</td>
                                     <td>{club.region || '—'}</td>
                                     <td className="action-buttons">
-                                        <button className="action-btn view-btn">👁️</button>
+                                        <button 
+                                            className="action-btn view-btn"
+                                            onClick={() => viewHandler(club._id)}
+                                        >
+                                            👁️
+                                        </button>
                                         <button 
                                             className="action-btn delete-btn" 
                                             onClick={() => deleteHandler(club._id)}

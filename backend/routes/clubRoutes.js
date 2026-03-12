@@ -3,7 +3,8 @@ const router = express.Router();
 const {
     createClub,
     getClubs,
-    deleteClub, // Importing the new controller function
+    getClubById, // Importing the new controller
+    deleteClub,
     getMyClub,
     updateMyClub,
     getMyAthletes,
@@ -12,8 +13,9 @@ const {
 } = require('../controllers/clubController');
 const { protect, coach, admin } = require('../middleware/authMiddleware');
 
-// Public route to get all clubs
+// Public routes
 router.get('/', getClubs);
+router.get('/:id', getClubById); // New public route for getting a single club by ID
 
 // Coach routes for managing their own club
 router.route('/my-club')

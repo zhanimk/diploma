@@ -14,12 +14,26 @@ export const getClubs = createAsyncThunk(
     }
 );
 
+// Async thunk for fetching a single club by ID
+export const getClubById = createAsyncThunk(
+    'clubs/getClubById',
+    async (clubId, { rejectWithValue }) => {
+        try {
+            const { data } = await axios.get(`/api/clubs/${clubId}`);
+            return data;
+        } catch (error) {
+            return rejectWithValue(error.response.data.message || error.message);
+        }
+    }
+);
+
+
 // Async thunk for deleting a club
 export const deleteClub = createAsyncThunk(
     'clubs/deleteClub',
     async (clubId, { getState, rejectWithValue }) => {
         try {
-            const { user: { userInfo } } = getState();
+            const { auth: { userInfo } } = getState(); // Correctly accessing userInfo from auth state
             const config = {
                 headers: {
                     Authorization: `Bearer ${userInfo.token}`,
@@ -37,8 +51,11 @@ const clubSlice = createSlice({
     name: 'clubs',
     initialState: {
         clubs: [],
+        club: null, // To store details of a single club
         loading: false,
         error: null,
+        loadingDetails: false, // Separate loading for details view
+        errorDetails: null,     // Separate error for details view
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -56,20 +73,31 @@ const clubSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
+            // Get club by ID reducers
+            .addCase(getClubById.pending, (state) => {
+                state.loadingDetails = true;
+                state.errorDetails = null;
+                state.club = null;
+            })
+            .addCase(getClubById.fulfilled, (state, action) => {
+                state.loadingDetails = false;
+                state.club = action.payload;
+            })
+            .addCase(getClubById.rejected, (state, action) => {
+                state.loadingDetails = false;
+                state.errorDetails = action.payload;
+            })
             // Delete club reducers
             .addCase(deleteClub.pending, (state) => {
-                // Optionally, you can set a specific loading state for deletion
                 state.loading = true; 
             })
             .addCase(deleteClub.fulfilled, (state, action) => {
                 state.loading = false;
-                // Filter out the deleted club from the state
                 state.clubs = state.clubs.filter(club => club._id !== action.payload);
                 state.error = null;
             })
             .addCase(deleteClub.rejected, (state, action) => {
                 state.loading = false;
-                // It's good practice to show the error message for the failed deletion
                 state.error = action.payload;
             });
     },

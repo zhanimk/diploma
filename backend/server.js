@@ -19,6 +19,7 @@ app.use('/api/tournaments', require('./routes/tournamentRoutes'));
 app.use('/api/applications', require('./routes/applicationRoutes'));
 app.use('/api/clubs', require('./routes/clubRoutes'));
 app.use('/api/upload', require('./routes/uploadRoutes'));
+app.use('/api/admin', require('./routes/adminRoutes')); // <-- Added this line
 
 // --- Static Folder Setup ---
 const dirname = path.resolve();

@@ -1,0 +1,230 @@
+/* =========================================
+   LOGIN PAGE CSS (MIRROR SPLIT-SCREEN & 3D ARENA)
+   ========================================= */
+
+   :root {
+    --login-bg-main: #020617; /* Черный для формы */
+    --login-bg-side: #040b16; /* Глубокий синий для визуала */
+    --login-accent: #00afec;  /* KZ Blue */
+    --login-text: #f8fafc;
+    --login-muted: #64748b;
+    --login-border: rgba(255, 255, 255, 0.08);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  * { box-sizing: border-box; }
+  
+  /* --- ГЛАВНЫЙ КОНТЕЙНЕР (РЕВЕРСИВНЫЙ) --- */
+  .auth-container {
+    display: flex;
+    flex-direction: row-reverse; /* ФИШКА: Форма слева, визуал справа! */
+    min-height: 100vh;
+    width: 100%;
+    font-family: 'Inter', sans-serif;
+    color: var(--login-text);
+    overflow: hidden;
+  }
+  
+  /* =========================================
+     ВИЗУАЛ СПРАВА: 3D КИБЕР-АРЕНА
+     ========================================= */
+  .login-visual {
+    flex: 1.2;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem 10%;
+    background: radial-gradient(circle at 100% 100%, rgba(0, 175, 236, 0.15) 0%, var(--login-bg-side) 70%);
+    border-left: 1px solid var(--login-border); /* Рамка теперь слева */
+    overflow: hidden;
+    perspective: 1000px; /* Добавляем перспективу для 3D колец */
+  }
+  
+  /* 3D Кольцо 1 */
+  .login-visual::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 700px; height: 700px;
+    border: 2px dashed rgba(0, 175, 236, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) rotateX(65deg);
+    animation: rotateRing 30s linear infinite;
+    box-shadow: 0 0 100px rgba(0, 175, 236, 0.1) inset;
+    z-index: 0;
+  }
+  
+  /* 3D Кольцо 2 (внутреннее) */
+  .login-visual::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 450px; height: 450px;
+    border: 3px solid rgba(0, 175, 236, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) rotateX(65deg) rotateY(10deg);
+    animation: rotateRing 20s linear infinite reverse;
+    box-shadow: 0 0 40px rgba(0, 175, 236, 0.2);
+    z-index: 0;
+  }
+  
+  @keyframes rotateRing {
+    0% { transform: translate(-50%, -50%) rotateX(65deg) rotateZ(0deg); }
+    100% { transform: translate(-50%, -50%) rotateX(65deg) rotateZ(360deg); }
+  }
+  
+  .login-visual .brand-logo {
+    position: absolute;
+    top: 40px;
+    right: 10%; /* Логотип теперь справа */
+    font-family: 'Unbounded', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    z-index: 4;
+  }
+  .login-visual .brand-logo span { color: var(--login-accent); }
+  
+  .login-visual .auth-visual__content {
+    position: relative;
+    z-index: 3;
+    text-align: right; /* Текст выравниваем по правому краю для симметрии */
+  }
+  
+  .login-visual .quote-box {
+    background: rgba(2, 6, 23, 0.5);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--login-border);
+    padding: 3rem;
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    border-right: 4px solid var(--login-accent); /* Акцентная линия */
+  }
+  
+  .login-visual h1 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: #fff;
+  }
+  .login-visual p {
+    color: var(--login-muted);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+  
+  /* =========================================
+     ФОРМА СЛЕВА (ЧИСТЫЙ ИНТЕРФЕЙС)
+     ========================================= */
+  .auth-form-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--login-bg-main);
+    padding: 2rem;
+    z-index: 2;
+  }
+  
+  .auth-card {
+    width: 100%;
+    max-width: 440px; /* Форма входа чуть уже, чем регистрация */
+    background: transparent;
+    padding: 0;
+  }
+  
+  .auth-header { margin-bottom: 3rem; text-align: left; }
+  .auth-header h2 { font-family: 'Unbounded', sans-serif; font-size: 2.2rem; margin-bottom: 0.5rem; color: #fff; }
+  .auth-header p { color: var(--login-muted); font-size: 1rem; }
+  
+  /* --- ИДЕАЛЬНО РОВНЫЕ ИНПУТЫ --- */
+  .form-fields { display: flex; flex-direction: column; gap: 1.5rem; }
+  
+  .input-group { position: relative; width: 100%; }
+  
+  .icon-wrapper {
+    position: absolute; left: 0; top: 0;
+    width: 56px; height: 56px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--login-muted); pointer-events: none;
+    transition: var(--transition);
+  }
+  
+  .input-group input {
+    width: 100%;
+    height: 56px; /* ЖЕСТКАЯ ВЫСОТА ПОЛЯ */
+    padding: 0 16px 0 56px; /* Отступ под иконку */
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--login-border);
+    border-radius: 14px;
+    color: #fff;
+    font-size: 1rem;
+    outline: none;
+    transition: var(--transition);
+  }
+  
+  .input-group input:focus {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--login-accent);
+    box-shadow: 0 0 0 4px rgba(0, 175, 236, 0.1);
+  }
+  .input-group input:focus + .icon-wrapper,
+  .input-group:focus-within .icon-wrapper {
+    color: var(--login-accent);
+  }
+  
+  .eye-btn {
+    position: absolute; right: 0; top: 0; width: 56px; height: 56px;
+    display: flex; align-items: center; justify-content: center;
+    background: none; border: none; color: var(--login-muted); cursor: pointer;
+    transition: var(--transition);
+  }
+  .eye-btn:hover { color: #fff; }
+  
+  /* --- ССЫЛКИ И КНОПКИ --- */
+  .login-options-row {
+    display: flex; justify-content: flex-end;
+    margin: 1rem 0 2rem 0;
+  }
+  
+  .forgot-link-sm {
+    font-size: 0.9rem; font-weight: 500; color: var(--login-muted); text-decoration: none; transition: var(--transition);
+  }
+  .forgot-link-sm:hover { color: var(--login-accent); }
+  
+  .submit-btn {
+    width: 100%; height: 56px; /* ВЫСОТА КАК У ИНПУТОВ */
+    border-radius: 14px; border: none;
+    background: linear-gradient(135deg, var(--login-accent) 0%, #008ecc 100%);
+    color: #fff; font-weight: 700; font-size: 1.1rem;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    cursor: pointer; transition: var(--transition);
+    box-shadow: 0 8px 20px rgba(0, 175, 236, 0.2);
+  }
+  .submit-btn:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(0, 175, 236, 0.4);
+  }
+  .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+  
+  /* --- ОШИБКИ И ФУТЕР --- */
+  .error-alert { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; padding: 1rem; border-radius: 12px; font-size: 0.9rem; font-weight: 600; text-align: center; }
+  .auth-footer { margin-top: 3rem; text-align: center; font-size: 0.95rem; color: var(--login-muted); }
+  .auth-footer a { color: var(--login-accent); font-weight: 700; margin-left: 5px; text-decoration: none; }
+  .auth-footer a:hover { text-decoration: underline; }
+  
+  /* Лоадер */
+  .loader-spin { width: 22px; height: 22px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  
+  /* --- АДАПТИВНОСТЬ --- */
+  @media (max-width: 992px) {
+    .auth-container { flex-direction: column; } /* Форма вернется наверх на мобилках */
+    .login-visual { display: none; }
+    .auth-form-wrapper { padding: 2rem; align-items: flex-start; padding-top: 5rem; }
+    .auth-card { max-width: 100%; }
+  }

@@ -44,6 +44,7 @@ import AdminApplications from './pages/admin/AdminApplications';
 import AdminApplicationDetails from './pages/admin/AdminApplicationDetails';
 import AdminTournamentGrids from './pages/admin/AdminTournamentGrids';
 import AdminClubs from './pages/admin/AdminClubs';
+import ClubDetails from './pages/admin/ClubDetails';
 
 const userInfo = JSON.parse(localStorage.getItem('userInfo'));
 if (userInfo && userInfo.token) {
@@ -69,6 +70,7 @@ const App = () => {
                     <Route path="applications" element={<AdminApplications />} />
                     <Route path="applications/:id" element={<AdminApplicationDetails />} />
                     <Route path="clubs" element={<AdminClubs />} />
+                    <Route path="clubs/:id" element={<ClubDetails />} />
                 </Route>
             </Routes>
         );

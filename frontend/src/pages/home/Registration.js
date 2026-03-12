@@ -6,7 +6,7 @@ import { setUser } from "../../store/authSlice";
 import axios from 'axios';
 import setAuthToken from '../../utils/setAuthToken';
 import { User, Mail, Lock, Eye, EyeOff, Medal, Briefcase, Phone, Calendar, Weight, Users, Shield, ArrowRight, ArrowLeft } from "lucide-react";
-import "./Auth.css";
+import "./Registration.css";
 
 export default function Register() {
   const [step, setStep] = useState(1);

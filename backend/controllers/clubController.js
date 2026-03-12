@@ -4,6 +4,46 @@ const asyncHandler = require('express-async-handler');
 
 // ... (existing functions like createClub, getClubs, etc.)
 
+// @desc    Get a single club by ID with its athletes
+// @route   GET /api/clubs/:id
+// @access  Public
+const getClubById = asyncHandler(async (req, res) => {
+    const clubId = req.params.id;
+
+    const club = await Club.findById(clubId).populate('coach', 'firstName lastName phone').lean();
+
+    if (!club) {
+        res.status(404);
+        throw new Error('Club not found');
+    }
+
+    const athletes = await User.find({
+        club: clubId,
+        role: 'athlete',
+        clubStatus: 'approved'
+    }).select('firstName lastName dateOfBirth gender').lean();
+
+    const coachInfo = club.coach ? {
+        name: `${club.coach.firstName} ${club.coach.lastName}`,
+        phone: club.coach.phone || '—'
+    } : {
+        name: 'Тренер белгісіз',
+        phone: '—'
+    };
+
+    const response = {
+        _id: club._id,
+        name: club.name,
+        coachName: coachInfo.name,
+        coachPhone: coachInfo.phone,
+        region: club.city, 
+        logo: club.logo,
+        athletes: athletes, // Embed the list of athletes
+    };
+
+    res.json(response);
+});
+
 // @desc    Create or Update a club
 // @route   POST /api/clubs
 // @access  Private/Coach
@@ -226,7 +266,8 @@ const registerAthleteByCoach = asyncHandler(async (req, res) => {
 module.exports = {
     createClub,
     getClubs,
-    deleteClub, // Exporting the new function
+    getClubById, // Exporting the new function
+    deleteClub,
     getMyClub,
     updateMyClub,
     getMyAthletes,

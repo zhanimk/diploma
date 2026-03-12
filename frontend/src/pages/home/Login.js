@@ -8,7 +8,7 @@ import axios from 'axios';
 import setAuthToken from '../../utils/setAuthToken';
 import toast from 'react-hot-toast';
 import { Mail, Lock, Eye, EyeOff, LogIn } from "lucide-react";
-import "./Auth.css";
+import "./Login.css";
 
 export default function Login() {
   const [email, setEmail] = useState("");
