@@ -3,6 +3,8 @@ const Application = require('../models/applicationModel');
 const Tournament = require('../models/tournamentModel');
 const User = require('../models/userModel');
 
+// ... (остальные контроллеры остаются без изменений)
+
 // @desc    Создать новую заявку на турнир
 // @route   POST /api/applications
 // @access  Private (Coach)
@@ -162,9 +164,34 @@ const updateAthleteInApplication = asyncHandler(async (req, res) => {
     res.json(athleteEntry);
 });
 
-// Другие контроллеры (getCoachApplications, getAthleteTournaments и т.д.) остаются без изменений
 const getCoachApplications = asyncHandler(async (req, res) => { /* ... */ });
 const getAthleteTournaments = asyncHandler(async (req, res) => { /* ... */ });
+
+// @desc    Получить все заявки для конкретного турнира
+// @route   GET /api/applications/tournament/:tournamentId
+// @access  Private (Admin)
+const getApplicationsByTournament = asyncHandler(async (req, res) => {
+    const { tournamentId } = req.params;
+
+    const applications = await Application.find({ tournament: tournamentId })
+        .populate({ 
+            path: 'coach',
+            select: 'firstName lastName club', // Добавим клуб для информации
+            populate: { path: 'club', select: 'name' } 
+        })
+        .populate({
+            path: 'athletes.athlete',
+            model: 'User',
+            select: 'firstName lastName dateOfBirth gender belt'
+        });
+
+    if (!applications) {
+        res.status(404);
+        throw new Error('Заявки для этого турнира не найдены.');
+    }
+
+    res.json(applications);
+});
 
 
 module.exports = {
@@ -175,4 +202,5 @@ module.exports = {
     updateAthleteInApplication,
     getCoachApplications,
     getAthleteTournaments,
+    getApplicationsByTournament // <-- Экспортируем новую функцию
 };

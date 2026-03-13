@@ -15,7 +15,6 @@ export default function Header() {
 
   const handleLogout = () => {
     dispatch(logout());
-    localStorage.removeItem('userInfo');
     navigate('/');
     setMobileMenuOpen(false); 
   };
@@ -48,69 +47,69 @@ export default function Header() {
 
   return (
     <>
-      <div className="header-space">
-        <header className="new-header">
-          <div className="new-header__bg"></div>
-          <div className="new-header__grid-lines"></div>
+      <div class="header-space">
+        <header class="new-header">
+          <div class="new-header__bg"></div>
+          <div class="new-header__grid-lines"></div>
 
-          <div className="new-header__inner">
-            <Link to="/" className="new-logo">
-              <div className="new-logo__icon-wrap">
-                <div className="new-logo__icon-bg"></div>
-                <div className="new-logo__icon-dot"></div>
+          <div class="new-header__inner">
+            <Link to="/" class="new-logo">
+              <div class="new-logo__icon-wrap">
+                <div class="new-logo__icon-bg"></div>
+                <div class="new-logo__icon-dot"></div>
               </div>
-              <div className="new-logo__text">JUDO<span>ARENA</span></div>
+              <div class="new-logo__text">JUDO<span>ARENA</span></div>
             </Link>
             
-            <nav className="new-nav">
-              <Link to="/#about" className="new-nav__item">Платформа</Link>
-              <Link to="/#skills" className="new-nav__item">Техникалар</Link>
-              <Link to="/tournaments" className="new-nav__item">Жарыстар</Link>
+            <nav class="new-nav">
+              <Link to="/#about" class="new-nav__item">Платформа</Link>
+              <Link to="/#skills" class="new-nav__item">Техникалар</Link>
+              <Link to="/tournaments" class="new-nav__item">Жарыстар</Link>
             </nav>
 
-            <div className="new-actions">
+            <div class="new-actions">
               {user ? (
-                <div className="profile-menu" data-role-color={roleMeta.color}>
-                  <div className="profile-menu__trigger">
-                    <div className="profile-info">
-                      <span className="profile-info__name">{user.firstName || 'Профиль'}</span>
-                      <span className="profile-info__role">{user.role}</span>
+                <div class="profile-menu" data-role-color={roleMeta.color}>
+                  <div class="profile-menu__trigger">
+                    <div class="profile-info">
+                      <span class="profile-info__name">{user.firstName || 'Профиль'}</span>
+                      <span class="profile-info__role">{user.role}</span>
                     </div>
-                    <div className="avatar">
-                        <div className="avatar__border"></div>
-                        <div className="avatar__placeholder"><roleMeta.Icon size={18} /></div>
+                    <div class="avatar">
+                        <div class="avatar__border"></div>
+                        <div class="avatar__placeholder"><roleMeta.Icon size={18} /></div>
                     </div>
                   </div>
 
-                  <div className="profile-menu__dropdown">
-                     <div className="dropdown__header">
-                        <span className="dropdown__greeting">Сәлем, {user.firstName || 'пайдаланушы'}!</span>
-                        <span className="dropdown__email">{user.email}</span>
+                  <div class="profile-menu__dropdown">
+                     <div class="dropdown__header">
+                        <span class="dropdown__greeting">Сәлем, {user.firstName || 'пайдаланушы'}!</span>
+                        <span class="dropdown__email">{user.email}</span>
                      </div>
-                     <div className="dropdown__divider"></div>
-                     <Link to={roleMeta.path} className="dropdown__item">
+                     <div class="dropdown__divider"></div>
+                     <Link to={roleMeta.path} class="dropdown__item">
                        <LayoutDashboard size={16} />
                        <span>Басқару панелі</span>
                      </Link>
-                     <Link to={roleMeta.profilePath} className="dropdown__item">
+                     <Link to={roleMeta.profilePath} class="dropdown__item">
                        <User size={16} />
                        <span>Профиль</span>
                      </Link>
-                     <div className="dropdown__divider"></div>
-                     <button onClick={handleLogout} className="dropdown__item is-logout">
+                     <div class="dropdown__divider"></div>
+                     <button onClick={handleLogout} class="dropdown__item is-logout">
                        <LogOut size={16} />
                        <span>Шығу</span>
                      </button>
                   </div>
                 </div>
               ) : (
-                <div className="auth-buttons">
-                  <Link to="/login" className="btn-secondary">Кіру</Link>
-                  <Link to="/register" className="btn-primary"><span>Тіркелу</span></Link>
+                <div class="auth-buttons">
+                  <Link to="/login" class="btn-secondary">Кіру</Link>
+                  <Link to="/register" class="btn-primary"><span>Тіркелу</span></Link>
                 </div>
               )}
               
-              <button className="mobile-toggle" onClick={() => setMobileMenuOpen(true)}>
+              <button class="mobile-toggle" onClick={() => setMobileMenuOpen(true)}>
                 <Menu size={24} />
               </button>
             </div>
@@ -119,26 +118,26 @@ export default function Header() {
       </div>
 
       {isMobileMenuOpen && (
-        <nav className="mobile-fullscreen-nav">
-          <button className="mobile-fullscreen-nav__close" onClick={() => setMobileMenuOpen(false)}>
+        <nav class="mobile-fullscreen-nav">
+          <button class="mobile-fullscreen-nav__close" onClick={() => setMobileMenuOpen(false)}>
             <X size={32} />
           </button>
-          <div className="mobile-fullscreen-nav__links">
-            <Link to="/#about" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Платформа</Link>
-            <Link to="/#skills" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Техникалар</Link>
-            <Link to="/tournaments" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Жарыстар</Link>
-            <div className="mobile-nav-divider"></div>
+          <div class="mobile-fullscreen-nav__links">
+            <Link to="/#about" class="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Платформа</Link>
+            <Link to="/#skills" class="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Техникалар</Link>
+            <Link to="/tournaments" class="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Жарыстар</Link>
+            <div class="mobile-nav-divider"></div>
             {!user ? (
               <>
-                <Link to="/login" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Кіру</Link>
-                <Link to="/register" className="btn-primary" onClick={() => setMobileMenuOpen(false)}>Тіркелу</Link>
+                <Link to="/login" class="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Кіру</Link>
+                <Link to="/register" class="btn-primary" onClick={() => setMobileMenuOpen(false)}>Тіркелу</Link>
               </>
             ) : (
                 <>
-                  <Link to={roleMeta.path} className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Басқару панелі</Link>
-                  <Link to={roleMeta.profilePath} className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Профиль</Link>
-                  <div className="mobile-nav-divider"></div>
-                  <button onClick={handleLogout} className="mobile-nav-link is-logout">Шығу</button>
+                  <Link to={roleMeta.path} class="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Басқару панелі</Link>
+                  <Link to={roleMeta.profilePath} class="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Профиль</Link>
+                  <div class="mobile-nav-divider"></div>
+                  <button onClick={handleLogout} class="mobile-nav-link is-logout">Шығу</button>
                 </>
             )}
           </div>

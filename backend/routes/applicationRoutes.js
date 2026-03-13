@@ -8,7 +8,8 @@ const {
     updateApplicationStatus,
     updateAthleteInApplication, // <-- Импортируем новую функцию
     getCoachApplications, 
-    getAthleteTournaments 
+    getAthleteTournaments,
+    getApplicationsByTournament // <-- Наша новая функция
 } = require('../controllers/applicationController');
 
 const { protect, coach, admin } = require('../middleware/authMiddleware');
@@ -22,6 +23,7 @@ router.get('/athlete', protect, getAthleteTournaments); // Спортсмен в
 
 // --- Маршруты для Админа ---
 router.route('/admin').get(protect, admin, getAllApplications); // Админ видит все заявки
+router.route('/tournament/:tournamentId').get(protect, admin, getApplicationsByTournament); // <-- Наш новый маршрут
 router.route('/:id').get(protect, admin, getApplicationById); // Админ видит заявку по ID
 router.route('/:id/status').put(protect, admin, updateApplicationStatus); // Админ обновляет статус заявки
 

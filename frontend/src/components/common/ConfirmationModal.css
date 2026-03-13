@@ -1,0 +1,110 @@
+/* === Overlay & Container === */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(13, 17, 23, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+}
+
+.modal-container {
+    background-color: var(--pro-surface, #161b22);
+    border: 1px solid var(--pro-border, #30363d);
+    border-radius: 8px;
+    width: 90%;
+    max-width: 480px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* === Header === */
+.modal-header {
+    display: flex;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--pro-border, #30363d);
+    position: relative;
+}
+
+.modal-icon {
+    margin-right: 1rem;
+}
+.modal-icon.danger { color: var(--pro-danger, #f85149); }
+.modal-icon.primary { color: var(--pro-primary, #58a6ff); }
+
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--pro-text-main, #c9d1d9);
+}
+
+.close-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: var(--pro-text-secondary, #8b949e);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 50%;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.close-button:hover {
+    background-color: var(--pro-secondary-bg, #21262d);
+    color: var(--pro-text-main, #c9d1d9);
+}
+
+/* === Body & Footer === */
+.modal-body {
+    padding: 1.5rem;
+    color: var(--pro-text-secondary, #8b949e);
+    line-height: 1.6;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    background-color: var(--pro-bg, #0d1117);
+    border-top: 1px solid var(--pro-border, #30363d);
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+/* === Button variants === */
+/* (Using btn classes from AdminDashboard.css for consistency) */
+.btn.btn-danger {
+    background-color: var(--pro-danger, #f85149);
+    border-color: var(--pro-danger, #f85149);
+    color: #fff;
+}
+.btn.btn-danger:hover {
+    background-color: #da3633;
+    border-color: #da3633;
+}
+
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

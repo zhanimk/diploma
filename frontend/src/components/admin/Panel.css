@@ -1,0 +1,219 @@
+/* === Overlay & Panel Container === */
+.panel-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(13, 17, 23, 0.6);
+    z-index: 900;
+    display: flex;
+    justify-content: flex-end; /* Panel appears from the right */
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+    animation: overlayFadeIn 0.3s ease-out;
+}
+
+.panel-container {
+    background-color: var(--pro-bg, #0d1117);
+    width: 100%;
+    max-width: 480px;
+    height: 100%;
+    border-left: 1px solid var(--pro-border, #30363d);
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    animation: panelSlideIn 0.3s ease-out;
+}
+
+/* === Header === */
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--pro-border, #30363d);
+    flex-shrink: 0;
+}
+
+.panel-header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--pro-text-main, #c9d1d9);
+    margin: 0;
+}
+
+.panel-close-btn {
+    background: none;
+    border: none;
+    color: var(--pro-text-secondary, #8b949e);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 50%;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.panel-close-btn:hover {
+    background-color: var(--pro-secondary-bg, #21262d);
+    color: var(--pro-text-main, #c9d1d9);
+}
+
+/* === Body & Scrolling === */
+.panel-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+    flex-grow: 1;
+    color: var(--pro-text-secondary, #8b949e);
+}
+
+.panel-section {
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--pro-border, #30363d);
+    padding-bottom: 2rem;
+}
+
+.panel-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.panel-section.text-center {
+    text-align: center;
+}
+
+.panel-section h4 {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--pro-text-secondary);
+    margin: 0 0 1rem 0;
+}
+
+/* === User/Club specific elements === */
+.avatar-large {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: var(--pro-primary, #58a6ff);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.panel-body h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--pro-text-main, #c9d1d9);
+    margin: 0 0 0.5rem 0;
+}
+
+.panel-body .role-badge {
+    display: inline-block;
+    margin: 0;
+}
+
+/* === Info Grid === */
+.info-grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.info-item svg {
+    color: var(--pro-text-secondary, #8b949e);
+    flex-shrink: 0;
+    margin-top: 4px;
+}
+
+.info-item div {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-item span {
+    font-size: 0.875rem;
+    color: var(--pro-text-secondary, #8b949e);
+}
+
+.info-item p {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--pro-text-main, #c9d1d9);
+    font-weight: 500;
+}
+
+/* === Footer === */
+.panel-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    background-color: var(--pro-bg, #0d1117);
+    border-top: 1px solid var(--pro-border, #30363d);
+    flex-shrink: 0;
+}
+
+/* === Animations === */
+@keyframes overlayFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes panelSlideIn {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+/* === List within panel (for club members) === */
+.panel-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.panel-list-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    background-color: var(--pro-secondary-bg, #21262d);
+}
+
+.panel-list-item .avatar-small {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--pro-primary, #58a6ff);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.panel-list-item p {
+    margin: 0;
+    color: var(--pro-text-main, #c9d1d9);
+    font-weight: 500;
+}
+
+.panel-list-item span {
+    font-size: 0.875rem;
+    color: var(--pro-text-secondary, #8b949e);
+}

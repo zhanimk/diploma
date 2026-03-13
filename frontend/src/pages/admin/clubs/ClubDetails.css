@@ -1,0 +1,77 @@
+/* Dark Theme for Club Details */
+.club-details-container {
+    padding: 2rem;
+    /* Темно-синий фон */
+    background-color: #121828; /* Более глубокий синий */
+    color: #e5e7eb; /* Светло-серый текст для читаемости */
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    /* Яркий цвет для ссылки */
+    color: #38bdf8; 
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+/* Карточки с информацией делаем чуть светлее фона */
+.main-info-card, .athletes-card {
+    background-color: #1f2937; /* Темно-серый/синий */
+    border: 1px solid #374151; /* Граница, чтобы выделить карточку */
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+h1 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #ffffff; /* Белый заголовок */
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem; /* Немного увеличим разрыв */
+}
+
+.info-item .info-label {
+    font-weight: bold;
+    color: #9ca3af; /* Менее яркий цвет для метки */
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.info-item .info-value {
+    color: #e5e7eb; /* Светлый цвет для значения */
+}
+
+.athletes-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.athletes-table th, .athletes-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    /* Более светлая граница для темного фона */
+    border-bottom: 1px solid #374151; 
+}
+
+.athletes-table th {
+    /* Фон для заголовков таблицы */
+    background-color: #374151;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.error-message {
+    color: #fca5a5; /* Светло-красный для ошибок */
+}

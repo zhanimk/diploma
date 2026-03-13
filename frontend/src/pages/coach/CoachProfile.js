@@ -6,7 +6,8 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { User, Mail, MapPin, Edit, X, Save, ArrowLeft, UploadCloud, Building, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { kazakhstanCities } from '../../utils/kazakhstanCities'; // Импортируем города
+import { kazakhstanRegions } from '../../utils/kazakhstanRegions'; // ИМПОРТИРУЕМ РЕГИОНЫ
+import { kazakhstanCities } from '../../utils/kazakhstanCities';
 import './CoachProfile.css';
 
 const CoachProfile = () => {
@@ -14,8 +15,10 @@ const CoachProfile = () => {
     const dispatch = useDispatch();
     const { user: userInfo } = useSelector((state) => state.auth);
 
+    // ... state declarations ...
     const [profileData, setProfileData] = useState({ firstName: '', lastName: '', email: '', city: '', gender: 'male' });
-    const [clubData, setClubData] = useState({ name: '', city: '', logo: '' });
+    // ИСПРАВЛЕНО: city -> region
+    const [clubData, setClubData] = useState({ name: '', region: '', logo: '' });
 
     const [isEditingProfile, setIsEditingProfile] = useState(false);
     const [isEditingClub, setIsEditingClub] = useState(false);
@@ -28,7 +31,8 @@ const CoachProfile = () => {
                 email: userInfo.email || '', city: userInfo.city || '', gender: userInfo.gender || 'male' 
             });
             if (userInfo.club) {
-                setClubData({ name: userInfo.club.name || '', city: userInfo.club.city || '', logo: userInfo.club.logo || '' });
+                // ИСПРАВЛЕНО: city -> region
+                setClubData({ name: userInfo.club.name || '', region: userInfo.club.region || '', logo: userInfo.club.logo || '' });
                 setIsEditingClub(false);
             } else {
                 setIsEditingClub(true);
@@ -36,10 +40,8 @@ const CoachProfile = () => {
         }
     }, [userInfo]);
 
-    // --- Функции для управления состоянием редактирования --- //
-
+    // ... edit state management ...
     const startEditingProfile = () => {
-        // Заполняем форму актуальными данными перед открытием
         setProfileData({ 
             firstName: userInfo.firstName || '', lastName: userInfo.lastName || '', 
             email: userInfo.email || '', city: userInfo.city || '', gender: userInfo.gender || 'male' 
@@ -48,20 +50,20 @@ const CoachProfile = () => {
     };
 
     const startEditingClub = () => {
-        // Заполняем форму актуальными данными перед открытием
         if (userInfo.club) {
+            // ИСПРАВЛЕНО: city -> region
             setClubData({ 
                 name: userInfo.club.name || '', 
-                city: userInfo.club.city || '', 
+                region: userInfo.club.region || '', 
                 logo: userInfo.club.logo || '' 
             });
         }
         setIsEditingClub(true);
     };
 
-    // --- Обработчики --- //
 
     const handleProfileChange = (e) => setProfileData({ ...profileData, [e.target.name]: e.target.value });
+    // ИСПРАВЛЕНО: name 'city' становится 'region'
     const handleClubChange = (e) => setClubData({ ...clubData, [e.target.name]: e.target.value });
 
     const handleProfileSubmit = (e) => {
@@ -79,6 +81,7 @@ const CoachProfile = () => {
 
     const handleClubSubmit = (e) => {
         e.preventDefault();
+        // ОТПРАВЛЯЕМ 'region' ВМЕСТО 'city'
         const request = userInfo?.club ? axios.put('/api/clubs/my-club', clubData) : axios.post('/api/clubs', clubData);
         toast.promise(request, {
             loading: 'Клуб ақпараты сақталуда...',
@@ -91,6 +94,7 @@ const CoachProfile = () => {
         });
     };
 
+    // ... uploadFileHandler remains the same ...
     const uploadFileHandler = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -109,8 +113,10 @@ const CoachProfile = () => {
         }
     };
 
+
     return (
         <div className="coach-profile-container">
+            {/* ... header ... */}
             <header className="profile-page-header">
                 <button onClick={() => navigate(-1)} className="back-button"><ArrowLeft size={20} /></button>
                 <div>
@@ -119,9 +125,11 @@ const CoachProfile = () => {
                 </div>
             </header>
 
+
             <div className="profile-grid">
+                {/* --- Profile Card (city is correct here for user profile) --- */}
                 <div className="profile-card">
-                    <div className="card-header">
+                     <div className="card-header">
                         <h2>Жеке ақпарат</h2>
                         <button onClick={isEditingProfile ? () => setIsEditingProfile(false) : startEditingProfile} className="edit-button">
                             {isEditingProfile ? <X size={18} /> : <Edit size={18} />}
@@ -155,6 +163,7 @@ const CoachProfile = () => {
                     )}
                 </div>
 
+                {/* --- Club Card (Corrected to use REGION) --- */}
                 <div className="profile-card">
                     <div className="card-header">
                         <h2>Менің клубым</h2>
@@ -167,12 +176,13 @@ const CoachProfile = () => {
                             <div className="input-wrapper"><Building size={16} className="input-icon" /><input type="text" name="name" placeholder="Клуб атауы" value={clubData.name} onChange={handleClubChange} /></div>
                             <div className="input-wrapper">
                                 <MapPin size={16} className="input-icon" />
-                                <select name="city" value={clubData.city} onChange={handleClubChange}>
-                                    <option value="">Клуб қаласын таңдаңыз</option>
-                                    {kazakhstanCities.map(city => <option key={city} value={city}>{city}</option>)}
+                                {/* ИСПРАВЛЕНО: select для РЕГИОНА */}
+                                <select name="region" value={clubData.region} onChange={handleClubChange}>
+                                    <option value="">Облысты таңдаңыз</option>
+                                    {kazakhstanRegions.map(reg => <option key={reg} value={reg}>{reg}</option>)}
                                 </select>
                             </div>
-                            <div className="file-upload-area">
+                           <div className="file-upload-area">
                                 {clubData.logo ? (
                                     <div className="logo-preview-wrapper"><img src={clubData.logo} alt="Логотип" /><button type="button" className="remove-logo-button" onClick={() => setClubData({...clubData, logo: ''})}><X size={16}/></button></div>
                                 ) : (
@@ -189,7 +199,8 @@ const CoachProfile = () => {
                                 <>
                                     <div className="club-logo-view">{userInfo.club.logo ? <img src={userInfo.club.logo} alt={`${userInfo.club.name} logo`}/> : <div className="logo-placeholder"><Building/></div>}</div>
                                     <InfoRow icon={<Star size={18}/>} label="Клуб" value={userInfo.club.name} />
-                                    <InfoRow icon={<MapPin size={18}/>} label="Қала" value={userInfo.club.city} />
+                                    {/* ИСПРАВЛЕНО: city -> region */}
+                                    <InfoRow icon={<MapPin size={18}/>} label="Облыс" value={userInfo.club.region} />
                                 </> 
                             ) : (
                                 <div className="empty-state">Клуб туралы ақпарат жоқ. Жаңа клуб қосу үшін өңдеу режиміне өтіңіз.</div>
@@ -202,6 +213,7 @@ const CoachProfile = () => {
     );
 };
 
+// ... InfoRow component remains the same ...
 const InfoRow = ({ icon, label, value }) => (
     <div className="info-row">
         <div className="info-icon-wrapper">{icon}</div>
@@ -211,5 +223,6 @@ const InfoRow = ({ icon, label, value }) => (
         </div>
     </div>
 );
+
 
 export default CoachProfile;

@@ -1,0 +1,228 @@
+/* === Глобальные переменные для профессионального дашборда === */
+:root {
+    --pro-bg: #0d1117; /* Очень темный, почти черный */
+    --pro-surface: #161b22; /* Поверхность для карточек */
+    --pro-border: #30363d; /* Разделители и границы */
+    --pro-text-main: #c9d1d9; /* Основной, чуть приглушенный белый */
+    --pro-text-secondary: #8b949e; /* Вторичный, серый */
+    --pro-primary: #58a6ff; /* Яркий синий для акцентов */
+    --pro-primary-hover: #79c0ff;
+    --pro-secondary-bg: #21262d;
+    --pro-secondary-border: #30363d;
+    --pro-danger: #f85149;
+}
+
+/* === Основной контейнер === */
+.admin-dashboard-professional {
+    padding: 2rem 3rem;
+    background-color: var(--pro-bg);
+    min-height: 100vh;
+    color: var(--pro-text-secondary);
+}
+
+/* === Заголовок страницы === */
+.dashboard-header-pro {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--pro-border);
+}
+
+.header-text h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--pro-text-main);
+    margin: 0;
+}
+
+.header-text p {
+    margin: 0.25rem 0 0;
+    font-size: 1rem;
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+/* === Основная сетка === */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* Основная колонка шире */
+    gap: 2rem;
+}
+
+.main-column, .sidebar-column {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* === Секции дашборда === */
+.dashboard-section-pro {
+    background-color: var(--pro-surface);
+    border: 1px solid var(--pro-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--pro-text-main);
+    margin: 0 0 1.5rem 0;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--pro-border);
+}
+
+/* === Кнопки (общие) === */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: var(--pro-primary);
+    color: #fff;
+    border-color: var(--pro-primary);
+}
+.btn-primary:hover {
+    background-color: var(--pro-primary-hover);
+    border-color: var(--pro-primary-hover);
+}
+
+.btn-secondary {
+    background-color: var(--pro-secondary-bg);
+    color: var(--pro-text-main);
+    border-color: var(--pro-secondary-border);
+}
+.btn-secondary:hover {
+    border-color: var(--pro-text-secondary);
+}
+
+.btn-tertiary {
+    background: none;
+    color: var(--pro-text-secondary);
+    padding: 0;
+}
+.btn-tertiary:hover {
+    color: var(--pro-primary);
+}
+
+
+/* === Список действий (клубы, турниры, логи) === */
+.action-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.action-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 6px;
+    background-color: #0d1117; /* Немного темнее фона секции */
+}
+
+.item-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.item-icon {
+    color: var(--pro-text-secondary);
+}
+.item-icon.club-icon { color: #3081f7; }
+.item-icon.tournament-icon { color: #a371f7; }
+
+.item-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.item-title {
+    font-weight: 500;
+    color: var(--pro-text-main);
+}
+
+.item-subtitle {
+    font-size: 0.875rem;
+    color: var(--pro-text-secondary);
+}
+.item-subtitle strong {
+    color: var(--pro-primary);
+    font-weight: 600;
+}
+
+/* === Логи === */
+.log-item .item-details {
+    font-size: 0.9rem;
+}
+.log-icon.create { color: #3081f7; }
+.log-icon.register { color: #238636; }
+.log-icon.verify { color: #8957e5; }
+.log-icon.block { color: #f85149; }
+.log-icon.generic { color: var(--pro-text-secondary); }
+
+/* === Компактная статистика === */
+.stats-grid-pro {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.stat-card-pro {
+    background-color: var(--pro-bg);
+    border-radius: 6px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.stat-card-pro svg {
+    margin: 0 auto 0.5rem;
+    color: var(--pro-text-secondary);
+}
+
+.stat-card-pro p {
+    margin: 0;
+    font-size: 0.875rem;
+}
+
+.stat-card-pro span {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--pro-text-main);
+}
+
+/* === Состояния === */
+.empty-state {
+    padding: 2rem;
+    text-align: center;
+    color: var(--pro-text-secondary);
+    border: 2px dashed var(--pro-border);
+    border-radius: 6px;
+}
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    font-size: 1.25rem;
+    color: var(--pro-text-secondary);
+}

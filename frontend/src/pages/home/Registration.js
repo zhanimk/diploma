@@ -21,8 +21,10 @@ export default function Register() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [weight, setWeight] = useState("");
-  const [club, setClub] = useState(""); // This will now store the CLUB ID
-  
+  const [club, setClub] = useState("");
+  const [rank, setRank] = useState(""); // Added rank state
+  const [city, setCity] = useState(""); // Added city state
+
   // UI/UX states
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -60,7 +62,7 @@ export default function Register() {
 
     if (role === 'athlete' && !club) {
         setError("Please select a club.");
-        setStep(3); // Go back to club selection step
+        setStep(3);
         return;
     }
 
@@ -68,6 +70,7 @@ export default function Register() {
     setError("");
 
     try {
+        // THE FIX: Ensure all relevant fields, including weight, are sent.
         const registrationData = {
             firstName,
             lastName,
@@ -77,6 +80,8 @@ export default function Register() {
             gender,
             phoneNumber,
             dateOfBirth,
+            city,
+            rank,
             weight: role === 'athlete' ? weight : undefined,
             club: role === 'athlete' ? club : undefined,
         };
@@ -114,12 +119,14 @@ export default function Register() {
           </motion.div>
         );
       case 2:
+        // Added City to this step
         return (
           <motion.div {...motionProps}>
             <div className="auth-header"><h2>Жеке деректер</h2><p>Өзіңіз жайлы ақпаратты толтырыңыз</p></div>
             <div className="form-fields">
                 <div className="input-group"><div className="icon-wrapper"><User size={20} /></div><input type="text" placeholder="Аты (Имя)" required value={firstName} onChange={(e) => setFirstName(e.target.value)} /></div>
                 <div className="input-group"><div className="icon-wrapper"><User size={20} /></div><input type="text" placeholder="Тегі (Фамилия)" required value={lastName} onChange={(e) => setLastName(e.target.value)} /></div>
+                <div className="input-group"><div className="icon-wrapper"><User size={20} /></div><input type="text" placeholder="Қала (Город)" required value={city} onChange={(e) => setCity(e.target.value)} /></div>
                 <div className="input-group gender-selection">
                     <div className="icon-wrapper"><Users size={20} /></div>
                     <div className="gender-options">
@@ -152,6 +159,7 @@ export default function Register() {
                             </select>
                         </div>
                         <div className="input-group"><div className="icon-wrapper"><Weight size={20} /></div><input type="number" placeholder="Салмақ (кг)" value={weight} onChange={(e) => setWeight(e.target.value)} /></div>
+                        <div className="input-group"><div className="icon-wrapper"><Shield size={20} /></div><input type="text" placeholder="Разряд" value={rank} onChange={(e) => setRank(e.target.value)} /></div>
                     </>
                 ) : (
                     <p className="text-center info-text">Бапкер ретінде тіркелу үшін қосымша ақпарат қажет емес.</p>

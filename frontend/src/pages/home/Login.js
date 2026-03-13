@@ -53,6 +53,7 @@ export default function Login() {
     const loginPromise = new Promise(async (resolve, reject) => {
       try {
         const { data } = await axios.post("/api/users/login", { email, password });
+        localStorage.setItem('userInfo', JSON.stringify(data)); // ИСПРАВЛЕНИЕ
         setAuthToken(data.token);
         dispatch(setUser(data));
         resolve(data);

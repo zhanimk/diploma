@@ -9,22 +9,36 @@ const clubSchema = mongoose.Schema(
         },
         coach: {
             type: mongoose.Schema.Types.ObjectId,
-            required: true,
             ref: 'User',
-            unique: true, // Each coach can only have one club
+            unique: true,
         },
-        city: {
+        region: {
             type: String,
-            required: [true, 'Please add a city'],
+            required: [true, 'Please add a region'],
         },
         logo: {
-            type: String, // URL to the club logo
-            default: '', // Default to an empty string
+            type: String, 
+            default: '',
+        },
+        isVerified: { // Поле для верификации клуба
+            type: Boolean,
+            required: true,
+            default: false,
         },
     },
     {
         timestamps: true,
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true },
     }
 );
+
+clubSchema.virtual('athletes', {
+    ref: 'User',
+    localField: '_id',
+    foreignField: 'club',
+    justOne: false,
+    match: { role: 'athlete' }
+});
 
 module.exports = mongoose.model('Club', clubSchema);

@@ -8,8 +8,8 @@ const {
     getTournamentById,
     updateTournament,
     deleteTournament,
-    generateTournamentGrid,
-    getTournamentGrids, // Наш новый контроллер
+    generateTournamentGrids, // Renamed for clarity
+    getTournamentGrids, 
 } = require('../controllers/tournamentController');
 const { protect, admin } = require('../middleware/authMiddleware');
 
@@ -25,7 +25,7 @@ router.route('/:id')
     .delete(protect, admin, deleteTournament);
 
 // Grid-related routes
-router.route('/:id/generate-grid').post(protect, admin, generateTournamentGrid);
-router.route('/:id/grids').get(protect, admin, getTournamentGrids); // Новый роут для получения сеток
+router.route('/:id/generate-grids').post(protect, admin, generateTournamentGrids); // Renamed route
+router.route('/:id/grids').get(protect, admin, getTournamentGrids); 
 
 module.exports = router;

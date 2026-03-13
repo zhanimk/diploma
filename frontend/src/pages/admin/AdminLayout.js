@@ -1,16 +1,18 @@
-
 import React from 'react';
 import { NavLink, useNavigate, Outlet } from 'react-router-dom';
-import { Shield, Calendar, Users, FileCheck, Settings, LogOut } from 'lucide-react';
+import { Shield, Calendar, Users, Settings, LogOut, Bell, Archive } from 'lucide-react';
 import './AdminLayout.css';
 import toast from 'react-hot-toast';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../store/authSlice';
 
 const AdminLayout = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleLogout = () => {
-        localStorage.removeItem('userInfo');
-        toast.success('Сіз жүйеден сәтті шықтыңыз!');
+        dispatch(logout());
+        toast.success('Сіз жүйеден сәтті шықтыңыз');
         navigate('/login');
     };
 
@@ -19,7 +21,7 @@ const AdminLayout = () => {
             <aside className="admin-sidebar">
                 <div className="sidebar-header">
                     <Shield size={30} />
-                    <h2>ZHUDOKZ ADMIN</h2>
+                    <h2>Әкімші панелі</h2>
                 </div>
                 <nav className="sidebar-nav">
                     <NavLink to="/admin/dashboard">
@@ -30,13 +32,17 @@ const AdminLayout = () => {
                         <Calendar size={20} />
                         <span>Турнирлер</span>
                     </NavLink>
-                    <NavLink to="/admin/clubs">
-                        <Users size={20} />
-                        <span>Клубтар</span>
+                     <NavLink to="/admin/notifications">
+                        <Bell size={20} />
+                        <span>Хабарландырулар</span>
                     </NavLink>
-                     <NavLink to="/admin/applications">
-                        <FileCheck size={20} />
-                        <span>Өтінімдер</span>
+                    <NavLink to="/admin/management">  
+                        <Users size={20} />
+                        <span>Пайдаланушылар мен Клубтар</span>
+                    </NavLink>
+                     <NavLink to="/admin/archive">
+                        <Archive size={20} />
+                        <span>Мұрағат</span>
                     </NavLink>
                     <NavLink to="/admin/settings">
                         <Settings size={20} />

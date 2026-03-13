@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setUser } from '../../store/authSlice';
+import { updateUser } from '../../store/authSlice';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { User, Mail, Calendar, MapPin, Weight, Shield, Edit, X, Save, ArrowLeft } from 'lucide-react';
@@ -27,14 +27,18 @@ const AthleteProfile = () => {
 
     useEffect(() => {
         if (userInfo) {
+            const dob = userInfo.dateOfBirth;
+            const formattedDate = dob && !isNaN(new Date(dob)) ? new Date(dob).toISOString().split('T')[0] : '';
+
             setFormData({
                 firstName: userInfo.firstName || '',
                 lastName: userInfo.lastName || '',
                 email: userInfo.email || '',
                 city: userInfo.city || '',
                 gender: userInfo.gender || 'male',
-                dateOfBirth: userInfo.dateOfBirth ? new Date(userInfo.dateOfBirth).toISOString().split('T')[0] : '',
-                weight: userInfo.weight !== undefined ? userInfo.weight : '',
+                dateOfBirth: formattedDate,
+                // Ensure weight is handled correctly (null/undefined vs 0)
+                weight: (userInfo.weight !== null && userInfo.weight !== undefined) ? userInfo.weight : '',
                 rank: userInfo.rank || '',
             });
         }
@@ -47,9 +51,30 @@ const AthleteProfile = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const toastId = toast.loading('Профиль жаңартылуда...');
+
+        if (!userInfo || !userInfo.token) {
+            toast.error('Сессияның мерзімі бітті. Қайта кіріңіз.', { id: toastId });
+            return;
+        }
+
         try {
-            const { data: updatedUser } = await axios.put('/api/users/profile', formData);
-            dispatch(setUser(updatedUser));
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${userInfo.token}`,
+                },
+            };
+            
+            // Create a payload, ensuring weight is a number or null
+            const payload = {
+                ...formData,
+                weight: (formData.weight === '' || formData.weight === null) ? null : parseFloat(formData.weight)
+            };
+
+            const { data: updatedFields } = await axios.put('/api/users/profile', payload, config);
+            
+            dispatch(updateUser(updatedFields));
+
             toast.success('Профиль сәтті жаңартылды!', { id: toastId });
             setIsEditing(false);
         } catch (error) {
@@ -104,10 +129,19 @@ const AthleteProfile = () => {
                             <InfoItem icon={<Mail size={20} />} label="Email" value={formData.email} />
                             <InfoItem icon={<MapPin size={20} />} label="Қала" value={formData.city} />
                             <InfoItem icon={<User size={20} />} label="Жынысы" value={formData.gender === 'male' ? 'Ер' : 'Әйел'} />
-                            <InfoItem icon={<Calendar size={20} />} label="Туған күні" value={new Date(formData.dateOfBirth).toLocaleDateString()} />
+                            <InfoItem 
+                                icon={<Calendar size={20} />} 
+                                label="Туған күні" 
+                                value={formData.dateOfBirth ? new Date(formData.dateOfBirth).toLocaleDateString() : 'Көрсетілмеген'} 
+                            />
                             <InfoItem icon={<Shield size={20} />} label="Клуб" value={userInfo.club?.name || 'Клуб жоқ'} />
                             <InfoItem icon={<Shield size={20} />} label="Дәреже" value={formData.rank} />
-                            <InfoItem icon={<Weight size={20} />} label="Салмақ" value={formData.weight ? `${formData.weight} кг` : ''} />
+                            {/* THE FIX: This line is now robust and handles 0, null, and undefined correctly */}
+                            <InfoItem 
+                                icon={<Weight size={20} />}
+                                label="Салмақ"
+                                value={(formData.weight || formData.weight === 0) ? `${formData.weight} кг` : null}
+                            />
                         </div>
                     </div>
                 )}

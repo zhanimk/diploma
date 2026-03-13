@@ -19,19 +19,21 @@ app.use('/api/tournaments', require('./routes/tournamentRoutes'));
 app.use('/api/applications', require('./routes/applicationRoutes'));
 app.use('/api/clubs', require('./routes/clubRoutes'));
 app.use('/api/upload', require('./routes/uploadRoutes'));
-app.use('/api/admin', require('./routes/adminRoutes')); // <-- Added this line
+app.use('/api/admin', require('./routes/adminRoutes'));
+app.use('/api/settings', require('./routes/settingRoutes'));
+app.use('/api/notifications', require('./routes/notificationRoutes'));
+app.use('/api/grids', require('./routes/gridRoutes'));
+app.use('/api/matches', require('./routes/matchRoutes'));
+app.use('/api/dashboard', require('./routes/dashboardRoutes')); // <-- ИСПОЛЬЗУЕМ ПРАВИЛЬНЫЙ МАРШРУТ
 
 // --- Static Folder Setup ---
 const dirname = path.resolve();
-// Corrected path: It should be relative to the project root where 'uploads' is located.
 app.use('/uploads', express.static(path.join(dirname, '/uploads')));
 
 
 // --- Production Build ---
 if (process.env.NODE_ENV === 'production') {
-    // Serve frontend build
     app.use(express.static(path.join(dirname, '/frontend/build')));
-
     app.get('* ', (req, res) => 
         res.sendFile(path.resolve(dirname, 'frontend', 'build', 'index.html'))
     );

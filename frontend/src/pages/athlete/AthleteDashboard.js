@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -6,7 +6,10 @@ import './AthleteDashboard.css';
 import { User, Shield, Edit, Clock, CheckCircle, XCircle, HelpCircle } from 'lucide-react';
 import { setUser } from '../../store/authSlice';
 
-const ClubStatusCard = ({ profile, loading }) => {
+const ClubStatusCard = ({ profile }) => {
+    // We determine the loading state based on whether the profile object exists.
+    const loading = !profile;
+
     if (loading) {
         return <div className="item-card-placeholder"></div>;
     }
@@ -66,43 +69,32 @@ const ClubStatusCard = ({ profile, loading }) => {
 const AthleteDashboard = () => {
     const { user } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
-    const [loading, setLoading] = useState(true);
 
-    const fetchProfile = useCallback(async () => {
+    // This function is now only for polling for status updates.
+    const pollProfile = useCallback(async () => {
         try {
-            // Add cache-control headers to prevent browser caching
-            const { data } = await axios.get('/api/users/profile', {
-                headers: {
-                    'Cache-Control': 'no-cache',
-                    'Pragma': 'no-cache',
-                    'Expires': '0',
-                },
-            });
+            const { data } = await axios.get('/api/users/profile');
             dispatch(setUser(data)); 
         } catch (error) {
-            console.error("Профиль деректерін алу қатесі:", error);
-        } finally {
-            if (loading) {
-                setLoading(false);
-            }
+            console.error("Polling error:", error);
         }
-    }, [dispatch, loading]);
+    }, [dispatch]);
 
     useEffect(() => {
-        fetchProfile();
-
+        // We no longer fetch the profile on initial render. We trust the data from the Redux store.
+        // We only set up an interval to poll for updates if the user's club status is pending.
         let intervalId = null;
-        // Only poll if the status is explicitly pending
         if (user?.clubStatus === 'pending') {
-            intervalId = setInterval(fetchProfile, 5000); // Poll every 5 seconds
+            intervalId = setInterval(pollProfile, 5000); // Poll every 5 seconds
         }
 
+        // Cleanup function to clear the interval if the component unmounts or the status changes.
         return () => {
             if (intervalId) {
                 clearInterval(intervalId);
             }
         };
-    }, [user?.clubStatus, fetchProfile]);
+    }, [user?.clubStatus, pollProfile]);
 
     return (
         <div className="container athlete-dashboard-grid">
@@ -123,7 +115,8 @@ const AthleteDashboard = () => {
                 </header>
 
                 <div className="list-container">
-                    <ClubStatusCard profile={user} loading={loading} />
+                    {/* The `profile` prop is the user object from Redux. Loading is handled internally. */}
+                    <ClubStatusCard profile={user} />
 
                     <div className="item-card">
                         <div className="item-card__info">

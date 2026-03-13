@@ -2,11 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Users, LogIn, Shield, Building, MapPin, ArrowRight } from 'lucide-react';
+import { kazakhstanRegions } from '../../utils/kazakhstanRegions'; // Импортируем регионы
 import './CoachDashboard.css';
 
-// =========================================
-//   StatCard Component V2
-// =========================================
+// ... (StatCard component remains the same) ...
 const StatCard = ({ icon, value, label, linkTo, colorClass }) => (
     <Link to={linkTo} className={`stat-card-v2 ${colorClass}`}>
         <div className="stat-card-v2__header">
@@ -23,24 +22,30 @@ const StatCard = ({ icon, value, label, linkTo, colorClass }) => (
     </Link>
 );
 
+
 // =========================================
-//   CreateClub Component
+//   CreateClub Component - CORRECTED
 // =========================================
 const CreateClub = ({ onClubCreated }) => {
     const [name, setName] = useState('');
-    const [city, setCity] = useState('');
+    const [region, setRegion] = useState(''); // Changed from city to region
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
     const handleCreateClub = async (e) => {
         e.preventDefault();
+        if (!region) { // Check if a region is selected
+            setError('Пожалуйста, выберите регион.');
+            return;
+        }
         setLoading(true);
         setError('');
         try {
-            await axios.post('/api/clubs', { name, city });
+            // Send `name` and `region` to the backend
+            await axios.post('/api/clubs', { name, region });
             onClubCreated();
         } catch (err) {
-            setError(err.response?.data?.message || 'Failed to create club.');
+            setError(err.response?.data?.message || 'Клуб құру кезінде қате.');
         }
         setLoading(false);
     };
@@ -52,28 +57,36 @@ const CreateClub = ({ onClubCreated }) => {
             {error && <div className="error-alert">{error}</div>}
             <form onSubmit={handleCreateClub} className="create-club-form">
                 <div className="input-group"><div className="icon-wrapper"><Building size={18} /></div><input type="text" placeholder="Клуб атауы" value={name} onChange={(e) => setName(e.target.value)} required /></div>
-                <div className="input-group"><div className="icon-wrapper"><MapPin size={18} /></div><input type="text" placeholder="Қала" value={city} onChange={(e) => setCity(e.target.value)} required /></div>
+                <div className="input-group">
+                    <div className="icon-wrapper"><MapPin size={18} /></div>
+                    <select value={region} onChange={(e) => setRegion(e.target.value)} required>
+                        <option value="">Облысты таңдаңыз</option>
+                        {kazakhstanRegions.map(reg => (
+                            <option key={reg} value={reg}>{reg}</option>
+                        ))}
+                    </select>
+                </div>
                 <button type="submit" className="btn btn-primary" disabled={loading}>{loading ? 'Құрылуда...' : 'Клуб құру'}</button>
             </form>
         </div>
     );
 };
 
-// =========================================
-//   ClubDashboard Component V2
-// =========================================
+
+// ... (ClubDashboard component remains mostly the same, but we will adjust it) ...
 const ClubDashboard = ({ clubData }) => {
     return (
         <>
             <header className="page-header">
                 <div>
                     <h1>{clubData.club.name} клубының басқару панелі</h1>
-                    <span className="header-tag">{clubData.club.city}</span>
+                    {/* Display REGION instead of city */}
+                    <span className="header-tag">{clubData.club.region}</span>
                 </div>
             </header>
 
             <div className="stats-grid">
-                <StatCard 
+                 <StatCard 
                     icon={<Users size={24} />} 
                     value={clubData.approvedAthletesCount} 
                     label="Менің спортшыларым" 
@@ -99,10 +112,7 @@ const ClubDashboard = ({ clubData }) => {
     );
 };
 
-
-// =========================================
-//   Main CoachDashboard Container
-// =========================================
+// ... (Main CoachDashboard container remains the same) ...
 const CoachDashboard = () => {
     const [clubData, setClubData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -153,4 +163,6 @@ const CoachDashboard = () => {
     );
 };
 
+
 export default CoachDashboard;
+

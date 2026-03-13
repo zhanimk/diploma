@@ -1,246 +1,258 @@
 /* Footer.css — Версия: Black Belt / System End */
 
+:root {
+    /* Эти переменные должны быть определены в вашем глобальном файле стилей (например, App.css) 
+       для поддержки светлой/темной темы. Здесь они для примера. */
+    --bg: #06070d; /* Темный фон */
+    --text: #e2e8f0; /* Светлый текст */
+    --text-muted: #94a3b8; /* Приглушенный текст */
+    --border: rgba(255, 255, 255, 0.1);
+    --card: rgba(255, 255, 255, 0.03);
+    --accent: #3b82f6; /* Голубой акцент */
+}
+
 .kz-footer {
-    position: relative;
-    /* Адаптивные переменные фона и текста */
-    background: var(--bg);
-    color: var(--text);
-    padding: 80px 0 40px;
-    overflow: hidden;
-    border-top: 1px solid var(--border);
-    transition: background 0.4s ease;
-  }
-  
-  .kz-footer__container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 40px;
-    position: relative;
-    z-index: 2;
-  }
-  
-  /* ФОНОВАЯ СЕТКА В ПЕРСПЕКТИВЕ */
-  .kz-footer__grid-bg {
-    position: absolute;
-    inset: 0;
-    background-image: linear-gradient(var(--accent) 1px, transparent 1px),
-      linear-gradient(90deg, var(--accent) 1px, transparent 1px);
-    background-size: 60px 60px;
-    opacity: 0.05;
-    mask-image: linear-gradient(to top, transparent, black);
-    /* Эффект уходящего вдаль пола */
-    transform: perspective(500px) rotateX(60deg) translateY(-100px);
-    pointer-events: none;
-  }
-  
-  /* MAIN CONTENT */
+  position: relative;
+  background: var(--bg);
+  color: var(--text);
+  padding: 80px 0 40px;
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+  transition: background 0.4s ease;
+}
+
+.kz-footer__container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 40px;
+  position: relative;
+  z-index: 2;
+}
+
+/* ФОНОВАЯ СЕТКА В ПЕРСПЕКТИВЕ */
+.kz-footer__grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(var(--accent) 1px, transparent 1px),
+    linear-gradient(90deg, var(--accent) 1px, transparent 1px);
+  background-size: 60px 60px;
+  opacity: 0.05;
+  mask-image: linear-gradient(to top, transparent, black);
+  transform: perspective(500px) rotateX(60deg) translateY(-100px);
+  pointer-events: none;
+}
+
+/* MAIN CONTENT */
+.kz-footer__main {
+  display: grid;
+  grid-template-columns: 1.5fr 1.5fr 1fr;
+  gap: 60px;
+  margin-bottom: 60px;
+}
+
+.kz-footer__logo {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 32px;
+  font-weight: 900;
+  margin-bottom: 20px;
+  letter-spacing: -1px;
+  color: var(--text);
+}
+
+.kz-footer__logo span {
+  color: var(--accent); 
+}
+
+.kz-footer__brand p {
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: 320px;
+  font-size: 15px;
+}
+
+.kz-footer__socials {
+  display: flex;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.s-link {
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 800;
+  transition: all 0.3s ease;
+  background: var(--card);
+}
+
+.s-link:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  transform: translateY(-3px);
+}
+
+/* NAV */
+.kz-footer__nav {
+  display: flex;
+  justify-content: space-around;
+}
+
+.nav-group h4 {
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 2px;
+  margin-bottom: 25px;
+  color: var(--accent);
+}
+
+.nav-group ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-group a {
+  display: block;
+  text-decoration: none;
+  color: var(--text-muted);
+  margin-bottom: 15px;
+  transition: 0.3s;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.nav-group a:hover {
+  color: var(--text);
+  transform: translateX(5px);
+}
+
+/* WIDGET CARD */
+.widget-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 30px;
+  border-radius: 24px;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.w-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+}
+
+.w-status {
+  margin-top: 8px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  color: #00ff88;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+}
+
+.pulse {
+  width: 8px;
+  height: 8px;
+  background: #00ff88;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #00ff88;
+  animation: pulse-simple 2s infinite;
+}
+
+@keyframes pulse-simple {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+.w-stats {
+  margin-top: 25px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.w-stats span {
+  display: block;
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--text);
+}
+
+.w-stats div {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+/* WATERMARK */
+.kz-footer__watermark {
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 15vw;
+  font-weight: 950;
+  color: var(--text);
+  opacity: 0.03;
+  z-index: 1;
+  pointer-events: none;
+  text-transform: uppercase;
+}
+
+/* BOTTOM */
+.kz-footer__bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 40px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.b-links {
+  display: flex;
+  gap: 30px;
+}
+
+.b-links a {
+  text-decoration: none;
+  color: inherit;
+  transition: 0.3s;
+}
+
+.b-links a:hover {
+  color: var(--text);
+}
+
+/* MOBILE ADAPTATION */
+@media (max-width: 991px) {
   .kz-footer__main {
-    display: grid;
-    grid-template-columns: 1.5fr 1.5fr 1fr;
-    gap: 60px;
-    margin-bottom: 60px;
+    grid-template-columns: 1fr;
+    gap: 40px;
   }
-  
-  .kz-footer__logo {
-    font-size: 32px;
-    font-weight: 900;
-    margin-bottom: 20px;
-    letter-spacing: -1px;
-  }
-  
-  .kz-footer__logo span {
-    color: var(--accent); /* Используем наш основной голубой */
-  }
-  
-  .kz-footer__brand p {
-    color: var(--text-muted);
-    line-height: 1.6;
-    max-width: 320px;
-    font-size: 15px;
-  }
-  
-  .kz-footer__socials {
-    display: flex;
-    gap: 12px;
-    margin-top: 30px;
-  }
-  
-  .s-link {
-    width: 42px;
-    height: 42px;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    color: var(--text);
-    font-size: 12px;
-    font-weight: 800;
-    transition: all 0.3s ease;
-    background: var(--card);
-  }
-  
-  .s-link:hover {
-    background: var(--accent);
-    color: #fff;
-    border-color: var(--accent);
-    transform: translateY(-3px);
-  }
-  
-  /* NAV */
   .kz-footer__nav {
-    display: flex;
-    justify-content: space-around;
-  }
-  
-  .nav-group h4 {
-    text-transform: uppercase;
-    font-size: 12px;
-    letter-spacing: 2px;
-    margin-bottom: 25px;
-    color: var(--accent);
-  }
-  
-  .nav-group a {
-    display: block;
-    text-decoration: none;
-    color: var(--text-muted);
-    margin-bottom: 15px;
-    transition: 0.3s;
-    font-weight: 500;
-    font-size: 15px;
-  }
-  
-  .nav-group a:hover {
-    color: var(--text);
-    transform: translateX(5px);
-  }
-  
-  /* WIDGET CARD */
-  .widget-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    padding: 30px;
-    border-radius: 24px;
-    position: relative;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  }
-  
-  .w-label {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text-muted);
-  }
-  
-  .w-status {
-    margin-top: 8px;
-    font-family: "JetBrains Mono", monospace;
-    font-size: 12px;
-    color: #00ff88;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: 700;
-  }
-  
-  .pulse {
-    width: 8px;
-    height: 8px;
-    background: #00ff88;
-    border-radius: 50%;
-    box-shadow: 0 0 10px #00ff88;
-    animation: pulse-simple 2s infinite;
-  }
-  
-  @keyframes pulse-simple {
-    0% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.4;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-  
-  .w-stats {
-    margin-top: 25px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-  }
-  
-  .w-stats span {
-    display: block;
-    font-size: 24px;
-    font-weight: 900;
-    color: var(--text); /* В светлой теме цифры будут темными */
-  }
-  
-  .w-stats div {
-    font-size: 11px;
-    color: var(--text-muted);
-    text-transform: uppercase;
-  }
-  
-  /* WATERMARK */
-  .kz-footer__watermark {
-    position: absolute;
-    bottom: -20px;
-    left: 0;
-    right: 0;
-    text-align: center;
-    font-size: 15vw;
-    font-weight: 950;
-    color: var(--text);
-    opacity: 0.03; /* Еле заметная надпись */
-    z-index: 1;
-    pointer-events: none;
-    text-transform: uppercase;
-  }
-  
-  /* BOTTOM */
-  .kz-footer__bottom {
-    display: flex;
     justify-content: space-between;
-    padding-top: 40px;
-    border-top: 1px solid var(--border);
-    font-size: 13px;
-    color: var(--text-muted);
   }
-  
+  .kz-footer__bottom {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
   .b-links {
-    display: flex;
-    gap: 30px;
+    justify-content: center;
   }
-  .b-links a {
-    text-decoration: none;
-    color: inherit;
-    transition: 0.3s;
-  }
-  .b-links a:hover {
-    color: var(--text);
-  }
-  
-  /* MOBILE ADAPTATION */
-  @media (max-width: 991px) {
-    .kz-footer__main {
-      grid-template-columns: 1fr;
-      gap: 40px;
-    }
-    .kz-footer__nav {
-      justify-content: space-between;
-    }
-    .kz-footer__bottom {
-      flex-direction: column;
-      gap: 20px;
-      text-align: center;
-    }
-    .b-links {
-      justify-content: center;
-    }
-  }
-  
+}

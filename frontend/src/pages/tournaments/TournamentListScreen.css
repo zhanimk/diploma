@@ -1,0 +1,139 @@
+/* === Tournament List Page Redesign === */
+
+:root {
+    --text-color: #94a3b8;
+    --text-light: #f8fafc;
+    --accent-blue: #3b82f6;
+    --bg-color-main: #06070d;
+    --border-color-soft: rgba(255, 255, 255, 0.1);
+}
+
+.tournament-list-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    animation: pageFadeIn 0.5s ease-in-out;
+}
+
+@keyframes pageFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.tournament-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color-soft);
+    padding-bottom: 1rem;
+}
+
+.tournament-list-header h1 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 2rem;
+    color: var(--text-light);
+    margin: 0;
+}
+
+/* Сетка для карточек турниров */
+.tournaments-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+/* === Стили для карточки турнира === */
+.tournament-card {
+    background: rgba(15, 18, 25, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.tournament-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(59, 130, 246, 0.4);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+}
+
+.card-header {
+    margin-bottom: 1rem;
+}
+
+.card-header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-light);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.card-body {
+    flex-grow: 1; /* Чтобы футер всегда был внизу */
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.card-info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-color);
+    font-size: 0.9rem;
+}
+
+.card-info-item .icon {
+    color: var(--accent-blue);
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto; /* Прижимает футер к низу */
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.status-new {
+    background-color: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+}
+
+.status-active {
+    background-color: rgba(22, 163, 74, 0.2);
+    color: #4ade80;
+}
+
+.status-completed {
+    background-color: rgba(107, 114, 128, 0.2);
+    color: #9ca3af;
+}
+
+.details-button {
+    background: var(--accent-blue);
+    color: var(--text-light);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.details-button:hover {
+    background: #2563eb;
+    transform: scale(1.05);
+}

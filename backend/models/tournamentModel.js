@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 
 const categorySchema = new mongoose.Schema({
@@ -7,13 +6,13 @@ const categorySchema = new mongoose.Schema({
         required: [true, 'Жынысы міндетті'],
         enum: ['male', 'female']
     },
-    ageFrom: { 
+    yearFrom: { 
         type: Number, 
-        required: [true, 'Бастапқы жас міндетті'] 
+        required: [true, 'Бастапқы туған жылы міндетті']
     },
-    ageTo: { 
+    yearTo: { 
         type: Number, 
-        required: [true, 'Соңғы жас міндетті'] 
+        required: [true, 'Соңғы туған жылы міндетті']
     },
     weights: {
         type: [Number],
@@ -27,9 +26,13 @@ const tournamentSchema = new mongoose.Schema({
         required: [true, 'Турнир атауы міндетті'],
         trim: true,
     },
-    date: {
+    startDate: {
         type: Date,
-        required: [true, 'Өткізілу күні міндетті'],
+        required: [true, 'Басталу күні міндетті'],
+    },
+    endDate: {
+        type: Date,
+        required: [true, 'Аяқталу күні міндетті'],
     },
     location: {
         type: String,
@@ -48,7 +51,7 @@ const tournamentSchema = new mongoose.Schema({
     status: {
         type: String,
         required: true,
-        enum: ['PLANNED', 'REGISTRATION_OPEN', 'REGISTRATION_CLOSED', 'GRID_GENERATED', 'ONGOING', 'COMPLETED'],
+        enum: ['PLANNED', 'REGISTRATION_OPEN', 'REGISTRATION_CLOSED', 'GRID_GENERATED', 'ONGOING', 'COMPLETED', 'ARCHIVED'],
         default: 'PLANNED',
     },
     regulationsPdf: {

@@ -1,0 +1,219 @@
+/* === Основной макет === */
+.management-container {
+    padding: 1.5rem 2rem;
+    color: var(--pro-text-main, #c9d1d9);
+}
+
+.management-header {
+    margin-bottom: 1.5rem;
+}
+
+.management-header h1 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--pro-text-main, #c9d1d9);
+    margin: 0;
+}
+
+.management-header p {
+    margin-top: 0.25rem;
+    font-size: 1rem;
+    color: var(--pro-text-secondary, #8b949e);
+}
+
+/* === Навигация по вкладкам === */
+.tabs-navigation {
+    display: flex;
+    border-bottom: 1px solid var(--pro-border, #30363d);
+    margin-bottom: 1.5rem;
+}
+
+.tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--pro-text-secondary, #8b949e);
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px; 
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.tab-btn:hover {
+    color: var(--pro-text-main, #c9d1d9);
+}
+
+.tab-btn.active {
+    color: var(--pro-primary, #58a6ff);
+    border-bottom-color: var(--pro-primary, #58a6ff);
+    font-weight: 600;
+}
+
+/* === Панель инструментов (фильтры) === */
+.toolbar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    align-items: center;
+}
+
+.search-input, .filter-select {
+    background-color: var(--pro-secondary-bg, #21262d);
+    border: 1px solid var(--pro-border, #30363d);
+    color: var(--pro-text-main, #c9d1d9);
+    padding: 0.6rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+}
+.search-input::placeholder {
+    color: var(--pro-text-secondary, #8b949e);
+}
+
+.search-input {
+    flex-grow: 1;
+    max-width: 400px;
+}
+
+.filter-buttons {
+    display: flex;
+    background-color: var(--pro-secondary-bg, #21262d);
+    border-radius: 6px;
+    padding: 4px;
+    border: 1px solid var(--pro-border, #30363d);
+}
+
+.filter-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    background-color: transparent;
+    color: var(--pro-text-secondary, #8b949e);
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.filter-btn.active {
+    background-color: var(--pro-surface, #161b22);
+    color: var(--pro-text-main, #c9d1d9);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+
+/* === Таблицы === */
+.table-wrapper {
+    overflow-x: auto;
+    background-color: var(--pro-surface, #161b22);
+    border: 1px solid var(--pro-border, #30363d);
+    border-radius: 8px;
+}
+
+.content-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.content-table th, .content-table td {
+    padding: 0.9rem 1.25rem;
+    text-align: left;
+    border-bottom: 1px solid var(--pro-border, #30363d);
+}
+
+.content-table th {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--pro-text-secondary, #8b949e);
+    background-color: var(--pro-secondary-bg, #21262d);
+}
+
+.content-table tbody tr {
+    transition: background-color 0.15s;
+}
+
+.content-table.interactive tbody tr:hover {
+    background-color: var(--pro-secondary-bg, #21262d);
+    cursor: pointer;
+}
+
+/* Строки в ожидании и заблокированные */
+.pending-row, .blocked-row {
+    background-color: rgba(248, 81, 73, 0.05);
+}
+.pending-row:hover, .blocked-row:hover {
+     background-color: rgba(248, 81, 73, 0.1) !important;
+}
+
+/* === Бейджи статусов и ролей === */
+.status-badge, .role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.status-badge.status-active, .status-badge.status-verified { background-color: rgba(46, 160, 67, 0.15); color: #3fb950; }
+.status-badge.status-blocked, .status-badge.status-pending { background-color: rgba(247, 126, 68, 0.15); color: #f77e44; }
+
+.role-badge {
+    color: #fff;
+}
+.role-badge.role-admin { background-color: #da3633; }
+.role-badge.role-coach { background-color: #a475f9; }
+.role-badge.role-athlete { background-color: #388bfd; }
+.role-badge.role-judge { background-color: #bf8700; }
+
+
+/* === Inline редактирование роли === */
+.edit-role-btn {
+    background: none; border: none; color: inherit; cursor: pointer; 
+    opacity: 0.5; transition: opacity 0.2s; padding: 0 0 0 4px;
+}
+.role-badge:hover .edit-role-btn { opacity: 1; }
+
+.role-select-inline {
+    background-color: var(--pro-bg);
+    border: 1px solid var(--pro-border);
+    color: var(--pro-text-main);
+    border-radius: 4px;
+    padding: 2px 4px;
+    margin-right: 4px;
+}
+
+.action-btn-inline {
+    background: none; border: none; cursor: pointer; padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    vertical-align: middle;
+}
+.action-btn-inline.save { color: var(--pro-success); }
+.action-btn-inline.save:hover { background-color: rgba(46, 160, 67, 0.2); }
+.action-btn-inline.cancel { color: var(--pro-text-secondary); }
+.action-btn-inline.cancel:hover { background-color: var(--pro-secondary-bg); }
+
+
+/* === Загрузчики === */
+.loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    color: var(--pro-primary, #58a6ff);
+}
+
+.panel-loader {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1100;
+    color: var(--pro-primary, #58a6ff);
+}

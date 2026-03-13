@@ -1,0 +1,100 @@
+/* Основной контейнер */
+.admin-settings-container {
+    padding: 2rem;
+    font-family: 'Arial', sans-serif;
+    color: #e0e0e0;
+    background-color: #121828;
+    height: 100%;
+}
+
+.loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: #aeb8d3;
+}
+
+/* Заголовок страницы */
+.settings-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #2c3a58;
+}
+
+/* Форма настроек */
+.settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Секции формы (Основные, Соцсети) */
+.form-section {
+    background-color: #1a2235;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.form-section h2 {
+    color: #ffffff;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    border-bottom: 1px solid #2c3a58;
+    padding-bottom: 0.75rem;
+}
+
+/* Группа полей (label + input) */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #aeb8d3;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #3c4a68;
+    border-radius: 4px;
+    font-size: 1rem;
+    background-color: #2c3a58;
+    color: #e0e0e0;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #58a6ff;
+}
+
+/* Кнопка сохранения */
+.save-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #4CAF50; /* Зеленый цвет для сохранения */
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    align-self: flex-start; /* Располагаем кнопку в начале контейнера */
+}
+
+.save-btn:hover {
+    background-color: #45a049;
+}

@@ -7,6 +7,9 @@ const {
     updateUserProfile,
     getAllUsers,
     getUserById,
+    updateUser,
+    deleteUser,
+    blockUser, // <-- Импортируем функцию блокировки
     updateAthleteProfileByCoach,
     getAthleteTournaments,
     getStudentRequests,
@@ -18,7 +21,7 @@ const { protect, admin, coach } = require('../middleware/authMiddleware');
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 
-// --- General Private Routes (Profile must be before /:id) ---
+// --- General Private Routes ---
 router.route('/profile')
     .get(protect, getUserProfile)
     .put(protect, updateUserProfile);
@@ -29,10 +32,19 @@ router.put('/update-athlete/:athleteId', protect, coach, updateAthleteProfileByC
 router.post('/coach/handle-request', protect, coach, handleAthleteRequest);
 
 // --- Admin Routes ---
-router.get('/', protect, admin, getAllUsers);
+router.route('/')
+    .get(protect, admin, getAllUsers);
 
-// --- Public routes that might conflict with others must be last ---
-router.get('/:id', getUserById);
+// Новый маршрут для блокировки пользователя
+router.route('/:id/block')
+    .put(protect, admin, blockUser);
+
+router.route('/:id')
+    .get(getUserById)
+    .put(protect, admin, updateUser)
+    .delete(protect, admin, deleteUser);
+
+// --- Athlete-specific public routes ---
 router.get('/:id/history', getAthleteTournaments);
 
 module.exports = router;

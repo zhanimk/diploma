@@ -12,8 +12,6 @@ const AthleteResultsPage = () => {
     const [error, setError] = useState(null);
     const { user } = useSelector((state) => state.auth);
 
-    const hasCoach = user && user.coach;
-
     const fetchResults = useCallback(async () => {
         try {
             setLoading(true);
@@ -45,9 +43,6 @@ const AthleteResultsPage = () => {
                     <li><Link to="/athlete/dashboard">Басты бет</Link></li>
                     <li><Link to="/athlete/my-tournaments">Менің турнирлерім</Link></li>
                     <li><Link to="/athlete/results" className="active">Нәтижелер тарихы</Link></li>
-                    {!hasCoach && (
-                        <li><Link to="/athlete/find-coach">Жаттықтырушы табу</Link></li>
-                    )}
                 </ul>
             </nav>
 

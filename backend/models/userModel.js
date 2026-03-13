@@ -1,87 +1,76 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-const userSchema = new mongoose.Schema({
-    // --- Basic Info ---
-    firstName: {
-        type: String,
-        required: true
+const userSchema = mongoose.Schema(
+    {
+        firstName: {
+            type: String,
+            required: [true, 'Please add a first name'],
+        },
+        lastName: {
+            type: String,
+            required: [true, 'Please add a last name'],
+        },
+        email: {
+            type: String,
+            required: [true, 'Please add an email'],
+            unique: true,
+        },
+        password: {
+            type: String,
+            required: [true, 'Please add a password'],
+        },
+        role: {
+            type: String,
+            required: true,
+            enum: ['admin', 'coach', 'athlete', 'judge'], // Добавили judge
+            default: 'athlete',
+        },
+        isBlocked: { // Поле для блокировки
+            type: Boolean,
+            required: true,
+            default: false,
+        },
+        phone: {
+            type: String,
+            default: ''
+        },
+        club: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Club',
+        },
+        gender: {
+            type: String,
+            enum: ['male', 'female', ''],
+            default: ''
+        },
+        dateOfBirth: {
+            type: Date,
+        },
+        city: { 
+            type: String,
+        },
+        rank: { 
+            type: String,
+        },
     },
-    lastName: {
-        type: String,
-        required: true
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    phone: { // Added phone field
-        type: String,
-        required: false // Making it optional
-    },
-    password: {
-        type: String,
-        required: true
-    },
-    role: {
-        type: String,
-        required: true,
-        enum: ['athlete', 'coach', 'judge', 'admin'],
-        default: 'athlete'
-    },
-    gender: {
-        type: String,
-        required: function() { return this.role !== 'admin'; },
-        enum: ['male', 'female']
-    },
-    city: {
-        type: String,
-        required: false
-    },
-    dateOfBirth: {
-        type: Date,
-        required: function() { return this.role === 'athlete'; },
-    },
+    {
+        timestamps: true,
+    }
+);
 
-    // --- Athlete-specific fields ---
-    weight: {
-        type: Number,
-        required: false
-    },
-    club: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Club',
-        required: false 
-    },
-    clubStatus: {
-        type: String,
-        enum: ['pending', 'approved', 'rejected'],
-        required: false
-    },
-    rank: { 
-        type: String,
-        required: false
-    },
-
-}, {
-    timestamps: true
-});
-
-// --- METHODS ---
-
-userSchema.methods.matchPassword = async function(enteredPassword) {
+// Match user entered password to hashed password in database
+userSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };
 
-userSchema.pre('save', async function(next) {
+// Encrypt password using bcrypt
+userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
-        return next();
+        next();
     }
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
 });
 
-const User = mongoose.model('User', userSchema);
-
-module.exports = User;
+module.exports = mongoose.model('User', userSchema);

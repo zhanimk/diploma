@@ -27,8 +27,6 @@ const MyTournaments = () => {
     const [error, setError] = useState(null);
     const { user } = useSelector((state) => state.auth);
 
-    const hasCoach = user && user.coach;
-
     const fetchTournaments = useCallback(async () => {
         try {
             setLoading(true);
@@ -55,9 +53,6 @@ const MyTournaments = () => {
                     <li><Link to="/athlete/my-tournaments" className="active">Менің турнирлерім</Link></li>
                     {/* --- ДОБАВЛЕН НОВЫЙ ПУНКТ МЕНЮ --- */}
                     <li><Link to="/athlete/results">Нәтижелер тарихы</Link></li>
-                    {!hasCoach && (
-                        <li><Link to="/athlete/find-coach">Жаттықтырушы табу</Link></li>
-                    )}
                 </ul>
             </nav>
 

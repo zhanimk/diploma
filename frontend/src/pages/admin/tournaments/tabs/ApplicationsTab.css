@@ -1,0 +1,155 @@
+/* === Контейнер вкладки "Заявки" (ТЕМНАЯ ТЕМА) === */
+.applications-tab-container {
+    color: #cbd5e1;
+}
+
+.tab-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.tab-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #f1f5f9;
+}
+
+.tab-header p {
+    font-size: 0.9rem;
+    color: #94a3b8;
+}
+
+/* === Стили таблицы === */
+.table-wrapper {
+    overflow-x: auto;
+    border: 1px solid #1f2937;
+    border-radius: 8px;
+}
+
+.content-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.content-table thead {
+    background-color: #1f2937;
+    color: #e2e8f0;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.content-table th,
+.content-table td {
+    padding: 12px 15px;
+}
+
+.content-table tbody tr {
+    border-bottom: 1px solid #1f2937;
+    transition: background-color 0.2s;
+}
+
+.content-table tbody tr:last-of-type {
+    border-bottom: none;
+}
+
+.content-table tbody tr:hover {
+    background-color: #161e2d;
+}
+
+.no-data-cell {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #64748b;
+}
+
+/* === Статусы заявок === */
+.status-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.status-cell.status-approved {
+    color: #4ade80;
+}
+
+.status-cell.status-rejected {
+    color: #f87171;
+}
+
+.status-cell.status-pending {
+    color: #facc15;
+}
+
+/* === Кнопки действий === */
+.actions-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.action-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.approve-btn {
+    background-color: rgba(74, 222, 128, 0.1);
+    color: #4ade80;
+    border-color: #4ade80;
+}
+
+.approve-btn:not(:disabled):hover {
+    background-color: #4ade80;
+    color: #111827;
+}
+
+.reject-btn {
+    background-color: rgba(248, 113, 113, 0.1);
+    color: #f87171;
+    border-color: #f87171;
+}
+
+.reject-btn:not(:disabled):hover {
+    background-color: #f87171;
+    color: #111827;
+}
+
+/* === Загрузчик и ошибки === */
+.loader-container,
+.error-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 3rem;
+    font-size: 1rem;
+    color: #94a3b8;
+}
+
+.error-container {
+    color: #f87171;
+    background-color: rgba(248, 113, 113, 0.1);
+    border: 1px solid #f87171;
+    border-radius: 8px;
+}

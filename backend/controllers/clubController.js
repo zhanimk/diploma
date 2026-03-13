@@ -1,276 +1,205 @@
+const asyncHandler = require('express-async-handler');
 const Club = require('../models/clubModel');
 const User = require('../models/userModel');
-const asyncHandler = require('express-async-handler');
+const { logAction } = require('../utils/auditLogger');
 
-// ... (existing functions like createClub, getClubs, etc.)
+// ... (getClubs, getClubById без изменений)
 
-// @desc    Get a single club by ID with its athletes
-// @route   GET /api/clubs/:id
-// @access  Public
-const getClubById = asyncHandler(async (req, res) => {
-    const clubId = req.params.id;
+// @desc    Get all clubs with filtering by verification status
+// @route   GET /api/clubs
+// @access  Private/Admin
+const getClubs = asyncHandler(async (req, res) => {
+    const { status } = req.query;
+    const filter = {};
 
-    const club = await Club.findById(clubId).populate('coach', 'firstName lastName phone').lean();
-
-    if (!club) {
-        res.status(404);
-        throw new Error('Club not found');
+    if (status === 'verified') {
+        filter.isVerified = true;
+    } else if (status === 'pending') {
+        filter.isVerified = false;
     }
 
-    const athletes = await User.find({
-        club: clubId,
-        role: 'athlete',
-        clubStatus: 'approved'
-    }).select('firstName lastName dateOfBirth gender').lean();
-
-    const coachInfo = club.coach ? {
-        name: `${club.coach.firstName} ${club.coach.lastName}`,
-        phone: club.coach.phone || '—'
-    } : {
-        name: 'Тренер белгісіз',
-        phone: '—'
-    };
-
-    const response = {
+    const clubs = await Club.find(filter).populate('coach', 'firstName lastName email phone').populate('athletes');
+    
+    const clubsWithDetails = clubs.map(club => ({
         _id: club._id,
         name: club.name,
-        coachName: coachInfo.name,
-        coachPhone: coachInfo.phone,
-        region: club.city, 
-        logo: club.logo,
-        athletes: athletes, // Embed the list of athletes
-    };
-
-    res.json(response);
-});
-
-// @desc    Create or Update a club
-// @route   POST /api/clubs
-// @access  Private/Coach
-const createClub = asyncHandler(async (req, res) => {
-    const { name, city, logo } = req.body;
-
-    if (!name || !city) {
-        res.status(400);
-        throw new Error('Please provide all required fields: name, city');
-    }
-
-    const existingClub = await Club.findOne({ coach: req.user._id });
-
-    if (existingClub) {
-        existingClub.name = name || existingClub.name;
-        existingClub.city = city || existingClub.city;
-        existingClub.logo = logo !== undefined ? logo : existingClub.logo;
-
-        const updatedClub = await existingClub.save();
-        
-        await User.findByIdAndUpdate(req.user._id, { club: updatedClub._id });
-
-        return res.json(updatedClub);
-    }
-
-    const club = new Club({
-        name,
-        city,
-        logo,
-        coach: req.user._id,
-    });
-
-    const createdClub = await club.save();
-    
-    await User.findByIdAndUpdate(req.user._id, { club: createdClub._id });
-
-    res.status(201).json(createdClub);
-});
-
-// @desc    Get all clubs for public listing
-// @route   GET /api/clubs
-// @access  Public
-const getClubs = asyncHandler(async (req, res) => {
-    const clubs = await Club.find({ coach: { $exists: true, $ne: null } })
-        .populate('coach', 'firstName lastName phone')
-        .lean();
-
-    const clubsWithDetails = await Promise.all(clubs.map(async (club) => {
-        const athleteCount = await User.countDocuments({
-            club: club._id,
-            role: 'athlete',
-            clubStatus: 'approved'
-        });
-
-        const coachInfo = club.coach ? {
-            name: `${club.coach.firstName} ${club.coach.lastName}`,
-            phone: club.coach.phone || '—'
-        } : {
-            name: 'Тренер белгісіз',
-            phone: '—'
-        };
-
-        return {
-            _id: club._id,
-            name: club.name,
-            coachName: coachInfo.name,
-            coachPhone: coachInfo.phone,
-            athleteCount: athleteCount,
-            region: club.city,
-            logo: club.logo,
-        };
+        region: club.region,
+        isVerified: club.isVerified, // Добавили поле верификации
+        coachName: club.coach ? `${club.coach.firstName} ${club.coach.lastName}` : 'Тренер не назначен',
+        coachPhone: club.coach ? club.coach.phone || 'Не указан' : '-',
+        athleteCount: club.athletes ? club.athletes.length : 0
     }));
 
     res.json(clubsWithDetails);
+});
+
+// @desc    Get a single club by ID
+// @route   GET /api/clubs/:id
+// @access  Public
+const getClubById = asyncHandler(async (req, res) => {
+    const club = await Club.findById(req.params.id)
+        .populate('coach', 'firstName lastName email phone')
+        .populate('athletes', 'firstName lastName dateOfBirth gender');
+    if (club) {
+        res.json(club); // Возвращаем полную информацию, включая isVerified
+    } else {
+        res.status(404);
+        throw new Error('Club not found');
+    }
+});
+
+// @desc    Verify a club
+// @route   PUT /api/clubs/:id/verify
+// @access  Private/Admin
+const verifyClub = asyncHandler(async (req, res) => {
+    const club = await Club.findById(req.params.id);
+
+    if (club) {
+        club.isVerified = true;
+        const updatedClub = await club.save();
+
+        // --- Логирование --- 
+        await logAction(
+            req.user._id, 
+            'VERIFY_CLUB', 
+            `"${club.name}" клубы тексерістен өтті`
+        );
+
+        res.json(updatedClub);
+    } else {
+        res.status(404);
+        throw new Error('Club not found');
+    }
+});
+
+// @desc    Create a new club
+// @route   POST /api/clubs
+// @access  Private/Coach or Private/Admin
+const createClub = asyncHandler(async (req, res) => {
+    const { name, region } = req.body;
+    const coachId = req.user._id;
+
+    const clubExists = await Club.findOne({ coach: coachId });
+    if (clubExists) {
+        res.status(400);
+        throw new Error('You already have a club.');
+    }
+    const club = await Club.create({ name, region, coach: coachId });
+    await User.findByIdAndUpdate(coachId, { club: club._id });
+
+    // --- Логирование ---
+    await logAction(req.user._id, 'CREATE_CLUB', `"${name}" жаңа клубы құрылды`);
+
+    res.status(201).json(club);
+});
+
+// @desc    Update a club (for Admin)
+// @route   PUT /api/clubs/:id
+// @access  Private/Admin
+const updateClub = asyncHandler(async (req, res) => {
+    const club = await Club.findById(req.params.id);
+    if (club) {
+        const { name, region, coachId } = req.body;
+        club.name = name || club.name;
+        club.region = region || club.region;
+
+        if (coachId && coachId.toString() !== (club.coach ? club.coach.toString() : null)) {
+            if (club.coach) await User.findByIdAndUpdate(club.coach, { $unset: { club: '' } });
+            await User.findByIdAndUpdate(coachId, { club: club._id });
+            club.coach = coachId;
+        }
+        const updatedClub = await club.save();
+        res.json(updatedClub);
+    } else {
+        res.status(404);
+        throw new Error('Club not found');
+    }
 });
 
 // @desc    Delete a club
 // @route   DELETE /api/clubs/:id
 // @access  Private/Admin
 const deleteClub = asyncHandler(async (req, res) => {
-    const clubId = req.params.id;
+    const club = await Club.findById(req.params.id);
+    if (club) {
+        const clubName = club.name;
+        await User.updateMany({ club: club._id }, { $unset: { club: '' } });
+        await Club.deleteOne({ _id: club._id });
 
-    const club = await Club.findById(clubId);
+        // --- Логирование ---
+        await logAction(req.user._id, 'DELETE_CLUB', `"${clubName}" клубы жойылды`);
 
-    if (!club) {
+        res.json({ message: 'Club removed' });
+    } else {
         res.status(404);
         throw new Error('Club not found');
     }
-
-    // Step 1: Find all users associated with this club and clear their club affiliation
-    await User.updateMany(
-        { club: clubId },
-        { $unset: { club: "" }, $set: { clubStatus: 'none' } } 
-    );
-
-    // Step 2: Delete the club itself
-    await Club.findByIdAndDelete(clubId);
-
-    res.json({ message: 'Club removed and athletes unlinked successfully' });
 });
-
-
-// ... (other existing functions like getMyClub, updateMyClub, etc.)
 
 const getMyClub = asyncHandler(async (req, res) => {
-    const club = await Club.findOne({ coach: req.user._id });
-    if (!club) {
-        return res.json(null); 
-    }
-
-    const pendingAthletes = await User.find({
-        club: club._id,
-        clubStatus: 'pending',
-    }).select('-password');
-
-    res.json({
-        club,
-        pendingAthletes,
-    });
-});
-
-const updateMyClub = asyncHandler(async (req, res) => {
-    const { name, city, logo } = req.body;
-
-    const club = await Club.findOne({ coach: req.user._id });
-
-    if (!club) {
+    const club = await Club.findOne({ coach: req.user._id }).populate('athletes');
+    if (club) {
+        res.json(club);
+    } else {
         res.status(404);
-        throw new Error('Клуб не найден. Вы не можете редактировать клуб, которого не существует.');
+        throw new Error('Club not found for this coach');
     }
-
-    club.name = name || club.name;
-    club.city = city || club.city;
-    club.logo = logo !== undefined ? logo : club.logo; 
-
-    const updatedClub = await club.save();
-
-    res.json(updatedClub);
 });
-
+const updateMyClub = asyncHandler(async (req, res) => {
+    const club = await Club.findOne({ coach: req.user._id });
+    if (club) {
+        club.name = req.body.name || club.name;
+        club.region = req.body.region || club.region;
+        const updatedClub = await club.save();
+        res.json(updatedClub);
+    } else {
+        res.status(404);
+        throw new Error('Club not found');
+    }
+});
 const getMyAthletes = asyncHandler(async (req, res) => {
     const club = await Club.findOne({ coach: req.user._id });
     if (!club) {
-        res.status(404);
-        throw new Error('You do not manage a club.');
+        res.status(404); throw new Error('Club not found');
     }
-
-    const athletes = await User.find({
-        club: club._id,
-        clubStatus: 'approved'
-    }).select('-password');
-    
+    const athletes = await User.find({ role: 'athlete', club: club._id });
     res.json(athletes);
 });
-
 const respondToRequest = asyncHandler(async (req, res) => {
-    const { athleteId, status } = req.body;
-
-    if (!athleteId || !status || !['approved', 'rejected'].includes(status)) {
-        res.status(400);
-        throw new Error('Invalid input data.');
-    }
-
-    const club = await Club.findOne({ coach: req.user._id });
-    if (!club) {
-        res.status(404);
-        throw new Error('You do not manage a club.');
-    }
-
-    const athlete = await User.findById(athleteId);
-
-    if (!athlete || !athlete.club || !athlete.club.equals(club._id) || athlete.clubStatus !== 'pending') {
-        res.status(404);
-        throw new Error('Athlete not found or request is not pending for this club.');
-    }
-
-    if (status === 'rejected') {
-        athlete.club = undefined;
-        athlete.clubStatus = 'none';
-    } else {
-        athlete.clubStatus = status;
-    }
-    
-    await athlete.save();
-
-    res.json({ message: `Athlete request has been ${status}.` });
+    res.status(400).json({ message: 'This endpoint is deprecated. Please use /api/users/handle-request.' });
 });
-
 const registerAthleteByCoach = asyncHandler(async (req, res) => {
-    const { firstName, lastName, email, password, gender, dateOfBirth, city, rank } = req.body;
-
     const club = await Club.findOne({ coach: req.user._id });
-    if (!club) {
-        res.status(403);
-        throw new Error('You are not authorized to perform this action because you do not have a club.');
-    }
+    if (!club) { res.status(403); throw new Error('You do not have a club.'); }
 
+    const { firstName, lastName, email, password, gender, dateOfBirth, city, rank } = req.body;
     const userExists = await User.findOne({ email });
-    if (userExists) {
-        res.status(400);
-        throw new Error('User with this email already exists.');
-    }
+    if (userExists) { res.status(400); throw new Error('User already exists'); }
 
     const athlete = await User.create({
         firstName, lastName, email, password, gender, dateOfBirth, city, rank,
         role: 'athlete',
         club: club._id,
-        clubStatus: 'approved',
     });
 
-    res.status(201).json({
-        _id: athlete._id,
-        firstName: athlete.firstName,
-        lastName: athlete.lastName,
-        email: athlete.email,
-        role: athlete.role,
-    });
+    if (athlete) {
+        res.status(201).json({ _id: athlete._id, firstName: athlete.firstName, email: athlete.email });
+    } else {
+        res.status(400); throw new Error('Invalid athlete data');
+    }
 });
 
-module.exports = {
-    createClub,
-    getClubs,
-    getClubById, // Exporting the new function
+
+module.exports = { 
+    getClubs, 
+    verifyClub, // Добавили новую функцию
+    getClubById, 
+    createClub, 
+    updateClub, 
     deleteClub,
     getMyClub,
     updateMyClub,
     getMyAthletes,
     respondToRequest,
-    registerAthleteByCoach,
+    registerAthleteByCoach
 };

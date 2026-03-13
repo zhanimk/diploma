@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import setAuthToken from './utils/setAuthToken';
@@ -26,25 +25,30 @@ import AthleteResultsPage from './pages/athlete/AthleteResultsPage';
 // --- Страницы тренера ---
 import CoachDashboard from './pages/coach/CoachDashboard';
 import CoachProfile from './pages/coach/CoachProfile';
-import AthleteListPage from './pages/coach/AthleteListPage';
-import TournamentAppsPage from './pages/coach/TournamentAppsPage';
-import AthleteRequestsPage from './pages/coach/AthleteRequestsPage';
-import AddAthletePage from './pages/coach/AddAthletePage';
-import EditAthletePage from './pages/coach/EditAthletePage';
+import AthleteListPage from './pages/coach/athletes/AthleteListPage';
+import TournamentAppsPage from './pages/coach/tournaments/TournamentAppsPage';
+import AthleteRequestsPage from './pages/coach/athletes/AthleteRequestsPage';
+import AddAthletePage from './pages/coach/athletes/AddAthletePage';
+import EditAthletePage from './pages/coach/athletes/EditAthletePage';
 
 import { Toaster } from 'react-hot-toast';
 
 // --- Админ-панель ---
 import AdminLayout from './pages/admin/AdminLayout';
-import AdminDashboard from './pages/admin/AdminDashboard';
-import AdminTournaments from './pages/admin/AdminTournaments';
-import CreateTournament from './pages/admin/CreateTournament';
-import EditTournament from './pages/admin/EditTournament';
-import AdminApplications from './pages/admin/AdminApplications';
-import AdminApplicationDetails from './pages/admin/AdminApplicationDetails';
-import AdminTournamentGrids from './pages/admin/AdminTournamentGrids';
-import AdminClubs from './pages/admin/AdminClubs';
-import ClubDetails from './pages/admin/ClubDetails';
+import AdminDashboard from './pages/admin/dashboard/AdminDashboard';
+import EditTournament from './pages/admin/tournaments/EditTournament';
+import AdminApplications from './pages/admin/applications/AdminApplications';
+import AdminApplicationDetails from './pages/admin/applications/AdminApplicationDetails';
+import AdminTournamentGrids from './pages/admin/tournaments/AdminTournamentGrids';
+import ClubDetails from './pages/admin/clubs/ClubDetails';
+import AdminSettings from './pages/admin/settings/AdminSettings';
+import AdminNotifications from './pages/admin/notifications/AdminNotifications';
+import AdminManagement from './pages/admin/users/AdminManagement';
+import AdminTournaments from './pages/admin/tournaments/AdminTournaments'; // ИСПРАВЛЕНО
+import ManageTournamentPage from './pages/admin/tournaments/ManageTournamentPage';
+import ApplicationsTab from './pages/admin/tournaments/tabs/ApplicationsTab';
+import GridsTab from './pages/admin/tournaments/tabs/GridsTab';
+import ReportsTab from './pages/admin/tournaments/tabs/ReportsTab';
 
 const userInfo = JSON.parse(localStorage.getItem('userInfo'));
 if (userInfo && userInfo.token) {
@@ -63,14 +67,20 @@ const App = () => {
             <Routes>
                 <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
                     <Route path="dashboard" element={<AdminDashboard />} />
-                    <Route path="tournaments" element={<AdminTournaments />} />
-                    <Route path="tournaments/create" element={<CreateTournament />} />
+                    <Route path="tournaments" element={<AdminTournaments />} /> {/* ИСПРАВЛЕНО */}
                     <Route path="tournaments/edit/:id" element={<EditTournament />} />
                     <Route path="tournaments/grids/:id" element={<AdminTournamentGrids />} />
+                    <Route path="tournaments/manage/:id" element={<ManageTournamentPage />}>
+                        <Route path="applications" element={<ApplicationsTab />} />
+                        <Route path="grids" element={<GridsTab />} />
+                        <Route path="reports" element={<ReportsTab />} />
+                    </Route>
                     <Route path="applications" element={<AdminApplications />} />
                     <Route path="applications/:id" element={<AdminApplicationDetails />} />
-                    <Route path="clubs" element={<AdminClubs />} />
+                    <Route path="management" element={<AdminManagement />} />
                     <Route path="clubs/:id" element={<ClubDetails />} />
+                    <Route path="settings" element={<AdminSettings />} />
+                    <Route path="notifications" element={<AdminNotifications />} />
                 </Route>
             </Routes>
         );
@@ -83,31 +93,28 @@ const App = () => {
             <main className="main-content">
                 <Toaster position="top-right" />
                 <Routes>
-                    {/* Публичные маршруты */}
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/tournaments" element={<TournamentListScreen />} />
-                    <Route path="/tournaments/:id" element={<TournamentDetailScreen />} />
+                     <Route path='/' element={<HomePage />} />
+                    <Route path='/login' element={<Login />} />
+                    <Route path='/register' element={<Register />} />
+                    <Route path='/tournaments' element={<TournamentListScreen />} />
+                    <Route path='/tournaments/:id' element={<TournamentDetailScreen />} />
 
-                    {/* Перенаправление со старого профиля */}
-                    <Route path="/profile" element={<PrivateRoute><ProfileRedirectPage /></PrivateRoute>} />
+                    {/* Redirects and private routes */}
+                    <Route path='/profile' element={<PrivateRoute><ProfileRedirectPage /></PrivateRoute>} />
 
-                    {/* Приватные маршруты спортсмена */}
-                    <Route path="/athlete/dashboard" element={<PrivateRoute><AthleteDashboard /></PrivateRoute>} />
-                    <Route path="/athlete/profile" element={<PrivateRoute><AthleteProfile /></PrivateRoute>} />
-                    <Route path="/athlete/find-coach" element={<PrivateRoute><FindCoachPage /></PrivateRoute>} />
-                    <Route path="/athlete/my-tournaments" element={<PrivateRoute><MyTournaments /></PrivateRoute>} />
-                    <Route path="/athlete/results" element={<PrivateRoute><AthleteResultsPage /></PrivateRoute>} />
+                    <Route path='/athlete/dashboard' element={<PrivateRoute role='athlete'><AthleteDashboard /></PrivateRoute>} />
+                    <Route path='/athlete/profile' element={<PrivateRoute role='athlete'><AthleteProfile /></PrivateRoute>} />
+                    <Route path='/athlete/tournaments' element={<PrivateRoute role='athlete'><MyTournaments /></PrivateRoute>} />
+                    <Route path='/athlete/results' element={<PrivateRoute role='athlete'><AthleteResultsPage /></PrivateRoute>} />
+                    <Route path='/athlete/find-coach' element={<PrivateRoute role='athlete'><FindCoachPage /></PrivateRoute>} />
 
-                    {/* Приватные маршруты тренера */}
-                    <Route path="/coach/dashboard" element={<PrivateRoute><CoachDashboard /></PrivateRoute>} />
-                    <Route path="/coach/profile" element={<PrivateRoute><CoachProfile /></PrivateRoute>} />
-                    <Route path="/coach/my-athletes" element={<PrivateRoute><AthleteListPage /></PrivateRoute>} />
-                    <Route path="/coach/applications" element={<PrivateRoute><TournamentAppsPage /></PrivateRoute>} />
-                    <Route path="/coach/requests" element={<PrivateRoute><AthleteRequestsPage /></PrivateRoute>} />
-                    <Route path="/coach/register-athlete" element={<PrivateRoute><AddAthletePage /></PrivateRoute>} />
-                    <Route path="/coach/edit-athlete/:athleteId" element={<PrivateRoute><EditAthletePage /></PrivateRoute>} />
+                    <Route path='/coach/dashboard' element={<PrivateRoute role='coach'><CoachDashboard /></PrivateRoute>} />
+                    <Route path='/coach/profile' element={<PrivateRoute role='coach'><CoachProfile /></PrivateRoute>} />
+                    <Route path='/coach/athletes' element={<PrivateRoute role='coach'><AthleteListPage /></PrivateRoute>} />
+                    <Route path='/coach/athletes/add' element={<PrivateRoute role='coach'><AddAthletePage /></PrivateRoute>} />
+                    <Route path='/coach/athletes/edit/:id' element={<PrivateRoute role='coach'><EditAthletePage /></PrivateRoute>} />
+                    <Route path='/coach/applications' element={<PrivateRoute role='coach'><TournamentAppsPage /></PrivateRoute>} />
+                    <Route path='/coach/requests' element={<PrivateRoute role='coach'><AthleteRequestsPage /></PrivateRoute>} />
                 </Routes>
             </main>
             {!isAuthPage && !isUserDashboard && <Footer />}

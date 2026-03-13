@@ -1,0 +1,155 @@
+/* === Основной контейнер === */
+.admin-tournaments-container {
+    padding: 2rem;
+    color: #cbd5e1;
+}
+
+/* === Заголовок страницы === */
+.tournaments-header {
+    display: flex;
+    justify-content: space-between; /* Выравнивает элементы по краям */
+    align-items: flex-start;      /* Выравнивает по верхнему краю */
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #374151;
+    padding-bottom: 1.5rem;
+    gap: 1rem; /* Добавляет отступ между текстом и кнопкой */
+}
+
+.tournaments-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin: 0 0 0.25rem 0;
+}
+
+.tournaments-header p {
+    font-size: 1rem;
+    color: #9ca3af;
+    margin: 0;
+}
+
+/* === Кнопка создания === */
+.create-tournament-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    white-space: nowrap; /* Предотвращает перенос текста */
+}
+
+.create-tournament-btn:hover {
+    background-color: #1d4ed8;
+}
+
+/* === Список турниров === */
+.tournaments-list {
+    background-color: #111827;
+    border: 1px solid #1f2937;
+    border-radius: 8px;
+    overflow: hidden; /* Чтобы скруглить углы */
+}
+
+/* === Заголовок списка === */
+.list-header {
+    display: flex;
+    background-color: #1f2937;
+    padding: 12px 20px;
+    font-weight: 600;
+    color: #9ca3af;
+}
+
+/* === Элементы списка (общие) === */
+.header-item, .item-cell {
+    padding: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.name    { flex: 3; }
+.dates   { flex: 2; }
+.status  { flex: 1.5; justify-content: center; }
+.actions { flex: 2; justify-content: flex-end; }
+
+/* === Строка списка === */
+.list-item {
+    display: flex;
+    border-bottom: 1px solid #1f2937;
+    transition: background-color 0.2s;
+}
+
+.list-item:last-child {
+    border-bottom: none;
+}
+
+.list-item:hover {
+    background-color: #1e293b;
+}
+
+/* === Статус === */
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+.status-planned, .status-registration_open, .status-registration_closed { background-color: #2563eb; color: #fff; }
+.status-ongoing { background-color: #f59e0b; color: #fff; }
+.status-completed { background-color: #10b981; color: #fff; }
+.status-archived { background-color: #4b5563; color: #fff; }
+
+/* === Кнопки действий === */
+.actions {
+    gap: 0.75rem;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.view-btn {
+    background-color: #374151;
+    color: #e5e7eb;
+}
+
+.view-btn:hover {
+    background-color: #4b5563;
+}
+
+.delete-btn {
+    background-color: transparent;
+    color: #ef4444;
+}
+
+.delete-btn:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+}
+
+/* === Сообщение об отсутствии турниров === */
+.no-tournaments-message {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #6b7280;
+}
+
+.no-tournaments-message p {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    color: #9ca3af;
+}
