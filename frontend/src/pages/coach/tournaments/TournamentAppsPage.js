@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Shield, Users, Eye, User, Weight } from 'lucide-react';
-import '../CoachDashboard.css'; // Main dashboard layout
+import '../dashboard/CoachDashboard.css'; // Main dashboard layout
 
 // ====================================================================
 //  Individual Application Card Component

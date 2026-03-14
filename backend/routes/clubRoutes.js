@@ -9,7 +9,8 @@ const {
     updateMyClub,
     getMyAthletes,
     respondToRequest,
-    registerAthleteByCoach
+    registerAthleteByCoach,
+    verifyClub 
 } = require('../controllers/clubController');
 const { protect, coach, admin } = require('../middleware/authMiddleware');
 
@@ -27,6 +28,7 @@ router.put('/respond-request', protect, coach, respondToRequest);
 router.post('/register-athlete', protect, coach, registerAthleteByCoach);
 
 // Admin route
+router.put('/:id/verify', protect, admin, verifyClub);
 router.delete('/:id', protect, admin, deleteClub);
 
 module.exports = router;

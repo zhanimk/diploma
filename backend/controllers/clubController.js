@@ -3,34 +3,45 @@ const Club = require('../models/clubModel');
 const User = require('../models/userModel');
 const { logAction } = require('../utils/auditLogger');
 
-// ... (getClubs, getClubById без изменений)
-
 // @desc    Get all clubs with filtering by verification status
 // @route   GET /api/clubs
-// @access  Private/Admin
+// @access  Public (conditionally private for admin)
 const getClubs = asyncHandler(async (req, res) => {
     const { status } = req.query;
     const filter = {};
 
-    if (status === 'verified') {
+    // If not an admin, only show verified clubs
+    if (req.user?.role !== 'admin') {
         filter.isVerified = true;
-    } else if (status === 'pending') {
-        filter.isVerified = false;
+    }
+
+    // Admin can filter by status
+    if (req.user?.role === 'admin') {
+        if (status === 'verified') {
+            filter.isVerified = true;
+        } else if (status === 'pending') {
+            filter.isVerified = false;
+        }
     }
 
     const clubs = await Club.find(filter).populate('coach', 'firstName lastName email phone').populate('athletes');
     
-    const clubsWithDetails = clubs.map(club => ({
-        _id: club._id,
-        name: club.name,
-        region: club.region,
-        isVerified: club.isVerified, // Добавили поле верификации
-        coachName: club.coach ? `${club.coach.firstName} ${club.coach.lastName}` : 'Тренер не назначен',
-        coachPhone: club.coach ? club.coach.phone || 'Не указан' : '-',
-        athleteCount: club.athletes ? club.athletes.length : 0
-    }));
+    // Admin gets more details
+    if (req.user?.role === 'admin') {
+        const clubsWithDetails = clubs.map(club => ({
+            _id: club._id,
+            name: club.name,
+            region: club.region,
+            isVerified: club.isVerified,
+            coachName: club.coach ? `${club.coach.firstName} ${club.coach.lastName}` : 'Тренер не назначен',
+            coachPhone: club.coach ? club.coach.phone || 'Не указан' : '-',
+            athleteCount: club.athletes ? club.athletes.length : 0
+        }));
+        return res.json(clubsWithDetails);
+    }
 
-    res.json(clubsWithDetails);
+    // Public response is simpler
+    res.json(clubs);
 });
 
 // @desc    Get a single club by ID
@@ -41,7 +52,7 @@ const getClubById = asyncHandler(async (req, res) => {
         .populate('coach', 'firstName lastName email phone')
         .populate('athletes', 'firstName lastName dateOfBirth gender');
     if (club) {
-        res.json(club); // Возвращаем полную информацию, включая isVerified
+        res.json(club);
     } else {
         res.status(404);
         throw new Error('Club not found');
@@ -58,12 +69,7 @@ const verifyClub = asyncHandler(async (req, res) => {
         club.isVerified = true;
         const updatedClub = await club.save();
 
-        // --- Логирование --- 
-        await logAction(
-            req.user._id, 
-            'VERIFY_CLUB', 
-            `"${club.name}" клубы тексерістен өтті`
-        );
+        await logAction(req.user._id, 'VERIFY_CLUB', `"${club.name}" клубы тексерістен өтті`);
 
         res.json(updatedClub);
     } else {
@@ -74,9 +80,9 @@ const verifyClub = asyncHandler(async (req, res) => {
 
 // @desc    Create a new club
 // @route   POST /api/clubs
-// @access  Private/Coach or Private/Admin
+// @access  Private/Coach
 const createClub = asyncHandler(async (req, res) => {
-    const { name, region } = req.body;
+    const { name, region, description, phone, address, website } = req.body;
     const coachId = req.user._id;
 
     const clubExists = await Club.findOne({ coach: coachId });
@@ -84,10 +90,17 @@ const createClub = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error('You already have a club.');
     }
-    const club = await Club.create({ name, region, coach: coachId });
+    const club = await Club.create({ 
+        name, 
+        region, 
+        coach: coachId,
+        description,
+        phone,
+        address,
+        website
+    });
     await User.findByIdAndUpdate(coachId, { club: club._id });
 
-    // --- Логирование ---
     await logAction(req.user._id, 'CREATE_CLUB', `"${name}" жаңа клубы құрылды`);
 
     res.status(201).json(club);
@@ -99,16 +112,24 @@ const createClub = asyncHandler(async (req, res) => {
 const updateClub = asyncHandler(async (req, res) => {
     const club = await Club.findById(req.params.id);
     if (club) {
-        const { name, region, coachId } = req.body;
+        const { name, region, coachId, description, phone, address, website, logo } = req.body;
+        
         club.name = name || club.name;
         club.region = region || club.region;
+        club.description = description || club.description;
+        club.phone = phone || club.phone;
+        club.address = address || club.address;
+        club.website = website || club.website;
+        club.logo = logo || club.logo;
 
         if (coachId && coachId.toString() !== (club.coach ? club.coach.toString() : null)) {
             if (club.coach) await User.findByIdAndUpdate(club.coach, { $unset: { club: '' } });
             await User.findByIdAndUpdate(coachId, { club: club._id });
             club.coach = coachId;
         }
+        
         const updatedClub = await club.save();
+        await logAction(req.user._id, 'UPDATE_CLUB', `Администратор клубының деректерін жаңартты "${club.name}"`);
         res.json(updatedClub);
     } else {
         res.status(404);
@@ -126,7 +147,6 @@ const deleteClub = asyncHandler(async (req, res) => {
         await User.updateMany({ club: club._id }, { $unset: { club: '' } });
         await Club.deleteOne({ _id: club._id });
 
-        // --- Логирование ---
         await logAction(req.user._id, 'DELETE_CLUB', `"${clubName}" клубы жойылды`);
 
         res.json({ message: 'Club removed' });
@@ -136,6 +156,9 @@ const deleteClub = asyncHandler(async (req, res) => {
     }
 });
 
+// @desc    Get the club of the currently logged-in coach
+// @route   GET /api/clubs/my-club
+// @access  Private/Coach
 const getMyClub = asyncHandler(async (req, res) => {
     const club = await Club.findOne({ coach: req.user._id }).populate('athletes');
     if (club) {
@@ -145,18 +168,38 @@ const getMyClub = asyncHandler(async (req, res) => {
         throw new Error('Club not found for this coach');
     }
 });
+
+// @desc    Update the club of the currently logged-in coach
+// @route   PUT /api/clubs/my-club
+// @access  Private/Coach
 const updateMyClub = asyncHandler(async (req, res) => {
     const club = await Club.findOne({ coach: req.user._id });
+
     if (club) {
-        club.name = req.body.name || club.name;
-        club.region = req.body.region || club.region;
+        const { name, region, description, phone, address, website, logo } = req.body;
+
+        club.name = name || club.name;
+        club.region = region || club.region;
+        club.description = description !== undefined ? description : club.description;
+        club.phone = phone !== undefined ? phone : club.phone;
+        club.address = address !== undefined ? address : club.address;
+        club.website = website !== undefined ? website : club.website;
+        club.logo = logo !== undefined ? logo : club.logo;
+
         const updatedClub = await club.save();
+        
+        await logAction(req.user._id, 'UPDATE_MY_CLUB', `"${club.name}" клубының деректері жаңартылды`);
+
         res.json(updatedClub);
     } else {
         res.status(404);
-        throw new Error('Club not found');
+        throw new Error('Club not found for this coach');
     }
 });
+
+
+// --- Deprecated or other specific routes ---
+
 const getMyAthletes = asyncHandler(async (req, res) => {
     const club = await Club.findOne({ coach: req.user._id });
     if (!club) {
@@ -165,9 +208,11 @@ const getMyAthletes = asyncHandler(async (req, res) => {
     const athletes = await User.find({ role: 'athlete', club: club._id });
     res.json(athletes);
 });
+
 const respondToRequest = asyncHandler(async (req, res) => {
     res.status(400).json({ message: 'This endpoint is deprecated. Please use /api/users/handle-request.' });
 });
+
 const registerAthleteByCoach = asyncHandler(async (req, res) => {
     const club = await Club.findOne({ coach: req.user._id });
     if (!club) { res.status(403); throw new Error('You do not have a club.'); }
@@ -192,7 +237,7 @@ const registerAthleteByCoach = asyncHandler(async (req, res) => {
 
 module.exports = { 
     getClubs, 
-    verifyClub, // Добавили новую функцию
+    verifyClub, 
     getClubById, 
     createClub, 
     updateClub, 

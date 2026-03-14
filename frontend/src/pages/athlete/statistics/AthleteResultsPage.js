@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import './AthleteDashboard.css'; // Используем тот же стиль
+import '../dashboard/AthleteDashboard.css'; // Используем тот же стиль
 import { Trophy, Calendar, MapPin, Shield, BarChart2 } from 'lucide-react';
 
 const AthleteResultsPage = () => {

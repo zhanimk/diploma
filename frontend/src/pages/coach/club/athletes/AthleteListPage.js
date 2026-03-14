@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { UserPlus } from 'lucide-react';
 import './AthleteListPage.css'; // Импортируем новый файл стилей
-import AthleteCard from '../../../components/athlete/AthleteCard';
+import AthleteCard from '../../../../components/athlete/AthleteCard';
 
 
 const AthleteListPage = () => {

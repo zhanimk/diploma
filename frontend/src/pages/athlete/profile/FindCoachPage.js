@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
-import './AthleteDashboard.css'; 
+import '../dashboard/AthleteDashboard.css'; 
 import { UserPlus } from 'lucide-react';
 
 const FindCoachPage = () => {

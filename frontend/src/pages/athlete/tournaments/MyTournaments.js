@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import './AthleteDashboard.css'; 
+import '../dashboard/AthleteDashboard.css'; 
 import { Shield, Calendar, MapPin, Award, Clock, CheckCircle, XCircle } from 'lucide-react';
 
 const StatusBadge = ({ status }) => {

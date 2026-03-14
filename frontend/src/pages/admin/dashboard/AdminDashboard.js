@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { BarChart2, Users, Shield, Calendar, Plus, Bell, ArrowRight, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
+import { Users, Shield, Calendar, Plus, Bell, ArrowRight, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -12,34 +12,44 @@ const AdminDashboard = () => {
     const [auditLogs, setAuditLogs] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchDashboardData = async () => {
-            setLoading(true);
-            try {
-                // Предполагается, что у вас будет единый эндпоинт для данных дашборда
-                // Если нет, то можно использовать Promise.all для параллельных запросов
-                const { data } = await axios.get('/api/admin/dashboard', {
-                    headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem('userInfo')).token}` }
-                });
-                setStats({ 
-                    users: data.stats.totalUsers, 
-                    clubs: data.stats.totalClubs, 
-                    tournaments: data.stats.totalTournaments,
-                    pendingClubs: data.stats.pendingClubsCount
-                });
-                setRecentTournaments(data.recentTournamentsWithApps || []);
-                setPendingClubs(data.pendingClubs || []);
-                setAuditLogs(data.auditLogs || []);
-
-            } catch (error) {
-                toast.error('Не удалось загрузить данные для панели управления.');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchDashboardData();
+    const fetchDashboardData = useCallback(async () => {
+        setLoading(true);
+        try {
+            const { data } = await axios.get('/api/admin/dashboard', {
+                headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem('userInfo')).token}` }
+            });
+            setStats({ 
+                users: data.stats.totalUsers, 
+                clubs: data.stats.totalClubs, 
+                tournaments: data.stats.totalTournaments,
+                pendingClubs: data.stats.pendingClubsCount
+            });
+            setRecentTournaments(data.recentTournamentsWithApps || []);
+            setPendingClubs(data.pendingClubs || []);
+            setAuditLogs(data.auditLogs || []);
+        } catch (error) {
+            toast.error('Не удалось загрузить данные для панели управления.');
+        } finally {
+            setLoading(false);
+        }
     }, []);
+
+    useEffect(() => {
+        fetchDashboardData();
+    }, [fetchDashboardData]);
+
+    const handleVerifyClub = async (clubId) => {
+        try {
+            await axios.put(`/api/clubs/${clubId}/verify`, {}, {
+                headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem('userInfo')).token}` }
+            });
+            toast.success('Клуб успешно верифицирован!');
+            // Refresh data after verification
+            fetchDashboardData();
+        } catch (error) {
+            toast.error('Ошибка при верификации клуба.');
+        }
+    };
 
     const getLogIcon = (action) => {
         switch (action) {
@@ -87,9 +97,9 @@ const AdminDashboard = () => {
                                                 <span className="item-subtitle">{club.region}</span>
                                             </div>
                                         </div>
-                                        <Link to={`/admin/users-clubs`} className="btn btn-tertiary">
-                                            Тексеру <ArrowRight size={16} />
-                                        </Link>
+                                        <button onClick={() => handleVerifyClub(club._id)} className="btn btn-tertiary verify-btn">
+                                            <CheckCircle size={16} /> Верифицировать
+                                        </button>
                                     </li>
                                 ))}
                             </ul>

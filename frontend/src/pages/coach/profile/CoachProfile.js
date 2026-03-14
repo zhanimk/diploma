@@ -1,13 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setUser, setClub } from '../../store/authSlice';
+import { setUser, setClub } from '../../../store/authSlice';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { User, Mail, MapPin, Edit, X, Save, ArrowLeft, UploadCloud, Building, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { kazakhstanRegions } from '../../utils/kazakhstanRegions'; // ИМПОРТИРУЕМ РЕГИОНЫ
-import { kazakhstanCities } from '../../utils/kazakhstanCities';
+import { kazakhstanRegions } from '../../../utils/kazakhstanRegions'; // ИМПОРТИРУЕМ РЕГИОНЫ
+import { kazakhstanCities } from '../../../utils/kazakhstanCities';
 import './CoachProfile.css';
 
 const CoachProfile = () => {

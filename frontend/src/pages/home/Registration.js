@@ -39,7 +39,8 @@ export default function Register() {
   useEffect(() => {
     const fetchClubs = async () => {
       try {
-        const { data } = await axios.get("/api/clubs");
+        // Fetch only verified clubs
+        const { data } = await axios.get("/api/clubs?status=verified");
         setClubs(data || []);
       } catch (err) {
         console.error("Failed to fetch clubs:", err);
@@ -152,7 +153,7 @@ export default function Register() {
                             <select required value={club} onChange={(e) => setClub(e.target.value)}>
                                 <option value="" disabled>Спорт клубын таңдаңыз</option>
                                 {clubs.length > 0 ? (
-                                    clubs.map(c => <option key={c._id} value={c._id}>{c.name} ({c.city})</option>)
+                                    clubs.map(c => <option key={c._id} value={c._id}>{c.name} ({c.region})</option>)
                                 ) : (
                                     <option disabled>Клубтар жүктелуде...</option>
                                 )}

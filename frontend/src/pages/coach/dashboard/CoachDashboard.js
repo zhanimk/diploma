@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { Users, LogIn, Shield, Building, MapPin, ArrowRight } from 'lucide-react';
-import { kazakhstanRegions } from '../../utils/kazakhstanRegions'; // Импортируем регионы
+import { Users, LogIn, Shield, Building, MapPin, ArrowRight, Info, Phone, Globe, Edit } from 'lucide-react';
+import { kazakhstanRegions } from '../../../utils/kazakhstanRegions';
 import './CoachDashboard.css';
 
-// ... (StatCard component remains the same) ...
 const StatCard = ({ icon, value, label, linkTo, colorClass }) => (
     <Link to={linkTo} className={`stat-card-v2 ${colorClass}`}>
         <div className="stat-card-v2__header">
@@ -22,27 +21,26 @@ const StatCard = ({ icon, value, label, linkTo, colorClass }) => (
     </Link>
 );
 
-
-// =========================================
-//   CreateClub Component - CORRECTED
-// =========================================
 const CreateClub = ({ onClubCreated }) => {
     const [name, setName] = useState('');
-    const [region, setRegion] = useState(''); // Changed from city to region
+    const [region, setRegion] = useState('');
+    const [description, setDescription] = useState('');
+    const [phone, setPhone] = useState('');
+    const [address, setAddress] = useState('');
+    const [website, setWebsite] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
     const handleCreateClub = async (e) => {
         e.preventDefault();
-        if (!region) { // Check if a region is selected
+        if (!region) {
             setError('Пожалуйста, выберите регион.');
             return;
         }
         setLoading(true);
         setError('');
         try {
-            // Send `name` and `region` to the backend
-            await axios.post('/api/clubs', { name, region });
+            await axios.post('/api/clubs', { name, region, description, phone, address, website });
             onClubCreated();
         } catch (err) {
             setError(err.response?.data?.message || 'Клуб құру кезінде қате.');
@@ -66,53 +64,65 @@ const CreateClub = ({ onClubCreated }) => {
                         ))}
                     </select>
                 </div>
+                <div className="input-group"><div className="icon-wrapper"><Info size={18} /></div><textarea placeholder="Клуб туралы қысқаша сипаттама" value={description} onChange={(e) => setDescription(e.target.value)}></textarea></div>
+                <div className="input-group"><div className="icon-wrapper"><Phone size={18} /></div><input type="text" placeholder="Байланыс телефоны" value={phone} onChange={(e) => setPhone(e.target.value)} /></div>
+                <div className="input-group"><div className="icon-wrapper"><MapPin size={18} /></div><input type="text" placeholder="Мекен-жайы" value={address} onChange={(e) => setAddress(e.target.value)} /></div>
+                <div className="input-group"><div className="icon-wrapper"><Globe size={18} /></div><input type="text" placeholder="Веб-сайт" value={website} onChange={(e) => setWebsite(e.target.value)} /></div>
                 <button type="submit" className="btn btn-primary" disabled={loading}>{loading ? 'Құрылуда...' : 'Клуб құру'}</button>
             </form>
         </div>
     );
 };
 
-
-// ... (ClubDashboard component remains mostly the same, but we will adjust it) ...
 const ClubDashboard = ({ clubData }) => {
     return (
         <>
             <header className="page-header">
                 <div>
-                    <h1>{clubData.club.name} клубының басқару панелі</h1>
-                    {/* Display REGION instead of city */}
-                    <span className="header-tag">{clubData.club.region}</span>
+                    <h1>{clubData.name} клубының басқару панелі</h1>
+                    <span className="header-tag">{clubData.region}</span>
+                     {!clubData.isVerified && <span className="header-tag verification-pending">Тексеруде</span>}
                 </div>
+                 <Link to="/coach/club/edit" className="btn btn-primary">
+                    <Edit size={18} /> Клубты өңдеу
+                </Link>
             </header>
-
+            
             <div className="stats-grid">
                  <StatCard 
                     icon={<Users size={24} />} 
-                    value={clubData.approvedAthletesCount} 
+                    value={clubData.athletes.length} 
                     label="Менің спортшыларым" 
                     linkTo="/coach/my-athletes"
                     colorClass="card-blue" 
                 />
                 <StatCard 
                     icon={<LogIn size={24} />} 
-                    value={clubData.pendingAthletes.length} 
+                    value={0} // This needs to be dynamic later
                     label="Спортшылардың сұраныстары" 
                     linkTo="/coach/requests"
                     colorClass="card-purple" 
                 />
                 <StatCard 
                     icon={<Shield size={24} />} 
-                    value={0} 
+                    value={0} // This needs to be dynamic later
                     label="Белсенді турнирлер" 
                     linkTo="/coach/applications"
                     colorClass="card-green" 
                 />
             </div>
+             <div className='club-verification-notice'>
+                {clubData.isVerified ? (
+                    <p className='verified'><Shield size={18}/> Сіздің клубыңыз тексерістен өтті. Енді спортшылар сіздің клубты тіркеу кезінде таңдай алады.</p>
+                ) : (
+                    <p className='pending'><Shield size={18}/> Сіздің клубыңыз әкімшінің тексеруін күтуде. Тексерілгеннен кейін ол тіркеу кезінде спортшыларға көрінетін болады.</p>
+                )}
+            </div>
         </>
     );
 };
 
-// ... (Main CoachDashboard container remains the same) ...
+
 const CoachDashboard = () => {
     const [clubData, setClubData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -145,6 +155,7 @@ const CoachDashboard = () => {
                 <ul>
                     <li><Link to="/coach/dashboard" className="active">Басты бет</Link></li>
                     <li><Link to="/profile">Профильді өңдеу</Link></li>
+                    {clubData && <li><Link to="/coach/club/edit">Клуб профилі</Link></li>}
                     {clubData && <li><Link to="/coach/my-athletes">Менің спортшыларым</Link></li>}
                     {clubData && <li><Link to="/coach/applications">Турнирлік өтінімдер</Link></li>}
                     {clubData && <li><Link to="/coach/requests">Спортшылардың сұраныстары</Link></li>}
@@ -163,6 +174,4 @@ const CoachDashboard = () => {
     );
 };
 
-
 export default CoachDashboard;
-

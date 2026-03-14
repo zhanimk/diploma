@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './AthleteDashboard.css'; 
 import { User, Shield, Edit, Clock, CheckCircle, XCircle, HelpCircle } from 'lucide-react';
-import { setUser } from '../../store/authSlice';
+import { setUser } from '../../../store/authSlice';
 
 const ClubStatusCard = ({ profile }) => {
     // We determine the loading state based on whether the profile object exists.

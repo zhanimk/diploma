@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { Users, Home, Loader, X, Edit, Save, CheckCircle, Trash, Lock, Unlock } from 'lucide-react';
+import { Users, Home, Loader, X, Edit, Save } from 'lucide-react';
 import './AdminManagement.css';
 import { useDebounce } from '../../../hooks/useDebounce';
 

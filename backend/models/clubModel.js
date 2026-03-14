@@ -20,6 +20,22 @@ const clubSchema = mongoose.Schema(
             type: String, 
             default: '',
         },
+        description: {
+            type: String,
+            default: ''
+        },
+        phone: {
+            type: String,
+            default: ''
+        },
+        address: {
+            type: String,
+            default: ''
+        },
+        website: {
+            type: String,
+            default: ''
+        },
         isVerified: { // Поле для верификации клуба
             type: Boolean,
             required: true,
